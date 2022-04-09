@@ -1,0 +1,35 @@
+$space-cadet: #404c6b;
+$space-cadet-light: #5a6c99;
+$viridian-green: #119da4;
+$cerulean-frost: #6d9dc5;
+$cream-white: #ffffbe;
+$mandarin: #ef7b45;
+
+@font-face {
+    font-family: OpenSans;
+    src: url("/../src/assets/Open_Sans/static/OpenSans/OpenSans-Regular.ttf");
+}
+
+body {
+    margin: 0;
+}
+
+* {
+    font-family: OpenSans;
+}
+
+.white {
+    color: white;
+}
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+main {
+    margin: 65px 0 0 110px;
+}
+
+.bold {
+    font-weight: bold;
+}
