@@ -1,16 +1,3 @@
-<script lang="ts">
-    import { useWindowSize } from 'vue-window-size';
-    const { width, height } = useWindowSize()
-
-    export default {
-        data() {
-            return {
-                windowWidth: width
-            }
-        },
-    }
-</script>
-
 <template>
     <header class="shadow">
         <RouterLink to="/" class="banner">
@@ -26,8 +13,31 @@
         <nav>
             <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
             <RouterLink to="/levels" class="navbar-link">Niveaux</RouterLink>
-            <RouterLink to="/login" class="navbar-link">Se connecter</RouterLink>
-            <RouterLink to="/register" class="navbar-link">S'inscrire</RouterLink>
+            <div v-if="connected">
+                <RouterLink to="/profile" class="navbar-link">Mon compte</RouterLink>
+                <RouterLink to="/logout" class="navbar-link">Déconnexion</RouterLink>
+            </div>
+            <div v-else>
+                <RouterLink to="/login" class="navbar-link">Se connecter</RouterLink>
+                <RouterLink to="/register" class="navbar-link">S'inscrire</RouterLink>
+            </div>
         </nav>
     </header>
 </template>
+
+<script lang="ts">
+    import { ref } from '@vue/reactivity';
+    import { useWindowSize } from 'vue-window-size';
+    import { databaseClient } from '@/database/implementation';
+
+    const { width } = useWindowSize()
+
+    export default {
+        setup() {
+            return {
+                windowWidth: width,
+                connected: databaseClient.isConnected
+            }
+        },
+    }
+</script>
