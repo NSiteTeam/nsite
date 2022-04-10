@@ -47,6 +47,18 @@ header {
                 color: white;
             }   
         }
+
+        @media (max-width: 860px) {
+            width: 300px;
+            position: fixed;
+            bottom: 0;
+            transform: translate(50%, -50%);
+        }
+
+        @media (max-width: 500px) {
+            width: 210px;
+            transform: translate(50%, -50%);
+        }
     }
 
     nav {

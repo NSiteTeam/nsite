@@ -13,14 +13,10 @@
         <nav>
             <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
             <RouterLink to="/levels" class="navbar-link">Niveaux</RouterLink>
-            <div v-if="connected">
-                <RouterLink to="/profile" class="navbar-link">Mon compte</RouterLink>
-                <RouterLink to="/logout" class="navbar-link">Déconnexion</RouterLink>
-            </div>
-            <div v-else>
-                <RouterLink to="/login" class="navbar-link">Se connecter</RouterLink>
-                <RouterLink to="/register" class="navbar-link">S'inscrire</RouterLink>
-            </div>
+            <RouterLink v-if="connected" to="/profile" class="navbar-link">Mon compte</RouterLink>
+            <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
+            <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
+            <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
         </nav>
     </header>
 </template>
