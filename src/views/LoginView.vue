@@ -19,14 +19,13 @@
 <script setup>
     import { ref } from "vue"
     import { databaseClient } from '../database/implementation'
- 
+
     const email = ref("")
     const password = ref("")
     const loading = ref(false)
 
     async function handleLogin() {
         loading.value = true
-        await new Promise(r => setTimeout(r, 2000));
         const result = await databaseClient.login(email.value, password.value)
         loading.value = false
 

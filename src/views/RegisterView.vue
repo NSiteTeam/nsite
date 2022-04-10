@@ -16,7 +16,7 @@
     </form>
 </template>
 
-<script lang="ts">
+<script setup>
     import { ref } from "vue"
     import { databaseClient } from '../database/implementation'
 
@@ -26,9 +26,9 @@
 
     async function handleLogin() {
         loading.value = true
-        const connected = await databaseClient.signIn(email.value, password.value)
+        const result = await databaseClient.signIn(email.value, password.value)
         loading.value = false
 
-        // TODO: Say to the user if connection worked or not
+        // TODO: Ask to the user to verify his email
     }
 </script>
