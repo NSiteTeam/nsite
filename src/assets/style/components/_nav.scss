@@ -5,11 +5,6 @@ header {
     justify-content: space-between;
     background: rgb(64,76,107);
     background: linear-gradient(90deg, $space-cadet 10%, $space-cadet-light 100%);
-    
-    a {
-        color: white;
-        text-decoration: none;
-    }
 
     .banner {
         display:flex;
@@ -68,6 +63,14 @@ header {
             display:flex;
             align-items: center;
             justify-content: center;
+
+            &:hover {
+                @include shadow1;
+            }
+
+            &:active {
+                @include shadow2;
+            }
         }
     }
     

@@ -17,17 +17,40 @@ body {
 * {
     font-family: OpenSans;
 }
+    
+a {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+main {
+    margin: 65px 0 0 110px;
+}
+
+.wave {
+    background-image: url("/src/assets/vectors/wave.svg");
+    aspect-ratio: 1402/500;
+    width: calc(100% + 110px);
+    margin-left: -110px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
 
 .white {
     color: white;
 }
 
-.shadow {
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+.shadow1 {
+    @include shadow2;
 }
 
-main {
-    margin: 65px 0 0 110px;
+.shadow2 {
+    @include shadow2;
 }
 
 .bold {

@@ -1,5 +1,5 @@
 <template>
-    <header class="shadow">
+    <header class="shadow1">
         <RouterLink to="/" class="banner">
             <img src="https://via.placeholder.com/64" width="64" height="64">
             <h2 v-if="windowWidth > 1024">Les mathématiques à SJH</h2>

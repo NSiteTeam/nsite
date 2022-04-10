@@ -23,12 +23,7 @@ const router = createRouter({
       path: "/browse",
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
-    },
-    {
-      path: "/levels",
-      name: "levels",
-      component: () => import("../views/LevelsView.vue"),
-    },
+    }
   ],
 });
 
