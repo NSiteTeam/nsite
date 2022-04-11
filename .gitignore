@@ -19,6 +19,7 @@ package-lock.json
 /cypress/screenshots/
 
 # Editor directories and files
+.gitpod.yml
 .vscode/*
 !.vscode/extensions.json
 .idea

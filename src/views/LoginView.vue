@@ -1,5 +1,6 @@
 <template>
-    <form @submit.prevent="handleLogin">
+    <form id="login" @submit.prevent="handleLogin">
+        <h2>Se connecter</h2>
         <input
             type="email"
             v-model="email"

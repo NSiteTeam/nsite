@@ -1,5 +1,6 @@
 <template>
-    <form @submit.prevent="handleLogin">
+    <form id="register" @submit.prevent="handleLogin">
+        <h2>S'inscrire</h2>
         <input
             type="email"
             v-model="email"
