@@ -4,8 +4,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+    },
+    // alignement avec le support navigateur de Vue
+    "target": "es5",
+    // activation de la déduction stricte pour les propriétés de données sur `this`
+    "strict": true,
+    // si vous utilisez webpack 2+ ou rollup, permettre le tree shaking :
+    "module": "es2015",
+    "moduleResolution": "node"
   },
   "vueCompilerOptions": {
     "experimentalDisableTemplateSupport": true
@@ -14,5 +21,5 @@
     {
       "path": "./tsconfig.vite-config.json"
     }
-  ]
+  ],
 }
