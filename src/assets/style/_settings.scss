@@ -41,6 +41,12 @@ main {
     background-size: cover;
 }
 
+// mettre les deux div en ligne
+#home-container{
+    display:flex;
+    align-items: flex-start;
+}
+
 .white {
     color: $cream-white;
 }

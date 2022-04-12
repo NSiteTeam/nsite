@@ -1,5 +1,6 @@
-<template>
-    <div class="catch-line shadow2">
+<template class='catchline-template'>
+  <!-- div de la page 'les profs de maths ont enfin un site de maths' -->
+  <div class="catch-line shadow2">
     <h1>Les professeurs de maths de Saint Jean Hulst ont enfin un site internet pour vous aider !</h1>
     <ul>
       <li><i class="em em-lower_left_ballpoint_pen"></i> Les annales des précédents DS <span class="bold">avec</span> les corrigés</li>

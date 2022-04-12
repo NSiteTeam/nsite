@@ -45,7 +45,11 @@ header {
 
             &::placeholder {
                 color: $cream-white;
-            }   
+            }
+
+            &:focus {
+                outline:  none;
+            }
         }
 
         @media (max-width: 860px) {
