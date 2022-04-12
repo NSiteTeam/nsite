@@ -19,3 +19,6 @@ mathématiciens ou petites vidéos)
 - Les concours ou autres activités organisées par les professeurs de Mathématiques
 - Histoire : limité pour le collège, l’ouvre-t-on sur les thèmes du lycée ?
 - Les attendus pour une rentrée sereine. Exercices corrigés, liens vers site, conseils.
+
+## Commandes :
+- Pour lancer le site, entrez cette commande dans le terminal : ""
