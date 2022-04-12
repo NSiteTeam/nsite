@@ -1,4 +1,4 @@
-import type { User } from "../interface.ts/user";
+import type { User } from "../interface/user";
 
 export class SupabaseUser implements User {
     email?: string
