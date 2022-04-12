@@ -1,3 +1,15 @@
+// -------------------------------------------------------------------------
+// BODY
+// -------------------------------------------------------------------------
+body {
+    background: linear-gradient(217deg, #55658f, rgba(255,0,0,0) 70.71%),
+                linear-gradient(127deg, #5b5a99, rgba(0,255,0,0) 70.71%),
+                linear-gradient(336deg, #11a498, rgba(0,0,255,0) 70.71%);
+}
+
+// -------------------------------------------------------------------------
+// CATCHLINE
+// -------------------------------------------------------------------------
 .catch-line {
     width: 50%;
     border-radius: 50px;
@@ -15,8 +27,11 @@
     
 }
 
-
+// -------------------------------------------------------------------------
+// NEWS
+// -------------------------------------------------------------------------
 .news {
+    display: block;
     position: absolute;
     left: 60vw;
     transition: 0.1s;
@@ -25,8 +40,17 @@
     border-radius: 50px;
     margin-left: 2%;
     padding-right: 5%;
+    padding: 3%;
     background-color: rgba(255,255,255,0.1);
     color: $cream-white;
+
+    ul {
+        padding-left: 25px;
+
+        li {
+            line-height: 40px;
+        }
+    }
     
 }
 
@@ -35,17 +59,17 @@
     height: 80vh;
 }
 
-
-
-
 // mettre les deux div en ligne
 .news-template, .catchline-template {
     display:inline;
 }
 
-// bg
-body {
-    background: linear-gradient(217deg, $space-cadet, rgba(255,0,0,0) 70.71%),
-                linear-gradient(127deg, $space-cadet-light, rgba(0,255,0,0) 70.71%),
-                linear-gradient(336deg, $viridian-green, rgba(0,0,255,0) 70.71%);
+.liste-actualites {
+    height: 43vh;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+div.liste-actualites:hover{
+    height: 73vh;
 }

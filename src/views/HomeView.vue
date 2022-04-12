@@ -11,6 +11,7 @@ import News from "./../components/News.vue";
       <CatchLine />
       <News />
   </div>
+  <button>CLASSES</button>
   <div class="wave"></div>
   <Levels />
 </template>
