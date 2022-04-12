@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { ref, type Ref } from 'vue'
-import type { DatabaseClient } from '../interface.ts/database_client'
+import type { DatabaseClient } from '../interface/database_client'
+import { Permissions } from '../interface/permissions'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -14,11 +15,14 @@ export class SupabaseClient implements DatabaseClient {
     isConnected: Ref<boolean> = ref(false)
 
     /**
-     * Return the email of the connected user or null if the user is not connected
+     * The email of the connected user or null if the user is not connected
      */
-    email(): string | null {
-        return supabase.auth.user()?.email ?? null
-    }
+    email: Ref<string | null> = ref(null)
+
+    /**
+     * All the permissions of the user
+     */
+    permissions: Ref<Array<Permissions>> = ref(Array())
 
     /**
      * Sign in the user with the given email and password
@@ -29,7 +33,7 @@ export class SupabaseClient implements DatabaseClient {
     async signIn(email: string, password: string): Promise<any> {
         console.log("Try to sign in with email: ", email)
 
-        const { user, session, error } = await supabase.auth.signUp({
+        const { user, error } = await supabase.auth.signUp({
             email: email,
             password: password
         })
@@ -48,15 +52,34 @@ export class SupabaseClient implements DatabaseClient {
     async login(email: string, password: string): Promise<boolean> {
         console.log("Try to login with email: ", email)
 
-        const { user, session, error } = await supabase.auth.signIn({
+        await supabase.auth.signIn({
             email: email,
             password: password
         })
 
-        this.isConnected.value = !error && user != null
+        this.updateUserInfos()
 
         console.log("Connection status:", this.isConnected.value)
 
         return this.isConnected.value
+    }
+
+    private async updateUserInfos() {
+        this.isConnected.value = supabase.auth.session() != null
+        this.email.value = supabase.auth.user()?.email ?? null
+        await supabase.functions.invoke('fetch-permissions')
+            .then(result => {
+                this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permissions)[e])
+            })
+            .catch(error => {
+                console.log("Error while fetching permissions", error)
+            })
+
+        console.log(
+            `Just updated user infos:\n` +
+            ` - User is connected: ${this.isConnected.value}\n` +
+            ` - User's email : ${this.email.value}\n` +
+            ` - User's permissions: ${this.permissions.value}`
+        )
     }
 }
