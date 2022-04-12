@@ -2,7 +2,7 @@ $space-cadet: #404c6b;
 $space-cadet-light: #5a6c99;
 $viridian-green: #119da4;
 $cerulean-frost: #6d9dc5;
-$cream-white: #ffffbe;
+$cream-white: #e4f5ff;
 $mandarin: #ef7b45;
 
 @font-face {
@@ -19,7 +19,7 @@ body {
 }
     
 a {
-    color: white;
+    color: $cream-white;
     text-decoration: none;
 
     &:hover {
@@ -42,7 +42,7 @@ main {
 }
 
 .white {
-    color: white;
+    color: $cream-white;
 }
 
 .shadow1 {

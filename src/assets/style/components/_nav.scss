@@ -14,7 +14,7 @@ header {
 
         &-text {
             margin-left: 30px;
-            color: white;
+            color: $cream-white;
             font-weight: 700;
             font-size: 24px;
         }
@@ -40,11 +40,11 @@ header {
         &-input {
             width: 300px;
             border: 0;
-            color: white;
+            color: $cream-white;
             background-color: $space-cadet-light;
 
             &::placeholder {
-                color: white;
+                color: $cream-white;
             }   
         }
 
@@ -69,7 +69,7 @@ header {
             padding: 10px;
             background-color: $space-cadet-light;
             border-radius: 10px;
-            color: white;
+            color: $cream-white;
             height: 20px;
             line-height: 10px;
             display:flex;

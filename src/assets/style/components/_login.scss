@@ -11,19 +11,19 @@
     top: 50%;
 
     h2 {
-        color: white;
+        color: $cream-white;
     }
 
     input {
         border: 0;
-        color: white;
+        color: $cream-white;
         margin-bottom: 20px;
         padding: 3%;
         border-radius: 5px;
         background-color: $space-cadet-light;
 
         &::placeholder {
-            color: white;
+            color: $cream-white;
         }
     }
 
