@@ -3,24 +3,34 @@
   <div class="news shadow2">
     <h1>Actualités</h1>
     <div class="liste-actualites">
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
-      <p class="test">TEST</p><br>
+      <ul>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+      <li>TEST</li>
+    </ul>
 
       
     </div>
