@@ -8,6 +8,7 @@ import Footer from "./components/Footer.vue";
   <main>
     <RouterView />
   </main>
+  <div class="wave" :class="this.$route.name == 'home' ? 'display-none' : 'display-block'"></div>
   <Footer />
 </template>
 
