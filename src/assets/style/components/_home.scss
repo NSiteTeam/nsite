@@ -10,24 +10,7 @@ body {
     -moz-animation: BackGroundAnimation 10s ease infinite;
     animation: BackGroundAnimation 10s ease infinite;
 }
-// Linear gradient animation
-@-webkit-keyframes BackGroundAnimation {
-    0% { background-position:0% 50% }
-    50% { background-position:100% 50% }
-    100% { background-position:0% 50% }
-}
 
-@-moz-keyframes BackGroundAnimation {
-    0% { background-position:0% 50% }
-    50% { background-position:100% 50% }
-    100% { background-position:0% 50% }
-}
-
-@keyframes BackGroundAnimation {
-    0% { background-position:0% 50% }
-    50% { background-position:100% 50% }
-    100% { background-position:0% 50% }
-}
 
 // -------------------------------------------------------------------------
 // CATCHLINE
