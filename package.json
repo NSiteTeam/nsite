@@ -16,7 +16,7 @@
     "vue-window-size": "^1.1.2"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.1.0",
+    "@rushstack/eslint-patch": "^1.1.2",
     "@types/node": "^16.11.26",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vue/eslint-config-prettier": "^7.0.0",
