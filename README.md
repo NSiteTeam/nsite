@@ -1,6 +1,12 @@
 # Site des profs de maths
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/NSiteTeam/nsite)
 
+## Commandes :
+- Pour lancer le site, entrez cette commande dans le terminal : 
+```sh 
+npm run dev
+```
+
 ## Structure :
 - 1 page par niveau sur laquelle figure :
     - Tous les thèmes de l’année sans que cela s’appelle progression
@@ -19,6 +25,3 @@ mathématiciens ou petites vidéos)
 - Les concours ou autres activités organisées par les professeurs de Mathématiques
 - Histoire : limité pour le collège, l’ouvre-t-on sur les thèmes du lycée ?
 - Les attendus pour une rentrée sereine. Exercices corrigés, liens vers site, conseils.
-
-## Commandes :
-- Pour lancer le site, entrez cette commande dans le terminal : ""
