@@ -1,0 +1,28 @@
+#browse-container {
+    display:flex;
+    flex-wrap: wrap;
+
+    .card {
+        @include shadow1;
+        background-color: $space-cadet-light;
+        color: $cream-white;
+        display: flex;
+        flex-direction: column;
+        padding: 3%;
+        margin-right: 2%;
+        margin-top: 2%;
+        width: 20%;
+        border-radius: 20px;
+        cursor: pointer;
+
+        i {
+            font-size: 0.8em;
+        }
+
+        p {
+            padding-left: 5px;
+        }
+
+    }
+
+}

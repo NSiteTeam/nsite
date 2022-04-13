@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import Card from "./../components/Card.vue"
+</script>
+
+
 <template>
-    This is a browse template
+    <div id="browse-container">
+        <Card />
+    </div>
 </template>
