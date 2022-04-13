@@ -1,20 +1,22 @@
 <template>
-    <form id="register" @submit.prevent="handleLogin">
-        <h2>S'inscrire</h2>
-        <input
-            type="email"
-            v-model="email"
-        />
-        <input
-            type="password"
-            v-model="password"
-        />
-        <input
-          type="submit"
-          value="S'inscrire"
-          :disabled="loading"
-        />
-    </form>
+    <div class="login-container">
+        <form id="register" @submit.prevent="handleLogin">
+            <h2>S'inscrire</h2>
+            <input
+                type="email"
+                v-model="email"
+            />
+            <input
+                type="password"
+                v-model="password"
+            />
+            <input
+            type="submit"
+            value="S'inscrire"
+            :disabled="loading"
+            />
+        </form>
+    </div>
 </template>
 
 <script setup>

@@ -2,13 +2,11 @@
 	display: flex;
 	flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-color: $space-cadet;
     padding: 4% 6% 4% 6%;
     border-radius: 40px;
-    position: absolute;
-    transform: translate(50%, -50%);
-    right: 50%;
-    top: 50%;
+    width: 200px;
 
     h2 {
         color: $cream-white;
@@ -26,13 +24,9 @@
             color: $cream-white;
         }
     }
-
-    input:not([type="submit"]) {
-        width: 100%;
-    }
-
-    input[type="submit"] {
-        padding: 5%;
-        color: #fff;
-    }
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20%;
 }

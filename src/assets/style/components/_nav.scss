@@ -89,7 +89,7 @@ header {
             }
         }
 
-        .active {
+        .router-link-active {
             @include shadow1;
         }
     }

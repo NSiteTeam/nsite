@@ -11,7 +11,7 @@
             <input autocomplete="off" name="search-input" class="search-input" placeholder="Rechercher">
         </div>
         <nav>
-            <RouterLink to="/browse" class="navbar-link" :class="currentRouteName == 'browse' ? 'active' : ''">Parcourir</RouterLink>
+            <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
             <a v-if="currentRouteName == 'home'" href="#levels" class="navbar-link">Niveaux</a>
             <RouterLink
                 v-if="connected"
@@ -20,9 +20,9 @@
                 :class="currentRouteName == 'profile' ? '' : 'active'">
                 Mon compte {{ currentRouteName }}
             </RouterLink>
-            <RouterLink v-if="connected" to="/logout" class="navbar-link" :class="currentRouteName == 'logout' ? 'active' : ''">Déconnexion</RouterLink>
-            <RouterLink v-if="!connected" to="/login" class="navbar-link" :class="currentRouteName == 'login' ? 'active' : ''">Se connecter</RouterLink>
-            <RouterLink v-if="!connected" to="/register" class="navbar-link" :class="currentRouteName == 'register' ? 'active' : ''">S'inscrire</RouterLink>
+            <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
+            <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
+            <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
         </nav>
     </header>
 </template>

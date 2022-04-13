@@ -1,23 +1,25 @@
 <template>
-    <form id="login" @submit.prevent="handleLogin">
-        <h2>Se connecter</h2>
-        <input
-            type="email"
-            v-model="email"
-        />
-        <input
-            type="password"
-            v-model="password"
-        />
-        <input
-          type="submit"
-          value="Se connecter"
-          :disabled="loading"
-        />
-    </form>
+    <div class="login-container">
+        <form id="login" @submit.prevent="handleLogin">
+            <h2>Se connecter</h2>
+            <input
+                type="email"
+                v-model="email"
+            />
+            <input
+                type="password"
+                v-model="password"
+            />
+            <input
+            type="submit"
+            value="Se connecter"
+            :disabled="loading"
+            />
+        </form>
+    </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import { ref } from "vue"
     import { databaseClient } from '../database/implementation'
 
