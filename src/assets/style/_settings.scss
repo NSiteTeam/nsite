@@ -18,7 +18,7 @@ body {
     font-family: OpenSans;
 }
     
-a {
+a, NavLink {
     color: $cream-white;
     text-decoration: none;
 
@@ -31,13 +31,24 @@ main {
     margin: 65px 0 0 110px;
 }
 
-.wave {
-    background-image: url("/src/assets/vectors/wave.svg");
-    aspect-ratio: 1402/350;
+.wave1 {
+    background-image: url("/src/assets/vectors/wave1.svg");
+    aspect-ratio: 1402/300;
     width: calc(100% + 110px);
     margin-left: -110px;
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
+}
+
+.wave2 {
+    background-image: url("/src/assets/vectors/wave2.svg");
+    aspect-ratio: 1402/300;
+    width: calc(100% + 110px);
+    margin-left: -110px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: $cerulean-frost;
     background-size: cover;
 }
 

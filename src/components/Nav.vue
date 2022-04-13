@@ -11,7 +11,7 @@
             <input autocomplete="off" name="search-input" class="search-input" placeholder="Rechercher">
         </div>
         <nav>
-            <div id="navbar-links" :class="toggleMenu || windowWidth > 500 ? 'display-block' : 'display-none'">
+            <div id="navbar-links" :class="toggleMenu || windowWidth > 501 ? 'display-block' : 'display-none'">
                 <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
                 <a v-if="currentRouteName == 'home'" href="#levels" class="navbar-link">Niveaux</a>
                     <RouterLink

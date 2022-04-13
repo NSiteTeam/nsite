@@ -2,6 +2,7 @@
 import CatchLine from "./../components/CatchLine.vue";
 import Levels from "./../components/Levels.vue";
 import News from "./../components/News.vue";
+import Footer from "../components/Footer.vue";
 
 
 </script>
@@ -11,6 +12,7 @@ import News from "./../components/News.vue";
       <CatchLine />
       <News />
   </div>
-  <div class="wave"></div>
+  <div class="wave1"></div>
   <Levels />
+  <div class="wave2"></div>
 </template>

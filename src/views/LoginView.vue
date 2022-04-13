@@ -5,10 +5,12 @@
             <input
                 type="email"
                 v-model="email"
+                placeholder="Email"
             />
             <input
                 type="password"
                 v-model="password"
+                placeholder="Mot de passe"
             />
             <input
             type="submit"
