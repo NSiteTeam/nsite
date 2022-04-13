@@ -4,7 +4,7 @@
     <h1>Actualités</h1>
     <div class="liste-actualites">
       <ul>
-      <li>TEST</li>
+      <li>TESTONS LA LONGUEUR</li>
       <li>TEST</li>
       <li>TEST</li>
       <li>TEST</li>
