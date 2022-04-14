@@ -24,6 +24,7 @@
                     <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
                     <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
                     <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
+                    <RouterLink to="/browse" class="navbar-link">Un peu d'Histoire</RouterLink>
             </div>
             <span @click="toggleMenuFunction()" class="material-icons white menu-button">
                 menu 

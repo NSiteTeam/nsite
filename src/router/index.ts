@@ -28,6 +28,11 @@ const router = createRouter({
       path: "/admistration/users",
       name: "users",
       component: () => import("../views/admin/UsersView.vue")
+    },
+    {
+      path: "/timeline",
+      name: "timeline",
+      component: () => import("../views/admin/TimelineView.vue")
     }
   ],
 });
