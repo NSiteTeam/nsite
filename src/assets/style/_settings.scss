@@ -33,12 +33,9 @@ main {
     margin: 65px 0 0 110px;
 }
 
-.wave1 {
-    @include wave("/src/assets/vectors/wave1.svg");
-}
-
 .wave2 {
-    @include wave("/src/assets/vectors/wave2.svg", $cerulean-frost);
+    margin-top: -10%;
+    @include wave("/src/assets/vectors/wave2.svg");
 }
 
 .wave {
