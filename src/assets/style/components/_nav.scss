@@ -3,6 +3,7 @@ header {
     display:flex;
     align-items: center;
     position: sticky;
+    z-index: 2;
     top: 0;
     justify-content: space-between;
     background: linear-gradient(90deg, $space-cadet 10%, $space-cadet-light 100%);
