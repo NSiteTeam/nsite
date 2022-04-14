@@ -21,10 +21,10 @@
                         :class="currentRouteName == 'profile' ? '' : 'active'">
                         Mon compte {{ currentRouteName }}
                     </RouterLink>
+                    <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
                     <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
                     <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
                     <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
-                    <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
 
             </div>
             <span @click="toggleMenuFunction()" class="material-icons white menu-button">
@@ -38,6 +38,7 @@
     import { ref } from '@vue/reactivity';
     import { useWindowSize } from 'vue-window-size';
     import { databaseClient } from '@/database/implementation';
+    import '../data.json';
 
     const { width } = useWindowSize()
 

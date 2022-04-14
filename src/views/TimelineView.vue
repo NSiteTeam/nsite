@@ -3,7 +3,7 @@
 
 <template>
     <div class="container">
-        <img class  ="img" src="https://www.gdiy.fr/wp-content/uploads/2019/09/Cedric_Villani-500x500.jpg" height="100"> 
+        <img class  ="img" src="https://www.gdiy.fr/wp-content/uploads/2019/09/Cedric_Villani-500x500.jpg" height="125"> 
         <ul>
             <li>
             <span></span>
@@ -14,7 +14,7 @@
                 <div class="img"></div>
             </div>
             <span class="number">
-                <span>CECI N4A AUCUN SENS</span>
+                <span>18 000 av J.C</span>
                 <span>...</span>
             </span>
             </li>
