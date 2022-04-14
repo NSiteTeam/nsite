@@ -2,6 +2,7 @@
 // BODY
 // -------------------------------------------------------------------------
 body {
+    // https://wallpapercave.com/wp/6AGfPRi.jpg ??? (JB)
     background: linear-gradient(217deg, #404c6b, rgba(255,0,0,0) 70.71%),
                 linear-gradient(127deg, #5b5a99, rgba(0,255,0,0) 70.71%),
                 linear-gradient(336deg, #119da4, rgba(0,0,255,0) 70.71%);
@@ -56,11 +57,12 @@ body::-webkit-scrollbar-thumb {
 .news {
     display: inline-block;
     border-radius: 50px;
-    margin-left: 2%;
+    margin-left: 10%;
     padding-right: 5%;
     padding: 3%;
     background-color: rgba(255,255,255,0.1);
     color: $cream-white;
+    height: min-content;
 
     @media (max-width: 768px) {
         width: 80%;
@@ -80,6 +82,7 @@ body::-webkit-scrollbar-thumb {
 
 // mettre les deux div en ligne
 #home-container{
+    height: 63vh;
     display:flex;
     align-items: space-around;
     @media (max-width: 768px) {
@@ -95,6 +98,7 @@ body::-webkit-scrollbar-thumb {
     transition: 0.1s;
     height: 43vh;
     overflow-y: scroll;
+    max-width: 15vw;
     
 }
 
