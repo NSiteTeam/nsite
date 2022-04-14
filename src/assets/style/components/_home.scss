@@ -28,6 +28,7 @@ body::-webkit-scrollbar-thumb {
 // CATCHLINE
 // -------------------------------------------------------------------------
 .catch-line {
+    word-break: break-word;
     height: min-content;
     width: 50%;
     border-radius: 50px;
@@ -37,7 +38,6 @@ body::-webkit-scrollbar-thumb {
 
     @media (max-width: $mobile-width) {
         width: 80%;
-        max-height: 100%;
     }
 
     ul {
