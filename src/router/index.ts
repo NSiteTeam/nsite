@@ -29,11 +29,11 @@ const router = createRouter({
       name: "users",
       component: () => import("../views/admin/UsersView.vue")
     },
-    {
-      path: "/timeline",
-      name: "timeline",
-      component: () => import("../views/admin/TimelineView.vue")
-    }
+    // {
+    //   path: "/timeline",
+    //   name: "timeline",
+    //   component: () => import("../views/admin/TimelineView.vue")
+    // },
   ],
 });
 
