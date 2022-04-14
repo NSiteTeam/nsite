@@ -12,6 +12,7 @@ header {
         display:flex;
         justify-content: center;
         align-items: center;
+        width: 22vw;
 
 
         &-text {
@@ -123,5 +124,11 @@ header {
             @include shadow1;
         }
     }
-    
+
+    .logo {
+        margin-left: 2%;
+        margin-right: 5%;
+        margin-top: 1%;
+    }
+
 }

@@ -7,6 +7,7 @@ import Footer from "../components/Footer.vue";
 </script>
 
 <template>
+
   <div id="home-container">
       <CatchLine />
       <News />

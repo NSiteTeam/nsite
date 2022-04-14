@@ -1,7 +1,9 @@
 <template>
     <header class="shadow1">
         <RouterLink to="/" class="banner">
-            <img src="https://via.placeholder.com/64" width="64" height="64">
+            <!-- <img src="https://via.placeholder.com/64" width="64" height="64"> -->
+            
+            <img src="../../src/assets/logo-white.svg" width="64" height="64" class="logo">
             <h2 v-if="windowWidth > 1250">Les mathématiques à SJH</h2>
         </RouterLink>
         <div class="search">
