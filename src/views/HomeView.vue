@@ -12,7 +12,6 @@ import Footer from "../components/Footer.vue";
       <CatchLine />
       <News />
   </div>
-  <div class="wave1"></div>
   <Levels />
   <div class="wave2"></div>
 </template>
