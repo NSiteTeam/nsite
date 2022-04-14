@@ -55,16 +55,16 @@ header {
             }
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 1000px) {
             width: 300px;
             position: fixed;
             bottom: 0;
-            transform: translate(50%, -50%);
+            left: calc(70% - 300px);
         }
 
         @media (max-width: 500px) {
             width: 210px;
-            transform: translate(50%, -50%);
+            left: 20%;
         }
     }
 

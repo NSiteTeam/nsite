@@ -6,6 +6,6 @@ import data from "./../data.json"
 
 <template>
     <div id="browse-container">
-        <Card :id=card.id v-for="card in data" :key="card.id" />
+        <Card :data=card v-for="card in data" :key="card.id" />
     </div>
 </template>
