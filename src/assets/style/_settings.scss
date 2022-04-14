@@ -1,3 +1,4 @@
+// Color palette
 $space-cadet: #404c6b;
 $space-cadet-light: #5a6c99;
 $viridian-green: #119da4;
@@ -5,10 +6,16 @@ $cerulean-frost: #6d9dc5;
 $cream-white: #e4f5ff;
 $mandarin: #ef7b45;
 
+// Breakpoints
+$mobile-width: 800px;
+$little-screen-width: 1250px;
+
 @font-face {
     font-family: OpenSans;
     src: url("/../src/assets/Open_Sans/static/OpenSans/OpenSans-Regular.ttf");
 }
+
+
 
 body {
     margin: 0;
@@ -31,12 +38,9 @@ main {
     margin: 65px 0 0 110px;
 }
 
-.wave1 {
-    @include wave("/src/assets/vectors/wave1.svg");
-}
-
 .wave2 {
-    @include wave("/src/assets/vectors/wave2.svg", $cerulean-frost);
+    margin-top: -10%;
+    @include wave("/src/assets/vectors/wave2.svg");
 }
 
 .wave {
