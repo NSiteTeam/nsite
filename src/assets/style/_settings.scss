@@ -42,11 +42,19 @@ main {
     margin-top: -10%;
     @include wave("/src/assets/vectors/wave2.svg");
 
-    @media (max-width: $little-screen-width) {
+    @media (max-width: 1000px) {
         margin-top: 80%;
     }
 
     @media (max-width: $mobile-width) {
+        margin-top: 250%;
+    }
+
+    @media (max-width: 400px) {
+        margin-top: 350%;
+    }
+
+    @media (max-width: 350px) {
         margin-top: 520%;
     }
     
