@@ -56,9 +56,10 @@ body::-webkit-scrollbar-thumb {
 .news {
     display: inline-block;
     border-radius: 50px;
-    margin-left: 2%;
+    margin-left: 10%;
     padding-right: 5%;
     padding: 3%;
+    width: 15vw;
     background-color: rgba(255,255,255,0.1);
     color: $cream-white;
     height: min-content;
