@@ -4,32 +4,9 @@
     <h1>Actualités</h1>
     <div class="liste-actualites">
       <ul>
-      <li>TESTONS LA LONGUEUR</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
-      <li>TEST</li>
+        <li>Le site est mintenant responsive sur PC</li>
+        <li>Les scrollbars sont maintenant custom</li>
+        
     </ul>
 
       
