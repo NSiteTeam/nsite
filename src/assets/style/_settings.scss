@@ -31,9 +31,8 @@ main {
     margin: 65px 0 0 110px;
 }
 
-
 .wave1 {
-    @include wave("/src/assets/vectors/wave1.svg");  
+    @include wave("/src/assets/vectors/wave1.svg");
 }
 
 .wave2 {
