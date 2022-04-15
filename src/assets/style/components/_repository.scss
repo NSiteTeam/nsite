@@ -5,6 +5,13 @@
     border-radius: 20px;
     max-width: 80%;
 
+    h3 {
+        & > i {
+            font-size: 0.8em;
+            font-weight: 300;
+        }
+    }
+
     ul#repo-menu {
         list-style-type: none;
         display: flex;
