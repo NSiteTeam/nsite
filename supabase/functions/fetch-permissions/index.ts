@@ -1,7 +1,3 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
 import { supabaseClient } from "../supabase_client.ts"
 import { ServerError } from "../server_error.ts";
 import { classicServe, getUuid } from '../utils.ts';

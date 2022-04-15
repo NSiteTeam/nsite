@@ -13,10 +13,10 @@
 
 <script setup lang="ts">
     import { databaseClient } from '@/database/implementation';
-    import { Permissions } from '@/database/interface/permissions';
+    import { Permission } from '@/database/interface/permissions';
     import { computed } from 'vue';
 
     const isAdmin = computed(
-        () => Permissions.GLOBAL_ADMIN in databaseClient.permissions.value
+        () => Permission.GLOBAL_ADMIN in databaseClient.permissions.value
     )
 </script>

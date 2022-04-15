@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import { ref, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
-import { Permissions } from '../interface/permissions'
+import { Level } from '../interface/level'
+import type { News } from '../interface/news'
+import { Permission } from '../interface/permissions'
+import { SupabaseNews } from './supabase_news'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -22,7 +25,14 @@ export class SupabaseClient implements DatabaseClient {
     /**
      * All the permissions of the user
      */
-    permissions: Ref<Array<Permissions>> = ref(Array())
+    permissions: Ref<Array<Permission>> = ref(Array())
+
+    /**
+     * A list of news fetched from the database.
+     * This list is updated when the method fetchNews(quantity) is called
+     */
+    fetchedNews: Array<News> = []
+    private newsOffset: number = 0
 
     /**
      * Sign in the user with the given email and password
@@ -69,7 +79,7 @@ export class SupabaseClient implements DatabaseClient {
         this.email.value = supabase.auth.user()?.email ?? null
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
-                this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permissions)[e])
+                this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permission)[e])
             })
             .catch(error => {
                 console.log("Error while fetching permissions", error)
@@ -81,5 +91,27 @@ export class SupabaseClient implements DatabaseClient {
             ` - User's email : ${this.email.value}\n` +
             ` - User's permissions: ${this.permissions.value}`
         )
+    }
+
+    async fetchNews(quantity: number): Promise<void> {
+        console.log(`Try to fetch ${quantity} news from ${this.newsOffset}`)
+
+        return await supabase.functions.invoke('fetch-news', { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
+            .then(result => {
+                this.newsOffset += quantity
+                this.fetchedNews = (result['data'] as unknown as Array<any>).map(news => {
+                    return new SupabaseNews(
+                        news['title'],
+                        news['subtitle'],
+                        news['date'],
+                        news['concerned'].map((level: number) => Object.values(Level)[level])
+                    )
+                })
+                console.log(`Just fetched ${this.fetchedNews.length} news`)
+            })
+            .catch(error => {
+                console.log("Error while fetching news", error)
+            })
+
     }
 }

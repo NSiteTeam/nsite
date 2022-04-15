@@ -13,7 +13,7 @@ export const jwtDecoder = (jwt: string): JwtUser =>
 
 export function getUuid(request: Request) {
     const authorization = request.headers.get('authorization')
-    
+
     if (authorization == null) {
       throw new ServerError(400, "No authorization in headers")
     } else if (!authorization.startsWith("Bearer ")){
@@ -32,7 +32,7 @@ export function classicServe(lambda: (request: Request) => Promise<JSON>) {
         if (request.method === 'OPTIONS') {
           return new Response('ok', { headers: corsHeaders })
         }
-      
+  
         try {
             const returnData = await lambda(request)
             return new Response(JSON.stringify(returnData), {
