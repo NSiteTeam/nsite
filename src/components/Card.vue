@@ -8,7 +8,7 @@
 
 
 <template>
-    <div class="card">
+    <RouterLink :to="'/repository/' + data.id" class="card">
         <img :src="data.image" alt="placeholder" class="card-image">
         <h3 class="card-title">{{ data.title }}</h3>
         <i>Niveau: {{ data.level }} • Ajouté le 
@@ -19,5 +19,5 @@
         }}
         </i>
         <p class="card-descr">{{ data.description }}</p>
-    </div>
+    </RouterLink>
 </template>

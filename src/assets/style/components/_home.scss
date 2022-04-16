@@ -111,8 +111,6 @@ div.liste-actualites:hover{
     transition: 0.1s;
     transition: 0.1s;
     height: 63vh;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
 
     &::-webkit-scrollbar {
         background-color: rgba(0,0,255,0);
