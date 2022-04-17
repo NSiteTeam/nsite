@@ -59,7 +59,7 @@ export default defineComponent({
                 if (file.date == lastestDate) {
                     return file.last_commit
                 }
-            })[0].last_commit
+            })[0]
             // @ts-ignore
             return lastestCommit
         }
@@ -69,7 +69,7 @@ export default defineComponent({
 
 <template>
     <div id="repo">
-        <h3 id="repo-title">{{ repoData.title }} <i>{{ date }}</i></h3>
+        <h3 id="repo-title">{{ repoData.title }} <i>Ajouté le : {{ formatDate(last_commit.date) }} • Niveau : {{ repoData.level }}</i></h3>
         <ul id="repo-menu">
             <li id="content" :class="activeTab == 'content' ? 'active' : ''" @click="setActiveTab('content')">
                 <span class="icon material-icons">
@@ -84,30 +84,37 @@ export default defineComponent({
                 Discussion
             </li>
         </ul>
-        <div id="repo-content" v-if="activeTab == 'content'">
-            <div class="header">
-                {{ last_commit.author }} : 
-                {{ last_commit.text }}
-            </div>
-            <div class="repo-content-row" v-for="(data, index) in repoData.content" :key="data.id">
-                <span class="file-title">
-                    <span class="material-icons">
-                        {{ data.icon }}
-                    </span>
-                    <div class="file-title-name">
-                        {{ data.name }}
-                    </div>
-                </span>
-                <div class="file-last-commit">
-                    <span class="file-last-commit-author">
-                        {{ data.last_commit.author }}
-                    </span> :
-                    {{ data.last_commit.text }}
+        <div id="repo-body">
+            <div id="repo-content" v-if="activeTab == 'content'">
+                <div class="header">
+                    {{ last_commit.last_commit.author }} : 
+                    {{ last_commit.last_commit.text }}
                 </div>
-                <span class="date">{{ dates[index] }}</span>
+                <div class="repo-content-row" v-for="(data, index) in repoData.content" :key="data.id">
+                    <span class="file-title">
+                        <span class="material-icons">
+                            {{ data.icon }}
+                        </span>
+                        <div class="file-title-name">
+                            {{ data.name }}
+                        </div>
+                    </span>
+                    <div class="file-last-commit">
+                        <span class="file-last-commit-author">
+                            {{ data.last_commit.author }}
+                        </span> :
+                        {{ data.last_commit.text }}
+                    </div>
+                    <span class="date">{{ dates[index] }}</span>
+                </div>
+            </div>
+            <div v-if="activeTab == 'content'" class="repo-descr">
+                <h4>Description</h4>
+                {{ repoData.description }}
             </div>
         </div>
         <div id="repo-chat" v-if="activeTab == 'chat'">
+            <input type="text" placeholder="Votre message">
         </div>
     </div>
 </template>
