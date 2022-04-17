@@ -13,7 +13,8 @@ header {
         display:flex;
         justify-content: center;
         align-items: center;
-        width: 32vw;
+        max-width: 40vw;
+        margin-left: 10px;
 
 
         &-text {

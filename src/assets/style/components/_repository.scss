@@ -56,7 +56,6 @@
             }
 
             .file-last-commit {
-
                 &-author {
                     text-decoration: underline;
                 }
@@ -95,14 +94,25 @@
 
         input {
             position: absolute;
+            color: $cream-white;
+            font-size: 14px;
             bottom: 0;
-            padding: 10px;
-            border-radius: 0 0 0 20px;
-            border: 0;
+            border-top: 1px solid white;
+            border-bottom: 0;
+            border-left: 0;
+            border-right: 0;
+            padding: 15px;
+            border-radius: 0 0 20px 20px;
+            width: calc(100% - 30px);
             background-color: $space-cadet-light;
 
+            &:focus {
+                outline: none;
+            }
+
             &::placeholder {
-                color: white
+                color: white;
+                font-weight: bold;
             }
         }
     }
@@ -110,7 +120,6 @@
     &-menu {
         list-style-type: none;
         display: flex;
-        margin-left: 10px;
         padding-left: 0;
         padding-bottom: 2px;
         width: min-content;
