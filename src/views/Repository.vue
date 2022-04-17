@@ -4,13 +4,28 @@ import { defineComponent } from 'vue'
 
 const activeTab: String = "content"
 
+function formatDate(timestamp: number) {
+    const date = new Date(timestamp)
+    // @ts-ignore
+    return date.toISOString().split('T')[0].split('-').reverse().join('/')
+}
+
+function getDataFromId(id: string, data: Array<object>): object {
+    return data.filter(repo => {
+        // @ts-ignore
+        return repo.id == parseInt(id)
+    })[0]
+}
+
 export default defineComponent({
     data(): object {
         return {
-            repoData: data.filter(repo => {
-                // @ts-ignore
-                return repo.id == parseInt(this.$route.params.id)
-            })[0],
+            // @ts-ignore
+            repoData: getDataFromId(this.$route.params.id, data),
+            // @ts-ignore
+            dates: getDataFromId(this.$route.params.id, data).content.map(repo => {
+                return formatDate(repo.date)
+            }),
             activeTab: activeTab
         }
     },
@@ -18,17 +33,35 @@ export default defineComponent({
         setActiveTab(tabId: String): void {
             // @ts-ignore
             this.activeTab = tabId
-        }
+        },
+        formatDate
     },
     computed: {
         date(): string {
-            const timestamp = data.filter(repo => {
-                // @ts-ignore
-                return repo.id == parseInt(this.$route.params.id)
-            })[0].publication_date
-            return  (new Date(parseInt(timestamp))).getDate() + '/' +
-                    (new Date(parseInt(timestamp))).getMonth() + '/' +
-                    (new Date(parseInt(timestamp))).getFullYear()
+            // @ts-ignore
+            const timestamp = getDataFromId(this.$route.params.id, data).publication_date
+            return  formatDate(parseInt(timestamp))
+        },
+        last_commit(): string {
+            // @ts-ignore
+            const repoContent = getDataFromId(this.$route.params.id, data).content
+            // @ts-ignore
+            const dates: Array<number> =repoContent.map(repo => {
+                return repo.date
+            })
+            // @ts-ignore
+            const ids: Array<number> = repoContent.map(repo => {
+                return repo.id
+            })
+            const lastestDate = Math.max(... dates)
+            // @ts-ignore
+            const lastestCommit: number = repoContent.filter(file => {
+                if (file.date == lastestDate) {
+                    return file.last_commit
+                }
+            })[0].last_commit
+            // @ts-ignore
+            return lastestCommit
         }
     }
 })
@@ -53,84 +86,25 @@ export default defineComponent({
         </ul>
         <div id="repo-content" v-if="activeTab == 'content'">
             <div class="header">
-                M. Kenesson: j'ai ajouté des exercices.
+                {{ last_commit.author }} : 
+                {{ last_commit.text }}
             </div>
-            <div class="repo-content-row">
+            <div class="repo-content-row" v-for="(data, index) in repoData.content" :key="data.id">
                 <span class="file-title">
                     <span class="material-icons">
-                        picture_as_pdf
+                        {{ data.icon }}
                     </span>
                     <div class="file-title-name">
-                        Exercice 1
+                        {{ data.name }}
                     </div>
                 </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 2
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 3
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 4
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 5
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 6
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
-            </div>
-            <div class="repo-content-row">
-                <span class="file-title">
-                    <span class="material-icons">
-                        picture_as_pdf
-                    </span>
-                    <div class="file-title-name">
-                        Exercice 7
-                    </div>
-                </span>
-                <span class="date">31/12/2021</span>
+                <div class="file-last-commit">
+                    <span class="file-last-commit-author">
+                        {{ data.last_commit.author }}
+                    </span> :
+                    {{ data.last_commit.text }}
+                </div>
+                <span class="date">{{ dates[index] }}</span>
             </div>
         </div>
         <div id="repo-chat" v-if="activeTab == 'chat'">

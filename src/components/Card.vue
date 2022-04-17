@@ -13,9 +13,8 @@
         <h3 class="card-title">{{ data.title }}</h3>
         <i>Niveau: {{ data.level }} • Ajouté le 
         {{ 
-            (new Date(parseInt(data.publication_date))).getDate() + '/' +
-            (new Date(parseInt(data.publication_date))).getMonth() + '/' +
-            (new Date(parseInt(data.publication_date))).getFullYear()
+            (new Date(parseInt(data.publication_date)))
+            .toISOString().split('T')[0].split('-').reverse().join('/')
         }}
         </i>
         <p class="card-descr">{{ data.description }}</p>

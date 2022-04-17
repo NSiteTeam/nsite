@@ -1,23 +1,212 @@
 [
     {
-        "id": 0, "title": "Exercices théorème de pytagore", "level": "4ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 0,
+        "title": "Exercices théorème de pytagore",
+        "level": "4ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 1, "title": "Exercices trigonométrie", "level": "4ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 1,
+        "title": "Exercices trigonométrie",
+        "level": "4ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 2, "title": "Exercices priorités opératoires", "level": "4ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 2,
+        "title": "Exercices priorités opératoires",
+        "level": "4ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 3, "title": "Exercices droites parallèles", "level": "6ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 3,
+        "title": "Exercices droites parallèles",
+        "level": "6ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 4, "title": "Exercices nombres relatifs", "level": "6ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 4,
+        "title": "Exercices nombres relatifs",
+        "level": "6ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 5, "title": "Exercices théorème de thalès", "level": "5ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 5,
+        "title": "Exercices théorème de thalès",
+        "level": "5ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     },
     {
-        "id": 6, "title": "Exercices Alogrithmique", "level": "3ème", "publication_date": "1649914059607", "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.", "image": "https://via.placeholder.com/256"
+        "id": 6,
+        "title": "Exercices Alogrithmique",
+        "level": "3ème", "publication_date": "1649914059607",
+        "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
+        "image": "https://via.placeholder.com/256",
+        "content": [
+            {
+                "id": 0,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 1",
+                "date": 1649914040000,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            },
+            {
+                "id": 1,
+                "icon": "picture_as_pdf",
+                "name": "Exercice 2",
+                "date": 1649914059607,
+                "last_commit": {
+                    "author": "M. de Regis",
+                    "text": "J'ai ajouté un exercice"
+                }
+            }
+        
+        ]
     }
 ]
