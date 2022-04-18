@@ -69,7 +69,7 @@ export default defineComponent({
 
 <template>
     <div id="repo">
-        <h3 id="repo-title">{{ repoData.title }} <i>Ajouté le : {{ formatDate(last_commit.date) }} • Niveau : {{ repoData.level }}</i></h3>
+        <h3 id="repo-title">{{ repoData.title }} <i>Ajouté le : {{ formatDate(last_commit.date) }} • Niveau : {{ repoData.level }}ème</i></h3>
         <ul id="repo-menu">
             <li id="content" :class="activeTab == 'content' ? 'active' : ''" @click="setActiveTab('content')">
                 <span class="icon material-icons">

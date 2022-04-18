@@ -11,7 +11,7 @@
     <RouterLink :to="'/repository/' + data.id" class="card">
         <img :src="data.image" alt="placeholder" class="card-image">
         <h3 class="card-title">{{ data.title }}</h3>
-        <i>Niveau: {{ data.level }} • Ajouté le 
+        <i>Niveau: {{ data.level }}ème • Ajouté le 
         {{ 
             (new Date(parseInt(data.publication_date)))
             .toISOString().split('T')[0].split('-').reverse().join('/')

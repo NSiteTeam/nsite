@@ -32,7 +32,7 @@ const router = createRouter({
     {
       path: "/level/:id",
       name: "level",
-      component: () => import("../views/Repository.vue"),
+      component: () => import("../views/LevelView.vue"),
     },
     {
       path: "/admistration/users",
