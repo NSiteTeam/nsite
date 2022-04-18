@@ -1,12 +1,9 @@
-.bd {
-    height: 10vh;
-    font-family: 'Open Sans', sans-serif;
-    background: none
-    
-}
+// ###########################################################################
+// The stylesheet rules the timeline styles
+// ###########################################################################
 
 .img {
-    
+    // JB c'est pas du tout responsive, démerde-toi pour que ça le soit
     border-radius: 15%;
     margin-left: 1000px;
     margin-top: 73px;
@@ -14,87 +11,87 @@
 
 .container {
     height: 100vh;
-}
-   
-.container ul {
-    list-style: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 1px 100px;
-    color: #ffffff;
-    font-size: 13px;
-}
-.container ul:before {
-    content: '';
-    width: 1px;
-    height: 100%;
-    position: absolute;
-    border-left: 2px dashed #86b7e7;
 
-}
-.container ul li {
-    position: relative;
-    margin-left: 30px ;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 14px;
-    border-radius: 6px;
-    width: 200px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, .12), 0 2px 2px rgba(0, 0, 0, .08)  
-}
-.container ul li:not(:first-child) {
-    margin-top: 60px;
-    color:#ffffff;
-}
-.container ul li > span {
-    width: 2px;
-    height: 100%;
-    background: #86b7e7;
-    left: -30px;
-    top: 0;
-    position: absolute;
-}
-.container ul li > span:before, .container ul li > span:after {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 2px solid #86b7e7;
-    position: absolute;
-    background: #86b7e7;
-    left: -5px;
-    top: 0;
-}
-.container ul li span:after {
-    top: 100%;
-}
-.container ul li > div {
-    margin-left: 10px;  
-}   
-.container div .title, .container div .type {
-    font-weight: 600;
-    font-size: 12px;
-}
-.container div .info {
-    font-weight: 300;
-}
-.container div > div {
-    margin-top: 5px;
-}
-.container span.number {
-    height: 100%;
-}
-.container span.number span {
-    position: absolute;
-    font-size: 10px;
-    left: -50px;
-    font-weight: bold;
-    margin-right: 10px;
-}
-.container span.number span:first-child {
-    top: 0;
-}
-.container span.number span:last-child {
-    top: 100%;
+    ul {
+        list-style: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: $cream-white;
+        font-size: 13px;
+
+        &:before {
+            content: '';
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            border-left: 2px dashed $cerulean-frost;
+        }
+
+        li {
+            position: relative;
+            margin-left: 30px ;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 14px;
+            border-radius: 6px;
+            width: 200px;
+            @include shadow1;
+
+            &:not(:first-child) {
+                margin-top: 60px;
+                color: $cream-white;
+            }
+
+            & > span {
+                width: 2px;
+                height: 100%;
+                background: $cerulean-frost;
+                left: -30px;
+                top: 0;
+                position: absolute;
+            }
+
+            & > span:before, & > span:after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                border: 2px solid $cerulean-frost;
+                position: absolute;
+                background: $cerulean-frost;
+                left: -5px;
+                top: 0;
+            }
+            
+            span:after {
+                top: 100%;
+            }
+        }
+    }
+
+    div {
+        .title, .type {
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .info {
+            font-weight: 300;
+        }
+    }
+
+    span.number {
+        span {
+            position: absolute;
+            font-size: 10px;
+            left: -50px;
+            font-weight: bold;
+            margin-right: 10px;
+
+            &:last-child {
+                top: 100%;
+            }
+        }
+    }
 }
