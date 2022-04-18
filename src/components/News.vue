@@ -6,13 +6,12 @@
       <ul>
         <li v-for="(news, index) in news" :key="index">
           <div class="news-item">
-            <p>{{ news.title }}</p>
+            <p>{{ news.title }} <i>{{ formatDate(news.date) }}</i></p>
             <p>{{ news.subtitle }}</p>
-            <p>{{ news.date }}</p>
             <ul>
-              <li v-for="(concerned, index) in news.concerned" :key="index">
+              <!-- <li v-for="(concerned, index) in news.concerned" :key="index">
                 <p>{{ concerned }}</p>
-              </li>
+              </li> -->
             </ul>
           </div>
         </li>
@@ -32,4 +31,8 @@
     databaseClient.fetchNews(10).then(() => {
       news.value = databaseClient.fetchedNews;
     });
+
+    function formatDate(ISOtimestamp: String): String {
+      return ISOtimestamp.split("T")[0].split("-").reverse().join("/")
+    }
 </script>

@@ -2,6 +2,20 @@
 // This file contains the styles for the browse view
 // ###########################################################################
 
+.change-order-button {
+    @include shadow1;
+    border: 0;
+    padding: 10px;
+    background-color: $space-cadet-light;
+    color: $cream-white;
+    border-radius: 10px;
+    font-weight: bold;
+
+    &:active {
+        @include shadow2
+    }
+}
+
 #browse-container {
     display: flex;
     flex-wrap: wrap;
