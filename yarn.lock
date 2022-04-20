@@ -231,33 +231,33 @@
   version "2.3.1"
   resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-2.3.1.tgz"
 
-"@volar/code-gen@0.34.6":
-  version "0.34.6"
-  resolved "https://registry.npmjs.org/@volar/code-gen/-/code-gen-0.34.6.tgz"
+"@volar/code-gen@0.34.7":
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/@volar/code-gen/-/code-gen-0.34.7.tgz#be04a8b20ccfd31da8c23fcb7e25cd1932e2f16d"
   dependencies:
-    "@volar/source-map" "0.34.6"
+    "@volar/source-map" "0.34.7"
 
-"@volar/source-map@0.34.6":
-  version "0.34.6"
-  resolved "https://registry.npmjs.org/@volar/source-map/-/source-map-0.34.6.tgz"
+"@volar/source-map@0.34.7":
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/@volar/source-map/-/source-map-0.34.7.tgz#e154d5e3411fb8bfdbc1760af2b4d99b5c91eb18"
 
-"@volar/vue-code-gen@0.34.6":
-  version "0.34.6"
-  resolved "https://registry.npmjs.org/@volar/vue-code-gen/-/vue-code-gen-0.34.6.tgz"
+"@volar/vue-code-gen@0.34.7":
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/@volar/vue-code-gen/-/vue-code-gen-0.34.7.tgz#651d879c7be0885d35181951850a1c60aaa8290e"
   dependencies:
-    "@volar/code-gen" "0.34.6"
-    "@volar/source-map" "0.34.6"
+    "@volar/code-gen" "0.34.7"
+    "@volar/source-map" "0.34.7"
     "@vue/compiler-core" "^3.2.31"
     "@vue/compiler-dom" "^3.2.31"
     "@vue/shared" "^3.2.31"
 
-"@volar/vue-typescript@0.34.6":
-  version "0.34.6"
-  resolved "https://registry.npmjs.org/@volar/vue-typescript/-/vue-typescript-0.34.6.tgz"
+"@volar/vue-typescript@0.34.7":
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/@volar/vue-typescript/-/vue-typescript-0.34.7.tgz#82a684e098dd86337462aa118a2d0e50e93e09d0"
   dependencies:
-    "@volar/code-gen" "0.34.6"
-    "@volar/source-map" "0.34.6"
-    "@volar/vue-code-gen" "0.34.6"
+    "@volar/code-gen" "0.34.7"
+    "@volar/source-map" "0.34.7"
+    "@volar/vue-code-gen" "0.34.7"
     "@vue/compiler-sfc" "^3.2.31"
     "@vue/reactivity" "^3.2.31"
 
@@ -2451,11 +2451,11 @@ vue-router@^4.0.14:
   dependencies:
     "@vue/devtools-api" "^6.0.0"
 
-vue-tsc@^0.34.6:
-  version "0.34.6"
-  resolved "https://registry.npmjs.org/vue-tsc/-/vue-tsc-0.34.6.tgz"
+vue-tsc@^0.34.7:
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.34.7.tgz#b77f79598ff561979db352ad2cdc19b5e35de3ac"
   dependencies:
-    "@volar/vue-typescript" "0.34.6"
+    "@volar/vue-typescript" "0.34.7"
 
 vue-window-size@^1.1.2:
   version "1.1.2"
