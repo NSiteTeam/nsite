@@ -3,8 +3,10 @@ import { ref, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
+import type { History } from '../interface/history'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
+import { SupabaseHistory } from './supabase_history'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -33,6 +35,11 @@ export class SupabaseClient implements DatabaseClient {
      */
     fetchedNews: Array<News> = []
     private newsOffset: number = 0
+
+    /**
+     * A list of history points fetched from the database
+     */
+    fetchedHistory: Array<History> = []
 
     /**
      * Sign in the user with the given email and password
@@ -79,6 +86,7 @@ export class SupabaseClient implements DatabaseClient {
         this.email.value = supabase.auth.user()?.email ?? null
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
+                // @ts-ignore
                 this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permission)[e])
             })
             .catch(error => {
@@ -99,7 +107,7 @@ export class SupabaseClient implements DatabaseClient {
         return await supabase.functions.invoke('fetch-news', { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
             .then(result => {
                 this.newsOffset += quantity
-                this.fetchedNews = (result['data'] as unknown as Array<any>).map(news => {
+                this.fetchedNews = (result['data'] as Array<any>).map(news => {
                     return new SupabaseNews(
                         news['title'],
                         news['subtitle'],
@@ -113,5 +121,18 @@ export class SupabaseClient implements DatabaseClient {
                 console.log("Error while fetching news", error)
             })
 
+    }
+
+    async getTimeline(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('History points').select()
+        
+        // @ts-ignore
+        return callback(data.map(history => {
+                    return new SupabaseHistory(
+                        history['title'],
+                        history['content'],
+                        history['date'],
+                    )
+                }))
     }
 }

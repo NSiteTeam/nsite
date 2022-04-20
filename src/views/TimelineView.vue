@@ -3,45 +3,37 @@
 
 <template>
     <div class="container">
-        <img class  ="img" src="https://www.gdiy.fr/wp-content/uploads/2019/09/Cedric_Villani-500x500.jpg" height="125"> 
         <ul>
-            <li>
-            <span></span>
-            <div class = "bd">
-                <div class="title">les maths c vieux</div>
-                <div class="info">bref</div>
-                <div class="type">ZEJKAHFZJEEA</div>
-                <div class="img"></div>
-            </div>
-            <span class="number">
-                <span>18 000 av J.C</span>
-                <span>...</span>
-            </span>
-            </li>
-            <li>
-            <div class = "bd">
-                <span></span>
-                <div class="title">vive le golang</div>
-                <div class="info">et le c++</div>
-                <div class="type">vive les enfants moines boudhistes</div>
-            </div>
-            <span class="number">
-                <span>13:00 et j'ai faim</span>
-                <span>14:00 h-4:30</span>
-            </span>
-            </li>
-            <li>
-            <div class = "bd">
-                <span></span>
-                <div class="title">YAY</div>
-                <div class="info">...css...agonie</div>
-                <div class="type">le sens est mort</div>
-            </div>
-            <span class="number">
-                <span>SSS.f</span>
-                <span>17:45 (je meurs du cambridge)</span>
-            </span>
+            <li v-for="(history, index) in historyRef" :key="index">
+                <span class="number">
+                    <span>{{ history.date }}</span>
+                </span>
+                <div class="bd">
+                    <div class="title">{{ history.title }}</div>
+                    <div class="info">{{ history.content }}</div>
+                </div>
             </li>
         </ul>
     </div>
 </template>
+
+<script setup lang="ts">
+    import { databaseClient } from "@/database/implementation";
+    import type { History } from "@/database/interface/history";
+    import type { Ref } from "vue";
+    import { ref } from "vue";
+
+    const historyRef: Ref<Array<History>> = ref([])
+
+    // @ts-ignore
+    databaseClient.getTimeline(history => {
+        historyRef.value = history.sort((a: History, b: History) => {
+            // @ts-ignore
+            return a.index - b.index
+        })
+    })
+
+    function formatDate(ISOtimestamp: String): String {
+      return ISOtimestamp.split("T")[0].split("-").reverse().join("/")
+    }
+</script>
