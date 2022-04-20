@@ -5,8 +5,13 @@ import data from "./../data.json"
 export default {
     data() {
         return {
-            reverse: 1,
-            key: "date"
+            reverse: -1,
+            key: "publication_date",
+            sort_keys: {
+                publication_date: "date",
+                title: "titre",
+                level: "niveau"
+            }
         }
     },
     methods: {
@@ -25,7 +30,12 @@ export default {
     computed: {
         output(): Array<object> {
             // @ts-ignore
-            console.log(this.$data.reverse);
+            if (this.$data.key == "title") {
+                return data.sort((a, b) => {
+                    // @ts-ignore
+                    return this.$data.reverse * a.title.localeCompare(b.title)
+                })
+            }
             return data.sort((a, b) => {
                 // @ts-ignore
                 return this.$data.reverse * (a[this.$data.key] - b[this.$data.key])
@@ -39,10 +49,22 @@ export default {
 
 <template>
     <div class="sort-container">
-        <button class="change-order-button" @click="changeOrder()">Changer l'ordre</button>
         <ul class="sort-keys">
-            <li :@click="changeKey(key)" class="sort-key" v-for="key in Object.keys(output[0])" :key="key">
-                {{ key }}
+            <button class="change-order-button" @click="changeOrder()">
+                <span v-if="reverse == 1" class="material-icons">
+                    arrow_drop_up
+                </span>
+                <span v-else class="material-icons">
+                    arrow_drop_down
+                </span>
+                Changer l'ordre
+            </button>
+            <li @click="changeKey(sortKey[0])" 
+            class="sort-key" :class="key == sortKey[0] ? 'active' : ''" 
+            v-for="sortKey in Object.entries(sort_keys)" 
+            :key="sortKey">
+                <span :class="key == sortKey[0] ? 'selector' : ''">{{ key == sortKey[0] ? '•' : '' }}</span>
+                {{ sortKey[1] }}
             </li>
         </ul>
     </div>

@@ -62,7 +62,7 @@
     {
         "id": 2,
         "title": "Exercices priorités opératoires",
-        "level": 4, "publication_date": "1649914059607",
+        "level": 4, "publication_date": "1650434524518",
         "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
         "image": "https://via.placeholder.com/256",
         "content": [
@@ -122,7 +122,7 @@
     {
         "id": 4,
         "title": "Exercices nombres relatifs",
-        "level": 6, "publication_date": "1649914059607",
+        "level": 6, "publication_date": "1650435397767",
         "description": "Ces exercices vous aideront à réviser pour le contrôle commun de mai.",
         "image": "https://via.placeholder.com/256",
         "content": [
@@ -130,7 +130,7 @@
                 "id": 0,
                 "icon": "picture_as_pdf",
                 "name": "Exercice 1",
-                "date": 1649914059607,
+                "date": 1650435397767,
                 "last_commit": {
                     "author": "M. de Regis",
                     "text": "J'ai ajouté un exercice"
