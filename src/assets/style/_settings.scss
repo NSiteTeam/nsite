@@ -41,6 +41,10 @@ main {
     margin: 65px 0 0 110px;
 }
 
+h2 {
+    color: $cream-white;
+}
+
 .wave2 {
     margin-top: -10%;
     @include wave("/src/assets/vectors/wave2.svg");
