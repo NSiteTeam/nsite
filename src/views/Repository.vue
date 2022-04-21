@@ -2,7 +2,7 @@
 import data from "./../data.json"
 import { defineComponent } from 'vue'
 
-const activeTab: String = "content"
+const activeTab: String = "chat"
 
 function formatDate(timestamp: number) {
     const date = new Date(timestamp)
@@ -26,7 +26,11 @@ export default defineComponent({
             dates: getDataFromId(this.$route.params.id, data).content.map(repo => {
                 return formatDate(repo.date)
             }),
-            activeTab: activeTab
+            activeTab: activeTab,
+            items:[],
+            
+            Chat: ''
+            
         }
     },
     methods: {
@@ -34,7 +38,16 @@ export default defineComponent({
             // @ts-ignore
             this.activeTab = tabId
         },
-        formatDate
+        formatDate,
+
+        addMessage: function() {
+            // @ts-ignore
+            this.items.push({message:this.Chat});
+            // @ts-ignore
+            this.Chat = '';
+            
+        }
+
     },
     computed: {
         date(): string {
@@ -68,6 +81,7 @@ export default defineComponent({
 </script>
 
 <template>
+    <!-- ensemble -->
     <div id="repo">
         <h3 id="repo-title">{{ repoData.title }} <i>Ajouté le : {{ formatDate(last_commit.date) }} • Niveau : {{ repoData.level }}ème</i></h3>
         <ul id="repo-menu">
@@ -113,8 +127,18 @@ export default defineComponent({
                 {{ repoData.description }}
             </div>
         </div>
+        <!-- CHAT -->
         <div id="repo-chat" v-if="activeTab == 'chat'">
-            <input type="text" placeholder="Votre message">
+            
+            <div class="conversation">
+                
+                <li v-for="item in items" :key="item.message">
+                    {{item.message}}
+                </li>           
+
+            </div>
+            
+            <input type="text" placeholder="Votre message" v-model="Chat" v-on:keyup.enter="addMessage">
         </div>
     </div>
 </template>
