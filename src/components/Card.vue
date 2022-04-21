@@ -1,6 +1,4 @@
 <script lang="ts">
-    import data from "./../data.json"
-
     export default {
         props: ["data"],
     }

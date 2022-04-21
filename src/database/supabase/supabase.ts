@@ -124,7 +124,7 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getTimeline(callback: Function): Promise<any> {
-        const { data, error } = await supabase.from('History points').select()
+        const { data, error } = await supabase.from('history_points').select()
         
         // @ts-ignore
         return callback(data.map(history => {
