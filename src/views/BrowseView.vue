@@ -1,76 +1,73 @@
-<script lang="ts">
+<script setup lang="ts">
 import Card from "./../components/Card.vue"
-import data from "./../data.json"
+import { computed } from 'vue'
+import data from "../data.json"
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 
-export default {
-    data() {
-        return {
-            reverse: -1,
-            key: "publication_date",
-            selected_level: -1,
-            sort_keys: {
-                publication_date: "Par date",
-                title: "Alphabétique",
-                level: "Par niveau"
-            }
-        }
-    },
-    methods: {
-        changeOrder() {
+function sort_data(data: Array<object>) {
+    if (key.value == "title") {
+        return data.sort((a, b) => {
             // @ts-ignore
-            this.$data.reverse = this.$data.reverse * (-1)
-        },
-        changeKey(key: String) {
+            return reverse.value * a.title.localeCompare(b.title)
+        })
+    }
+    if (selected_level.value == -1){
+        return data.sort((a, b) => {
             // @ts-ignore
-            this.$data.key = key
-        },
-        selectLevel(level: number) {
+            return reverse.value * (a[key.value] - b[key.value])
+        })
+    } else {
+        return data.sort((a, b) => {
             // @ts-ignore
-            this.$data.selected_level = level
-        }
-    },
-    components: {
-        Card
-    },
-    computed: {
-        output(): Array<object> {
+            return reverse.value * (a[key.value] - b[key.value])
+        }).filter(repo => {
             // @ts-ignore
-            if (this.$data.key == "title") {
-                return data.sort((a, b) => {
-                    // @ts-ignore
-                    return this.$data.reverse * a.title.localeCompare(b.title)
-                })
-            }
-            // @ts-ignore
-            if (this.$data.selected_level == -1){
-                return data.sort((a, b) => {
-                    // @ts-ignore
-                    return this.$data.reverse * (a[this.$data.key] - b[this.$data.key])
-                })
-            } else {
-                return data.sort((a, b) => {
-                    // @ts-ignore
-                    return this.$data.reverse * (a[this.$data.key] - b[this.$data.key])
-                }).filter(repo => {
-                    // @ts-ignore
-                    return repo.level == this.$data.selected_level
-                })
-            }
-        },
-        levels(): Array<number> {
-            const levels: Array<number> = []
-            data.forEach(repo => {
-                if(!(levels.includes(repo.level))) {
-                    levels.push(repo.level)
-                }
-            })
-            return levels.sort((a, b) => {
-                return b-a
-            })
-        }
+            return repo.level == selected_level.value
+        })
     }
 }
 
+function levels_func() {
+    const levels: Array<number> = []
+    data.forEach(repo => {
+        if(!(levels.includes(repo.level))) {
+            levels.push(repo.level)
+        }
+    })
+    return levels.sort((a, b) => {
+        return b-a
+    })
+}
+
+function changeOrder() {
+    reverse.value = -1 * reverse.value
+}
+
+function changeKey(new_key: String) {
+    key.value = new_key
+}
+
+function selectLevel(level: number) {
+    selected_level.value = level
+}
+
+const output = computed(_ => {
+    return sort_data(data)
+})
+
+const levels = computed(_ => {
+    return levels_func()
+})
+
+const reverse: Ref<number> = ref(-1)
+const key: Ref<String> = ref("publication_date")
+const selected_level: Ref<number> = ref(-1)
+const sortKeys = {
+    publication_date: "Par date",
+    title: "Alphabétique",
+    level: "Par niveau"
+}
 </script>
 
 
@@ -88,7 +85,7 @@ export default {
         </button>
         <li @click="changeKey(sortKey[0])" 
         :class="key == sortKey[0] ? 'active' : ''" 
-        v-for="sortKey in Object.entries(sort_keys)" 
+        v-for="sortKey in Object.entries(sortKeys)" 
         :key="sortKey">
             {{ sortKey[1] }}
         </li>

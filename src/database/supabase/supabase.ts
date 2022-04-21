@@ -3,7 +3,7 @@ import { ref, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
-import type { History } from '../interface/history'
+import type { HistoryPoint } from '../interface/history'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseRepository } from './supabase_repositories'
@@ -41,7 +41,12 @@ export class SupabaseClient implements DatabaseClient {
     /**
      * A list of history points fetched from the database
      */
-    fetchedHistory: Array<History> = []
+    fetchedHistory: Array<HistoryPoint> = []
+
+    /**
+     * A list of history points fetched from the database
+     */
+    fetchedRepositories: Array<Repository> = []
 
     /**
      * Sign in the user with the given email and password
@@ -139,7 +144,7 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getRepos(callback: Function): Promise<any> {
-        const { data, error } = await supabase.from('repositories').select()
+        const { data, error } = await supabase.from('deposits').select()
         
         // @ts-ignore
         return callback(data.map(reposirories => {
