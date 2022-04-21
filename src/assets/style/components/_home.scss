@@ -108,7 +108,7 @@ body::-webkit-scrollbar-thumb {
 
 .liste-actualites:not(:hover)::-webkit-scrollbar {
     display: none;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 div.liste-actualites:hover{
@@ -118,6 +118,8 @@ div.liste-actualites:hover{
 
     &::-webkit-scrollbar {
         background-color: rgba(0,0,255,0);
+        overflow-y: visible;
+        overflow-y: scroll;
     }
 
     &::-webkit-scrollbar-thumb {

@@ -1,15 +1,15 @@
 import type { Repository } from "../interface/repositories"
 
-export class SupabaseHistory implements Repository {
+export class SupabaseRepository implements Repository {
     title: string
     level: number
     publication_date: string
     description: string
     image: string
-    content: object
+    content: Array<number | string>
 
     constructor(title: string, level: number, publication_date: string,
-        description: string, image: string, content: object) {
+        description: string, image: string, content: Array<number | string>) {
         this.title = title
         this.level = level
         this.publication_date = publication_date
