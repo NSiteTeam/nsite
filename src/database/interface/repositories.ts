@@ -4,5 +4,5 @@ export interface Repository {
     publication_date: string
     description: string
     image: string
-    content: object
+    content: Array<number | string>
 }

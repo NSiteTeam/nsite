@@ -6,7 +6,9 @@ import type { News } from '../interface/news'
 import type { History } from '../interface/history'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
+import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseHistory } from './supabase_history'
+import type { Repository } from '../interface/repositories'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -124,7 +126,7 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getTimeline(callback: Function): Promise<any> {
-        const { data, error } = await supabase.from('History points').select()
+        const { data, error } = await supabase.from('history_points').select()
         
         // @ts-ignore
         return callback(data.map(history => {
@@ -132,6 +134,22 @@ export class SupabaseClient implements DatabaseClient {
                         history['title'],
                         history['content'],
                         history['date'],
+                    )
+                }))
+    }
+
+    async getRepos(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('repositories').select()
+        
+        // @ts-ignore
+        return callback(data.map(reposirories => {
+                    return new SupabaseRepository(
+                        reposirories['title'],
+                        reposirories['level'],
+                        reposirories['publication_date'],
+                        reposirories['description'],
+                        reposirories['image'],
+                        reposirories['content'],
                     )
                 }))
     }
