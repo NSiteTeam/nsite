@@ -2,7 +2,7 @@
 import data from "./../data.json"
 import { defineComponent } from 'vue'
 
-const activeTab: String = "content"
+const activeTab: String = "chat"
 
 function formatDate(timestamp: number) {
     const date = new Date(timestamp)
