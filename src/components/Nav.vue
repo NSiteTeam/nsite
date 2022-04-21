@@ -18,7 +18,7 @@
                     to="/profile" 
                     class="navbar-link" 
                     :class="currentRouteName == 'profile' ? '' : 'active'">
-                    Mon compte {{ currentRouteName }}
+                    Mon compte
                 </RouterLink>
                 <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
                 <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>

@@ -24,7 +24,6 @@
 <script setup lang="ts">
     import { ref } from "vue"
     import { databaseClient } from '../database/implementation'
-
     const email = ref("")
     const password = ref("")
     const loading = ref(false)

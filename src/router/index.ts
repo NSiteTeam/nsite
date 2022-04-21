@@ -39,6 +39,11 @@ const router = createRouter({
       name: "timeline",
       component: () => import("../views/TimelineView.vue")
     },
+    {
+      path: "/profile",
+      name: "account",
+      component: () => import("../views/ProfileView.vue")
+    },
   ],
 });
 

@@ -1,0 +1,23 @@
+#img-profile-container {
+    display: grid;
+    margin-left: 42%;
+    height: max-content;
+    width: max-content;
+    border-radius: 20px;
+    background-color: $space-cadet-light;
+    text-align: center;
+    .material-symbols-outlined {
+        @include size;
+    }
+    .profile-title{
+        @include font_size;
+    }
+}
+
+.True_White{
+    color: #ffffff;
+}
+
+.True_Shadow{
+    @include shadow2;
+}

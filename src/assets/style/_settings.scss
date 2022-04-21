@@ -87,6 +87,10 @@ h2 {
     @include shadow1;
 }
 
+.size {
+    @include size
+}
+
 .shadow2 {
     @include shadow2;
 }
