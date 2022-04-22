@@ -6,10 +6,12 @@ export class SupabaseRepository implements Repository {
     publication_date: string
     description: string
     image: string
+    id: number
     content: Array<number | string>
 
-    constructor(title: string, level: number, publication_date: string,
+    constructor(id: number, title: string, level: number, publication_date: string,
         description: string, image: string, content: Array<number | string>) {
+        this.id = id
         this.title = title
         this.level = level
         this.publication_date = publication_date

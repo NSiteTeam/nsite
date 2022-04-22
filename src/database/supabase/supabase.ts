@@ -132,6 +132,7 @@ export class SupabaseClient implements DatabaseClient {
 
     async getTimeline(callback: Function): Promise<any> {
         const { data, error } = await supabase.from('history_points').select()
+        console.log(data)
         
         // @ts-ignore
         return callback(data.map(history => {
@@ -147,14 +148,15 @@ export class SupabaseClient implements DatabaseClient {
         const { data, error } = await supabase.from('deposits').select()
         
         // @ts-ignore
-        return callback(data.map(reposirories => {
+        return callback(data.map(repositories => {
                     return new SupabaseRepository(
-                        reposirories['title'],
-                        reposirories['level'],
-                        reposirories['publication_date'],
-                        reposirories['description'],
-                        reposirories['image'],
-                        reposirories['content'],
+                        repositories['id'],
+                        repositories['title'],
+                        repositories['level'],
+                        repositories['creation_date'],
+                        repositories['description'],
+                        repositories['image_link'],
+                        repositories['content'],
                     )
                 }))
     }

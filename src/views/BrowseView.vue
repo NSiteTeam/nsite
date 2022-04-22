@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import Card from "./../components/Card.vue"
 import { computed } from 'vue'
-import data from "../data.json"
 import type { Ref } from 'vue';
 import { ref } from 'vue';
+import type { Repository } from '@/database/interface/repositories'
+import { databaseClient } from "../database/implementation";
+
+const data: Ref<Array<Repository>> = ref([])
+// @ts-ignore
+databaseClient.getRepos(res => {
+    data.value = res
+})
 
 function sort_data(data: Array<object>) {
     if (key.value == "title") {
@@ -30,7 +37,7 @@ function sort_data(data: Array<object>) {
 
 function levels_func() {
     const levels: Array<number> = []
-    data.forEach(repo => {
+    data.value.forEach(repo => {
         if(!(levels.includes(repo.level))) {
             levels.push(repo.level)
         }
@@ -53,7 +60,7 @@ function selectLevel(level: number) {
 }
 
 const output = computed(_ => {
-    return sort_data(data)
+    return sort_data(data.value)
 })
 
 const levels = computed(_ => {

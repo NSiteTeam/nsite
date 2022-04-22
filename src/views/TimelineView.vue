@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation";
-    import type { History } from "@/database/interface/history";
+    import type { HistoryPoint } from "@/database/interface/history";
     import type { Ref } from "vue";
     import { ref } from "vue";
 
@@ -27,11 +27,13 @@
 
     // @ts-ignore
     databaseClient.getTimeline(history => {
-        historyRef.value = history.sort((a: History, b: History) => {
+        console.log(history)
+        historyRef.value = history.sort((a: HistoryPoint, b: HistoryPoint) => {
             // @ts-ignore
             return a.index - b.index
         })
     })
+    console.log(historyRef.value)
 
     function formatDate(ISOtimestamp: String): String {
       return ISOtimestamp.split("T")[0].split("-").reverse().join("/")
