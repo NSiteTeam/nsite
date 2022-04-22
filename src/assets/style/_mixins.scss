@@ -22,13 +22,6 @@
     background-color: $color;
 }
 
-@mixin size($size: 160px){
+@mixin size($size: 64px){
     font-size: $size;
-}
-
-@mixin font_size($fnt_sz : 40px){
-    font-size: $fnt_sz;
-    color: #ffffff;
-    text-decoration: underline;
-    text-align: center;
 }

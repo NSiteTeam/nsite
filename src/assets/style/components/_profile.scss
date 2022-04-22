@@ -1,23 +1,19 @@
-#img-profile-container {
-    display: grid;
-    margin-left: 42%;
+#profile-container {
+    align-items: center;
     height: max-content;
     width: max-content;
-    border-radius: 20px;
+    border-radius: 30px;
+    padding: 3%;
+    color: $cream-white;
     background-color: $space-cadet-light;
-    text-align: center;
-    .material-symbols-outlined {
-        @include size;
-    }
-    .profile-title{
-        @include font_size;
-    }
-}
 
-.True_White{
-    color: #ffffff;
-}
+    .profile-title {
+        display: flex;
+        align-items: center;
+        font-size: 32px;
+    }
 
-.True_Shadow{
-    @include shadow2;
+    .material-icons {
+        @include size(64px);
+    }
 }

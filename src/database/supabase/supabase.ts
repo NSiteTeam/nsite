@@ -7,6 +7,7 @@ import type { HistoryPoint } from '../interface/history'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseRepository } from './supabase_repositories'
+import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
 
@@ -42,11 +43,6 @@ export class SupabaseClient implements DatabaseClient {
      * A list of history points fetched from the database
      */
     fetchedHistory: Array<HistoryPoint> = []
-
-    /**
-     * A list of history points fetched from the database
-     */
-    fetchedRepositories: Array<Repository> = []
 
     /**
      * Sign in the user with the given email and password
@@ -132,7 +128,6 @@ export class SupabaseClient implements DatabaseClient {
 
     async getTimeline(callback: Function): Promise<any> {
         const { data, error } = await supabase.from('history_points').select()
-        console.log(data)
         
         // @ts-ignore
         return callback(data.map(history => {
@@ -157,6 +152,19 @@ export class SupabaseClient implements DatabaseClient {
                         repositories['description'],
                         repositories['image_link'],
                         repositories['content'],
+                    )
+                }))
+    }
+
+    async getUsernames(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('usernames').select()
+        
+        // @ts-ignore
+        return callback(data.map(username => {
+                    return new SupabaseUsername(
+                        username['id'],
+                        username['username'],
+                        username['user'],
                     )
                 }))
     }
