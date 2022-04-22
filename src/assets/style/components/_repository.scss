@@ -125,23 +125,31 @@
         .conversation {
             background-color: rgba(0, 255, 0, 0);
             height: 280px;
+            // overflow-y: hidden;
             overflow-y: scroll;
             flex-direction: column;
 
+            &::-webkit-scrollbar {
+                background-color: rgba(0,0,0,0);
+                width: 0px;
+            }
 
             .message {
                 background-color: $viridian-green;
                 float: right;
                 clear: right;
                 margin: 5px;
-                width: min-content;
                 max-width: 40%;
                 display: block;
+                padding-right: 1%;
+                padding-left: 1%;
+                border-radius: 20px 20px 5px 20px;
                 
                 p {
-                    margin-left: 5%;
-                }                
+                    // margin: 5%;
+                }       
             }
+
         }
     }
 
