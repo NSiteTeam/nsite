@@ -125,6 +125,23 @@
         .conversation {
             background-color: rgba(0, 255, 0, 0);
             height: 280px;
+            overflow-y: scroll;
+            flex-direction: column;
+
+
+            .message {
+                background-color: $viridian-green;
+                float: right;
+                clear: right;
+                margin: 5px;
+                width: min-content;
+                max-width: 40%;
+                display: block;
+                
+                p {
+                    margin-left: 5%;
+                }                
+            }
         }
     }
 

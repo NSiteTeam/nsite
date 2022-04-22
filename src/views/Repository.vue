@@ -132,9 +132,11 @@ export default defineComponent({
             
             <div class="conversation">
                 
-                <li v-for="item in items" :key="item.message">
-                    {{item.message}}
-                </li>           
+                
+                    <div class="message" i v-for="item in items" :key="item.message" align="right">
+                        <p>{{item.message}}</p>                  
+                    </div>
+                
 
             </div>
             
