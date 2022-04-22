@@ -96,9 +96,9 @@
   dependencies:
     cross-fetch "^3.1.5"
 
-"@supabase/gotrue-js@^1.22.12":
-  version "1.22.12"
-  resolved "https://registry.yarnpkg.com/@supabase/gotrue-js/-/gotrue-js-1.22.12.tgz#78caaef13ef9bdacfcbabceb803ac79de52c6ad3"
+"@supabase/gotrue-js@^1.22.13":
+  version "1.22.13"
+  resolved "https://registry.yarnpkg.com/@supabase/gotrue-js/-/gotrue-js-1.22.13.tgz#4b680b40e34f2ea37f4d227ae0147d60dd6288fa"
   dependencies:
     cross-fetch "^3.0.6"
 
@@ -121,12 +121,12 @@
   dependencies:
     cross-fetch "^3.1.0"
 
-"@supabase/supabase-js@^1.34.1":
-  version "1.34.1"
-  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-1.34.1.tgz#03482fb7e6bb96739f3bae8ad990e6def7f9b6f6"
+"@supabase/supabase-js@^1.35.1":
+  version "1.35.1"
+  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-1.35.1.tgz#8a82e6dbc904560bf1eb3cf47fc118ffb6822efc"
   dependencies:
     "@supabase/functions-js" "^1.3.3"
-    "@supabase/gotrue-js" "^1.22.12"
+    "@supabase/gotrue-js" "^1.22.13"
     "@supabase/postgrest-js" "^0.37.2"
     "@supabase/realtime-js" "^1.7.1"
     "@supabase/storage-js" "^1.7.0"
@@ -143,9 +143,9 @@
   version "1.2.2"
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.2.tgz"
 
-"@types/node@^17.0.24":
-  version "17.0.24"
-  resolved "https://registry.npmjs.org/@types/node/-/node-17.0.24.tgz"
+"@types/node@^17.0.25":
+  version "17.0.25"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.25.tgz#527051f3c2f77aa52e5dc74e45a3da5fb2301448"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -231,33 +231,33 @@
   version "2.3.1"
   resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-2.3.1.tgz"
 
-"@volar/code-gen@0.34.7":
-  version "0.34.7"
-  resolved "https://registry.yarnpkg.com/@volar/code-gen/-/code-gen-0.34.7.tgz#be04a8b20ccfd31da8c23fcb7e25cd1932e2f16d"
+"@volar/code-gen@0.34.8":
+  version "0.34.8"
+  resolved "https://registry.yarnpkg.com/@volar/code-gen/-/code-gen-0.34.8.tgz#aa484f77e1c50b304a5cdabd2f63fa70687c3f72"
   dependencies:
-    "@volar/source-map" "0.34.7"
+    "@volar/source-map" "0.34.8"
 
-"@volar/source-map@0.34.7":
-  version "0.34.7"
-  resolved "https://registry.yarnpkg.com/@volar/source-map/-/source-map-0.34.7.tgz#e154d5e3411fb8bfdbc1760af2b4d99b5c91eb18"
+"@volar/source-map@0.34.8":
+  version "0.34.8"
+  resolved "https://registry.yarnpkg.com/@volar/source-map/-/source-map-0.34.8.tgz#d2304491d6764b191016e2befd252e81ade9270b"
 
-"@volar/vue-code-gen@0.34.7":
-  version "0.34.7"
-  resolved "https://registry.yarnpkg.com/@volar/vue-code-gen/-/vue-code-gen-0.34.7.tgz#651d879c7be0885d35181951850a1c60aaa8290e"
+"@volar/vue-code-gen@0.34.8":
+  version "0.34.8"
+  resolved "https://registry.yarnpkg.com/@volar/vue-code-gen/-/vue-code-gen-0.34.8.tgz#11c4af313dc356f6ab7578c02961c9d51a7eb8ec"
   dependencies:
-    "@volar/code-gen" "0.34.7"
-    "@volar/source-map" "0.34.7"
+    "@volar/code-gen" "0.34.8"
+    "@volar/source-map" "0.34.8"
     "@vue/compiler-core" "^3.2.31"
     "@vue/compiler-dom" "^3.2.31"
     "@vue/shared" "^3.2.31"
 
-"@volar/vue-typescript@0.34.7":
-  version "0.34.7"
-  resolved "https://registry.yarnpkg.com/@volar/vue-typescript/-/vue-typescript-0.34.7.tgz#82a684e098dd86337462aa118a2d0e50e93e09d0"
+"@volar/vue-typescript@0.34.8":
+  version "0.34.8"
+  resolved "https://registry.yarnpkg.com/@volar/vue-typescript/-/vue-typescript-0.34.8.tgz#c7d6051b255c354236e17504934aa2f57a5b2782"
   dependencies:
-    "@volar/code-gen" "0.34.7"
-    "@volar/source-map" "0.34.7"
-    "@volar/vue-code-gen" "0.34.7"
+    "@volar/code-gen" "0.34.8"
+    "@volar/source-map" "0.34.8"
+    "@volar/vue-code-gen" "0.34.8"
     "@vue/compiler-sfc" "^3.2.31"
     "@vue/reactivity" "^3.2.31"
 
@@ -2451,11 +2451,11 @@ vue-router@^4.0.14:
   dependencies:
     "@vue/devtools-api" "^6.0.0"
 
-vue-tsc@^0.34.7:
-  version "0.34.7"
-  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.34.7.tgz#b77f79598ff561979db352ad2cdc19b5e35de3ac"
+vue-tsc@^0.34.8:
+  version "0.34.8"
+  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.34.8.tgz#90f893089ab79bdfa7485893272c83d32cf163a0"
   dependencies:
-    "@volar/vue-typescript" "0.34.7"
+    "@volar/vue-typescript" "0.34.8"
 
 vue-window-size@^1.1.2:
   version "1.1.2"
