@@ -9,8 +9,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "sass": "^1.50.1",
     "@supabase/supabase-js": "^1.35.1",
-    "sass": "^1.50.0",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14",
     "vue-window-size": "^1.1.2"
