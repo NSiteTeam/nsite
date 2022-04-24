@@ -12,6 +12,7 @@ export interface DatabaseClient {
     login(email: string, password: string): any
 
     // NEWS
-    fetchedNews: Array<News>
+    fetchedNews: Ref<Array<News>>
+    maxNewsReached: Ref<boolean>
     fetchNews(quantity: number): Promise<void>
 }

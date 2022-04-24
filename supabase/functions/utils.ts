@@ -27,12 +27,12 @@ export function getUuid(request: Request) {
     return sub
 }
 
-export function classicServe(lambda: (request: Request) => Promise<JSON>) {
+export function classicServe(lambda: (request: Request) => Promise<any>) {
     serve(async (request: Request) => {
         if (request.method === 'OPTIONS') {
           return new Response('ok', { headers: corsHeaders })
         }
-  
+
         try {
             const returnData = await lambda(request)
             return new Response(JSON.stringify(returnData), {
@@ -46,7 +46,7 @@ export function classicServe(lambda: (request: Request) => Promise<JSON>) {
                 status: error.code,
               })
             }
-            
+
             return new Response(JSON.stringify({ error: error.message }), {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
               status: 400,

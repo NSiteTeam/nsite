@@ -30,9 +30,14 @@ const router = createRouter({
       component: () => import("../views/Repository.vue"),
     },
     {
-      path: "/admistration/users",
+      path: "/admin/users",
       name: "users",
       component: () => import("../views/admin/UsersView.vue")
+    },
+    {
+      path: "/admin/news",
+      name: "users",
+      component: () => import("../views/admin/ManageNewsView.vue")
     },
     {
       path: "/timeline",

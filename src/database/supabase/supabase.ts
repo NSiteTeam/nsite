@@ -31,8 +31,9 @@ export class SupabaseClient implements DatabaseClient {
      * A list of news fetched from the database.
      * This list is updated when the method fetchNews(quantity) is called
      */
-    fetchedNews: Array<News> = []
+    fetchedNews: Ref<Array<News>> = ref(Array())
     private newsOffset: number = 0
+    maxNewsReached: Ref<boolean> = ref(false)
 
     /**
      * Sign in the user with the given email and password
@@ -98,16 +99,24 @@ export class SupabaseClient implements DatabaseClient {
 
         return await supabase.functions.invoke('fetch-news', { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
             .then(result => {
-                this.newsOffset += quantity
-                this.fetchedNews = (result['data'] as unknown as Array<any>).map(news => {
-                    return new SupabaseNews(
+                const { news: array, maxNewsReached } = result['data']
+
+                array.forEach((news: any) => {
+                    this.fetchedNews.value.push(new SupabaseNews(
                         news['title'],
                         news['subtitle'],
                         news['date'],
                         news['concerned'].map((level: number) => Object.values(Level)[level])
-                    )
+                    ))
                 })
-                console.log(`Just fetched ${this.fetchedNews.length} news`)
+
+                this.newsOffset += quantity
+                this.maxNewsReached.value = maxNewsReached
+
+                console.log(`Just fetched ${array.length} news`)
+                if (maxNewsReached) {
+                    console.log("Max news reached")
+                }
             })
             .catch(error => {
                 console.log("Error while fetching news", error)

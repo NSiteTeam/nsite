@@ -5,16 +5,16 @@ import { classicServe, getUuid } from '../utils.ts';
 classicServe(async (request: Request) => {
     const uuid = getUuid(request)
 
-    const { data: profiles } = await supabaseClient
+    const { data: profile } = await supabaseClient
       .from('profiles')
       .select("*")
       .eq("user", uuid)
+      .maybeSingle()
 
-    if (profiles == null || profiles.length == 0) {
+    if (profile == null) {
       return []
-    } else if (profiles.length == 1) {
-      return profiles[0]['roles']
-    } else {
-      throw new ServerError(500, "Duplicated user in database")
     }
+
+    return profile['roles']
+
 })

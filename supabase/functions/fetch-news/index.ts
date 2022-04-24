@@ -16,7 +16,16 @@ classicServe(async (request: Request) => {
       .from('news')
       .select("*")
       .order('date')
-      .range(offset, offset + quantity)
+      .range(offset, offset + quantity - 1) // -1 As range is inclusive
 
-    return news as unknown as JSON
+    const { count } = await supabaseClient
+        .from('news')
+        .select('*', { count: 'exact' })
+
+    if (count == null) {
+        console.log("count is null")
+        throw new ServerError(500, "unexepected error")
+    }
+
+    return { news: news, maxNewsReached: count <= offset + quantity }
 })

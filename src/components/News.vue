@@ -27,9 +27,8 @@
     import type { Ref } from "vue";
     import { ref } from "vue";
 
-    const news: Ref<Array<News>> = ref([])
+    const NUMBER_OF_FETCHED_NEWS = 10
 
-    databaseClient.fetchNews(10).then(() => {
-      news.value = databaseClient.fetchedNews;
-    });
+    const news: Ref<Array<News>> = databaseClient.fetchedNews
+    databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 </script>
