@@ -1,3 +1,7 @@
+// ###########################################################################
+// This stylesheet contains the styles for the homepage
+// ###########################################################################
+
 // -------------------------------------------------------------------------
 // BODY
 // -------------------------------------------------------------------------
@@ -104,18 +108,18 @@ body::-webkit-scrollbar-thumb {
 
 .liste-actualites:not(:hover)::-webkit-scrollbar {
     display: none;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 div.liste-actualites:hover{
     transition: 0.1s;
     transition: 0.1s;
     height: 63vh;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
 
     &::-webkit-scrollbar {
         background-color: rgba(0,0,255,0);
+        overflow-y: visible;
+        overflow-y: scroll;
     }
 
     &::-webkit-scrollbar-thumb {

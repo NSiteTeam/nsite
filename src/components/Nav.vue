@@ -13,18 +13,17 @@
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
                 <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
-                <a v-if="currentRouteName == 'home'" href="#levels" class="navbar-link">Niveaux</a>
-                    <RouterLink
-                        v-if="connected"
-                        to="/profile" 
-                        class="navbar-link" 
-                        :class="currentRouteName == 'profile' ? '' : 'active'">
-                        Mon compte {{ currentRouteName }}
-                    </RouterLink>
-                    <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
-                    <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
-                    <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
-                    <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
+                <RouterLink
+                    v-if="connected"
+                    to="/profile" 
+                    class="navbar-link" 
+                    :class="currentRouteName == 'profile' ? '' : 'active'">
+                    Mon compte
+                </RouterLink>
+                <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
+                <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
+                <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
+                <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
 
             </div>
             <span @click="toggleMenuFunction()" class="material-icons white menu-button">

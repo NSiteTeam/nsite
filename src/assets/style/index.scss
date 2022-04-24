@@ -1,11 +1,12 @@
+// Bundles every sass file into an index file that is imported in App.vue
 @import '_mixins.scss';
 @import '_settings.scss';
 @import 'components/_nav.scss';
 @import 'components/_home.scss';
-@import 'components/_levels.scss';
 @import 'components/_register.scss';
 @import 'components/_login.scss';
 @import 'components/_footer.scss';
 @import 'components/_browse.scss';
 @import 'components/_timeline.scss';
-@import 'components/_repository.scss';
+@import 'components/_profile.scss';
+@import 'components/repository'

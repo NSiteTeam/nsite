@@ -1,0 +1,19 @@
+#profile-container {
+    align-items: center;
+    height: max-content;
+    width: max-content;
+    border-radius: 30px;
+    padding: 3%;
+    color: $cream-white;
+    background-color: $space-cadet-light;
+
+    .profile-title {
+        display: flex;
+        align-items: center;
+        font-size: 32px;
+    }
+
+    .material-icons {
+        @include size(64px);
+    }
+}

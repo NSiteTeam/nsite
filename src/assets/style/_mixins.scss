@@ -1,3 +1,8 @@
+// ###########################################################################
+// Mixins (sort of style functions), import them via
+// '@include mixin_name' statement
+// ###########################################################################
+
 @mixin shadow1 {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
@@ -15,4 +20,8 @@
     background-position: center;
     background-size: cover;
     background-color: $color;
+}
+
+@mixin size($size: 64px){
+    font-size: $size;
 }

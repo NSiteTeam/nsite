@@ -3,8 +3,13 @@ import { ref, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
+import type { HistoryPoint } from '../interface/history'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
+import { SupabaseRepository } from './supabase_repositories'
+import { SupabaseUsername } from './supabase_username'
+import { SupabaseHistory } from './supabase_history'
+import type { Repository } from '../interface/repositories'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -34,6 +39,11 @@ export class SupabaseClient implements DatabaseClient {
     fetchedNews: Ref<Array<News>> = ref(Array())
     private newsOffset: number = 0
     maxNewsReached: Ref<boolean> = ref(false)
+
+    /**
+     * A list of history points fetched from the database
+     */
+    fetchedHistory: Array<HistoryPoint> = []
 
     /**
      * Sign in the user with the given email and password
@@ -80,6 +90,7 @@ export class SupabaseClient implements DatabaseClient {
         this.email.value = supabase.auth.user()?.email ?? null
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
+                // @ts-ignore
                 this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permission)[e])
             })
             .catch(error => {
@@ -122,5 +133,48 @@ export class SupabaseClient implements DatabaseClient {
                 console.log("Error while fetching news", error)
             })
 
+    }
+
+    async getTimeline(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('history_points').select()
+        
+        // @ts-ignore
+        return callback(data.map(history => {
+                    return new SupabaseHistory(
+                        history['title'],
+                        history['content'],
+                        history['date'],
+                    )
+                }))
+    }
+
+    async getRepos(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('deposits').select()
+        
+        // @ts-ignore
+        return callback(data.map(repositories => {
+                    return new SupabaseRepository(
+                        repositories['id'],
+                        repositories['title'],
+                        repositories['level'],
+                        repositories['creation_date'],
+                        repositories['description'],
+                        repositories['image_link'],
+                        repositories['content'],
+                    )
+                }))
+    }
+
+    async getUsernames(callback: Function): Promise<any> {
+        const { data, error } = await supabase.from('usernames').select()
+        
+        // @ts-ignore
+        return callback(data.map(username => {
+                    return new SupabaseUsername(
+                        username['id'],
+                        username['username'],
+                        username['user'],
+                    )
+                }))
     }
 }
