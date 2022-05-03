@@ -15,9 +15,10 @@
                 <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
                 <RouterLink
                     v-if="connected"
-                    to="/profile" 
-                    class="navbar-link" 
-                    :class="currentRouteName == 'profile' ? '' : 'active'">
+                    to="/profile"
+                    class="navbar-link"
+                    v-bind:class="{ active: isProfilePage }"
+                >
                     Mon compte
                 </RouterLink>
                 <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
@@ -27,41 +28,31 @@
 
             </div>
             <span @click="toggleMenuFunction()" class="material-icons white menu-button">
-                menu 
+                menu
             </span>
         </nav>
     </header>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
     import { ref } from '@vue/reactivity';
     import { useWindowSize } from 'vue-window-size';
     import { databaseClient } from '@/database/implementation';
-    import '../data.json';
+    import { useRoute } from 'vue-router';
+    import { computed } from '@vue/runtime-core';
 
     const { width } = useWindowSize()
+    const route = useRoute()
 
-    export default {
-        data() {
-            return {
-                toggleMenu: false,
-                windowWidth: width,
-                connected: databaseClient.isConnected,
-            }
-        },
-        methods: {
-            toggleMenuFunction: function() {
-                // @ts-ignore
-                this.toggleMenu = !this.toggleMenu
-                // @ts-ignore
-                console.log(this.toggleMenu)
-            }
-        },
-        computed: {
-            currentRouteName(): string {
-                // @ts-ignore
-                return this.$route.name
-            }
-        }
+    const toggleMenu = ref(false)
+    const windowWidth = width
+    const connected = databaseClient.isConnected
+
+    function toggleMenuFunction() {
+        toggleMenu.value = !toggleMenu.value
     }
+
+    const isProfilePage = computed(
+        () => { route.name == 'profile' }
+    )
 </script>

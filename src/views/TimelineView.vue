@@ -4,7 +4,7 @@
 <template>
     <div class="container">
         <ul>
-            <li v-for="(history, index) in historyRef" :key="index">
+            <li v-for="(history, index) in historyPoints" :key="index">
                 <span class="number">
                     <span>{{ history.date }}</span>
                 </span>
@@ -19,23 +19,22 @@
 
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation";
-    import type { HistoryPoint } from "@/database/interface/history";
+    import type { HistoryPoint } from "@/database/interface/history_point";
+    import { timestampToFrenchDate } from "@/utils/date";
     import type { Ref } from "vue";
     import { ref } from "vue";
 
-    const historyRef: Ref<Array<History>> = ref([])
+    const historyPoints: Ref<Array<History>> = ref([])
 
-    // @ts-ignore
     databaseClient.getTimeline(history => {
         console.log(history)
-        historyRef.value = history.sort((a: HistoryPoint, b: HistoryPoint) => {
-            // @ts-ignore
+        historyPoints.value = history.sort((a: HistoryPoint, b: HistoryPoint) => {
+            
             return a.index - b.index
         })
     })
-    console.log(historyRef.value)
 
-    function formatDate(ISOtimestamp: String): String {
-      return ISOtimestamp.split("T")[0].split("-").reverse().join("/")
+    function formatDate(ISOtimestamp: string): string {
+        return timestampToFrenchDate(ISOtimestamp)
     }
 </script>

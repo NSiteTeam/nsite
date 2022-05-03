@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type { News } from './news';
 import type { Permission } from './permissions';
+import type { HistoryPoint } from './history_point';
 
 export interface DatabaseClient {
     // USER
@@ -15,4 +16,7 @@ export interface DatabaseClient {
     fetchedNews: Ref<Array<News>>
     maxNewsReached: Ref<boolean>
     fetchNews(quantity: number): Promise<void>
+
+    // TIMELINE
+    getHistoryPoints(): Promise<Array<HistoryPoint>>
 }

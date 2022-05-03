@@ -6,13 +6,13 @@ const activeTab: String = "chat"
 
 function formatDate(timestamp: number) {
     const date = new Date(timestamp)
-    // @ts-ignore
+    
     return date.toISOString().split('T')[0].split('-').reverse().join('/')
 }
 
 function getDataFromId(id: string, data: Array<object>): object {
     return data.filter(repo => {
-        // @ts-ignore
+        
         return repo.id == parseInt(id)
     })[0]
 }
@@ -20,9 +20,9 @@ function getDataFromId(id: string, data: Array<object>): object {
 export default defineComponent({
     data(): object {
         return {
-            // @ts-ignore
+            
             repoData: getDataFromId(this.$route.params.id, data),
-            // @ts-ignore
+            
             dates: getDataFromId(this.$route.params.id, data).content.map(repo => {
                 return formatDate(repo.date)
             }),
@@ -35,15 +35,15 @@ export default defineComponent({
     },
     methods: {
         setActiveTab(tabId: String): void {
-            // @ts-ignore
+            
             this.activeTab = tabId
         },
         formatDate,
 
         addMessage: function() {
-            // @ts-ignore
+            
             this.items.push({message:this.Chat});
-            // @ts-ignore
+            
             this.Chat = '';
             
         }
@@ -51,29 +51,29 @@ export default defineComponent({
     },
     computed: {
         date(): string {
-            // @ts-ignore
+            
             const timestamp = getDataFromId(this.$route.params.id, data).publication_date
             return  formatDate(parseInt(timestamp))
         },
         last_commit(): string {
-            // @ts-ignore
+            
             const repoContent = getDataFromId(this.$route.params.id, data).content
-            // @ts-ignore
+            
             const dates: Array<number> =repoContent.map(repo => {
                 return repo.date
             })
-            // @ts-ignore
+            
             const ids: Array<number> = repoContent.map(repo => {
                 return repo.id
             })
             const lastestDate = Math.max(... dates)
-            // @ts-ignore
+            
             const lastestCommit: number = repoContent.filter(file => {
                 if (file.date == lastestDate) {
                     return file.last_commit
                 }
             })[0]
-            // @ts-ignore
+            
             return lastestCommit
         }
     }

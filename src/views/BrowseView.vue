@@ -1,88 +1,78 @@
 <script setup lang="ts">
-import Card from "./../components/Card.vue"
-import { computed } from 'vue'
-import type { Ref } from 'vue';
-import { ref } from 'vue';
-import type { Repository } from '@/database/interface/repositories'
-import { databaseClient } from "../database/implementation";
+    import { databaseClient } from "@/database/implementation"
+    import { computed, ref } from "vue"
+    import type { Ref } from "vue"
+    import type { Repository } from "@/database/interface/repositories"
+    import Card from "../components/Card.vue"
 
-const data: Ref<Array<Repository>> = ref([])
-// @ts-ignore
-databaseClient.getRepos(res => {
-    data.value = res
-})
-
-function sort_data(data: Array<object>) {
-    if (key.value == "title") {
-        return data.sort((a, b) => {
-            // @ts-ignore
-            return reverse.value * a.title.localeCompare(b.title)
-        })
+    enum Sort {
+        PUBLICATION_DATE = "Par date",
+        ALPHABETICAL = "Alphabétique",
+        LEVEL = "Par niveau"
     }
-    if (selected_level.value == -1){
-        return data.sort((a, b) => {
-            // @ts-ignore
-            return reverse.value * (a[key.value] - b[key.value])
-        })
-    } else {
-        return data.sort((a, b) => {
-            // @ts-ignore
-            return reverse.value * (a[key.value] - b[key.value])
-        }).filter(repo => {
-            // @ts-ignore
-            return repo.level == selected_level.value
-        })
-    }
-}
 
-function levels_func() {
-    const levels: Array<number> = []
-    data.value.forEach(repo => {
-        if(!(levels.includes(repo.level))) {
-            levels.push(repo.level)
+    const data: Ref<Array<Repository>> = ref([])
+
+    databaseClient.getRepos().then(res =>
+        data.value = res
+    )
+
+
+    const reversed = ref(false)
+    const sort = ref(Sort.PUBLICATION_DATE)
+    const selectedLevel: Ref<number | null> = ref(null)
+
+
+    function changeOrder() {
+        reversed.value = !reversed.value
+    }
+
+    function changeSort(newKey: Sort) {
+        sort.value = newKey
+    }
+
+    function selectLevel(newLevel: number) {
+        selectedLevel.value = newLevel
+    }
+
+    const output = computed(
+        () => {
+            const reverseCoef = reversed.value ? -1 : 1
+
+            switch (sort.value) {
+                case Sort.ALPHABETICAL:
+                    return data.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
+                case Sort.LEVEL:
+                    return data.value.sort((a, b) => reverseCoef * (a.level - b.level))
+                case Sort.PUBLICATION_DATE:
+                    return data.value.sort((a, b) => reverseCoef * (a.publication_date - b.publication_date))
+                default:
+                    throw Error('Unknown sort')
+            }
         }
-    })
-    return levels.sort((a, b) => {
-        return b-a
-    })
-}
+    )
 
-function changeOrder() {
-    reverse.value = -1 * reverse.value
-}
+    function levels(): Array<number> {
+        const levels: Array<number> = []
+        data.value.forEach(repo => {
+            if(!(levels.includes(repo.level))) {
+                levels.push(repo.level)
+            }
+        })
+        return levels.sort((a, b) => {
+            return b-a
+        })
+    }
 
-function changeKey(new_key: String) {
-    key.value = new_key
-}
-
-function selectLevel(level: number) {
-    selected_level.value = level
-}
-
-const output = computed(_ => {
-    return sort_data(data.value)
-})
-
-const levels = computed(_ => {
-    return levels_func()
-})
-
-const reverse: Ref<number> = ref(-1)
-const key: Ref<String> = ref("publication_date")
-const selected_level: Ref<number> = ref(-1)
-const sortKeys = {
-    publication_date: "Par date",
-    title: "Alphabétique",
-    level: "Par niveau"
-}
 </script>
 
 
 <template>
     <h2>Type de tri :</h2>
+
     <ul class="sort-keys">
         <button class="change-order-button" @click="changeOrder()">
-            <span v-if="reverse == 1" class="material-icons">
+            <span v-if="reversed" class="material-icons">
                 arrow_drop_up
             </span>
             <span v-else class="material-icons">
@@ -90,23 +80,39 @@ const sortKeys = {
             </span>
             Changer l'ordre
         </button>
-        <li @click="changeKey(sortKey[0])" 
-        :class="key == sortKey[0] ? 'active' : ''" 
-        v-for="sortKey in Object.entries(sortKeys)" 
-        :key="sortKey">
-            {{ sortKey[1] }}
+
+        <li
+            @click="changeSort(Sort.ALPHABETICAL)"
+            v-bind:class="{ 'active': sort == Sort.ALPHABETICAL }"
+            v-for="sortType in Sort"
+            :key="sortType"
+        >
+            {{ sortType }}
         </li>
-        <li :class="-1 == selected_level ? 'active' : ''" 
-        class="level-button-all" @click="selectLevel(-1)">
+
+        <li
+            :v-bind:class="{ 'active': selectedLevel == -1 }"
+            class="level-button-all" @click="selectLevel(-1)"
+        >
             Tout
         </li>
-        <li :class="level == selected_level ? 'active' : ''" 
-        class="level-button" @click="selectLevel(level)" v-for="level in levels" :key="level">
-            {{ level }}<sup>ème</sup>
+
+        <li
+            v-bind:class="{ 'active': level == selectedLevel }"
+            class="level-button"
+            @click="selectLevel(level)"
+            v-for="level in levels"
+            :key="level"
+        >
+            {{ level }}
+            <sup>ème</sup> <!--TODO: Use table join-->
         </li>
     </ul>
+
     <h2>Résultats :</h2>
+
     <div id="browse-container">
-        <Card :data=repo v-for="repo in output" :key="repo.id" />
+        <Card :exercise=repo v-for="repo in output" :key="repo.id" />
     </div>
+
 </template>

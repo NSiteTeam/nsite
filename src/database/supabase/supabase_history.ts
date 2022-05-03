@@ -1,6 +1,6 @@
-import type { History } from "../interface/history"
+import type { HistoryPoint } from "../interface/history_point"
 
-export class SupabaseHistory implements History {
+export class SupabaseHistory implements HistoryPoint {
     title: string
     date: string
     content: string

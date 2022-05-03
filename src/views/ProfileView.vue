@@ -23,7 +23,7 @@
     // TODO: Display all usernames in the database
     const email = databaseClient.email
     const usernames: Ref<Array<Username>> = ref([])
-    // @ts-ignore
+
     databaseClient.getUsernames(res => {
         usernames.value = res
     })

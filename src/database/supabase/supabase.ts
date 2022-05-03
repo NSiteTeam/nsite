@@ -3,7 +3,7 @@ import { ref, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
-import type { HistoryPoint } from '../interface/history'
+import type { HistoryPoint } from '../interface/history_point'
 import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseRepository } from './supabase_repositories'
@@ -78,24 +78,38 @@ export class SupabaseClient implements DatabaseClient {
             password: password
         })
 
-        this.updateUserInfos()
+        await this.updateUserInfos()
 
         console.log("Connection status:", this.isConnected.value)
 
         return this.isConnected.value
     }
 
+    /**
+     * Private method to update the data of the user. For the moment it updates :
+     *  - Connection status
+     *  - User email
+     *  - User permissions (always verified server-side)
+     */
     private async updateUserInfos() {
+        console.log("Try to update user infos")
+
         this.isConnected.value = supabase.auth.session() != null
+
         this.email.value = supabase.auth.user()?.email ?? null
+
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
-                // @ts-ignore
-                this.permissions.value = (result['data'] as unknown as Array<Number>).map(e => Object.values(Permission)[e])
+                try {
+                    this.permissions.value = (result['data'] as unknown as Array<number>).map(e => Object.values(Permission)[e])
+                } catch (error) {
+                    console.log("Error while updating permissions, probably caused by changes in the database", error)
+                }
             })
             .catch(error => {
                 console.log("Error while fetching permissions", error)
             })
+
 
         console.log(
             `Just updated user infos:\n` +
@@ -105,6 +119,11 @@ export class SupabaseClient implements DatabaseClient {
         )
     }
 
+    /**
+     * Add more new to the fetchedNews property
+     *
+     * @param quantity the quantity of new to fetch
+     */
     async fetchNews(quantity: number): Promise<void> {
         console.log(`Try to fetch ${quantity} news from ${this.newsOffset}`)
 
@@ -112,14 +131,18 @@ export class SupabaseClient implements DatabaseClient {
             .then(result => {
                 const { news: array, maxNewsReached } = result['data']
 
-                array.forEach((news: any) => {
-                    this.fetchedNews.value.push(new SupabaseNews(
-                        news['title'],
-                        news['subtitle'],
-                        news['date'],
-                        news['concerned'].map((level: number) => Object.values(Level)[level])
-                    ))
-                })
+                try {
+                    array.forEach((news: any) => {
+                        this.fetchedNews.value.push(new SupabaseNews(
+                            news['title'],
+                            news['subtitle'],
+                            news['date'],
+                            news['concerned'].map((level: number) => Object.values(Level)[level])
+                        ))
+                    })
+                } catch (error) {
+                    console.log("Error while updating permissions, probably caused by changes in the database", error)
+                }
 
                 this.newsOffset += quantity
                 this.maxNewsReached.value = maxNewsReached
@@ -135,46 +158,91 @@ export class SupabaseClient implements DatabaseClient {
 
     }
 
-    async getTimeline(callback: Function): Promise<any> {
-        const { data, error } = await supabase.from('history_points').select()
-        
-        // @ts-ignore
-        return callback(data.map(history => {
-                    return new SupabaseHistory(
-                        history['title'],
-                        history['content'],
-                        history['date'],
-                    )
-                }))
+    async getHistoryPoints(): Promise<any> {
+        console.log("Trying to fetch history points in the database")
+
+        // Here we can directly manipulate the database as history points are public
+        const { data, error } = await supabase
+                                    .from('history_points')
+                                    .select()
+
+        if (error) {
+            console.log("Error while fetching history points", error)
+        }
+
+        if (data == null) {
+            console.log('No data fetched')
+            return
+        }
+
+        try {
+            return data.map(history => {
+                return new SupabaseHistory(
+                    history['title'],
+                    history['content'],
+                    history['date'],
+                )
+            })
+        } catch (error) {
+            console.log("Error while fetching history points, probably caused by changes in the database", error)
+        }
     }
 
-    async getRepos(callback: Function): Promise<any> {
+    async getRepos(): Promise<any> {
+        console.log("Trying to fetch deposits in the database")
+
+        // Here we can directly manipulate the database as deposits are public
         const { data, error } = await supabase.from('deposits').select()
-        
-        // @ts-ignore
-        return callback(data.map(repositories => {
-                    return new SupabaseRepository(
-                        repositories['id'],
-                        repositories['title'],
-                        repositories['level'],
-                        repositories['creation_date'],
-                        repositories['description'],
-                        repositories['image_link'],
-                        repositories['content'],
-                    )
-                }))
+
+        if (error) {
+            console.log("Error while fetching deposits", error)
+        }
+
+        if (data == null) {
+            console.log('No data fetched')
+            return
+        }
+
+        try {
+            return data.map(repositories => {
+                return new SupabaseRepository(
+                    repositories['id'],
+                    repositories['title'],
+                    repositories['level'],
+                    repositories['creation_date'],
+                    repositories['description'],
+                    repositories['image_link'],
+                    repositories['content'],
+                )
+            })
+        } catch (error) {
+            console.log("Error while fetching deposits, probably caused by changes in the database", error)
+        }
     }
 
-    async getUsernames(callback: Function): Promise<any> {
+    async getUsernames(): Promise<any> {
+        // TODO: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
         const { data, error } = await supabase.from('usernames').select()
-        
-        // @ts-ignore
-        return callback(data.map(username => {
-                    return new SupabaseUsername(
-                        username['id'],
-                        username['username'],
-                        username['user'],
-                    )
-                }))
+
+        if (error) {
+            console.log("Error while fetching deposits", error)
+        }
+
+        if (data == null) {
+            console.log('No data fetched')
+            return
+        }
+
+        try {
+            return data.map(username => {
+                return new SupabaseUsername(
+                    username['id'],
+                    username['username'],
+                    username['user'],
+                )
+            })
+        } catch (error) {
+            console.log("Error while user name, probably caused by changes in the database", error)
+        }
     }
 }
