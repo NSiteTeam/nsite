@@ -13,8 +13,8 @@ class CustomDate implements date {
     year: number
     digits: Array<number>
 
-    constructor(seconds: number, minutes: number, hours: number,
-         day: number, month: number, year: number) {
+    constructor(seconds: number = 0, minutes: number = 0, hours: number = 0,
+        day: number = 1, month: number = 1, year: number = 1970) {
         this.seconds = seconds
         this.minutes = minutes
         this.hours = hours
