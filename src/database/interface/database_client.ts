@@ -8,6 +8,7 @@ export interface DatabaseClient {
     isConnected: Ref<boolean>
     permissions: Ref<Array<Permission>>
     email: Ref<string | null>
+    getUsernames(): Promise<any>
 
     signIn(email: string, password: string): any
     login(email: string, password: string): any
