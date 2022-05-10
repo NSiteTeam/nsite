@@ -1,22 +1,32 @@
 <template>
     <div class="login-container">
         <form id="login" @submit.prevent="handleLogin">
-            <h2>Se connecter</h2>
-            <input
-                type="email"
-                v-model="email"
-                placeholder="Email"
-            />
-            <input
-                type="password"
-                v-model="password"
-                placeholder="Mot de passe"
-            />
-            <input
-            type="submit"
-            value="Se connecter"
-            :disabled="loading"
-            />
+            <!-- {{ databaseClient.isConnected.value }} -->
+
+            <div v-if="databaseClient.isConnected.value">
+                <div class="connected">
+                    Vous êtes bien connecté !
+                </div>
+            </div>
+            <div v-else>
+                <h2>Se connecter</h2>
+                <input
+                    type="email"
+                    v-model="email"
+                    placeholder="Email"
+                />
+                <input
+                    type="password"
+                    v-model="password"
+                    placeholder="Mot de passe"
+                />
+                <input
+                type="submit"
+                value="Se connecter"
+                :disabled="loading"
+                />
+            </div>
+            
         </form>
     </div>
 </template>
