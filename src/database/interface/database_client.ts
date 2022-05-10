@@ -19,4 +19,5 @@ export interface DatabaseClient {
 
     // TIMELINE
     getHistoryPoints(): Promise<Array<HistoryPoint>>
+    fetchedHistory: Array<HistoryPoint>
 }
