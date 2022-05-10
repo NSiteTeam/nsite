@@ -8,8 +8,8 @@
         </span>
         {{ usernames }}
         <ul class="table-part">
-            <li class="white">Adresse mail: <i>{{ email }}</i></li>
-            <li class="white">Nom d'utilisateur: </li>
+            <li class="white">Adresse mail: <i>{{ val_email }}</i></li>
+            <li class="white">Nom d'utilisateur: <i>{{ usernames }}</i></li>
         </ul>
     </div>
 </template>
@@ -22,9 +22,13 @@
 
     // TODO: Display all usernames in the database
     const email = databaseClient.email
+    const val_email = email.value
+
     const usernames: Ref<Array<Username>> = ref([])
 
-    databaseClient.getUsernames(res => {
-        usernames.value = res
-    })
+    
+
+    // databaseClient.getUsernames(res => {
+    //     usernames.value = res
+    // })
 </script>

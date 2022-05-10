@@ -1,4 +1,20 @@
 <script setup lang="ts">
+    import { databaseClient } from "@/database/implementation";
+    import type { HistoryPoint } from "@/database/interface/history_point";
+    import { timestampToFrenchDate } from "@/utils/date";
+    import type { Ref } from "vue";
+    import { ref } from "vue";
+
+    const historyPoints: Ref<Array<HistoryPoint>> = ref([])
+    databaseClient.getHistoryPoints().then(res =>
+        historyPoints.value = res
+    ).catch(error => {
+        throw error
+    })
+
+    function formatDate(ISOtimestamp: string): string {
+        return timestampToFrenchDate(ISOtimestamp)
+    }
 </script>
 
 <template>
@@ -17,24 +33,3 @@
     </div>
 </template>
 
-<script setup lang="ts">
-    import { databaseClient } from "@/database/implementation";
-    import type { HistoryPoint } from "@/database/interface/history_point";
-    import { timestampToFrenchDate } from "@/utils/date";
-    import type { Ref } from "vue";
-    import { ref } from "vue";
-
-    const historyPoints: Ref<Array<History>> = ref([])
-
-    databaseClient.getTimeline(history => {
-        console.log(history)
-        historyPoints.value = history.sort((a: HistoryPoint, b: HistoryPoint) => {
-            
-            return a.index - b.index
-        })
-    })
-
-    function formatDate(ISOtimestamp: string): string {
-        return timestampToFrenchDate(ISOtimestamp)
-    }
-</script>
