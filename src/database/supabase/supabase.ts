@@ -166,26 +166,29 @@ export class SupabaseClient implements DatabaseClient {
                                     .from('history_points')
                                     .select()
 
-        if (error) {
-            console.log("Error while fetching history points", error)
-        }
-
         if (data == null) {
             console.log('No data fetched')
             return
         }
 
-        try {
-            return data.map(history => {
-                return new SupabaseHistory(
-                    history['title'],
-                    history['content'],
-                    history['date'],
+        return new Promise((resolve, reject) => {
+            if (!error && data != null) {
+                resolve(
+                    data.map(history => {
+                        return new SupabaseHistory(
+                            history['title'],
+                            history['content'],
+                            history['date'],
+                        )})
                 )
-            })
-        } catch (error) {
-            console.log("Error while fetching history points, probably caused by changes in the database", error)
-        }
+            } else {
+                if (error) {
+                    reject("Error while fetching history points" + error)
+                } else if (data == null) {
+                    reject("No data fetched")
+                }
+            }
+        })
     }
 
     async getRepos(): Promise<any> {
