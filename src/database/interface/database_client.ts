@@ -8,9 +8,14 @@ export interface DatabaseClient {
     isConnected: Ref<boolean>
     permissions: Ref<Array<Permission>>
     email: Ref<string | null>
+    uuid: Ref<string | null>
+    getUsername(id?: number): Promise<any>
 
     signIn(email: string, password: string): any
     login(email: string, password: string): any
+
+    // Repositories
+    getRepos(id?: number): Promise<any>
 
     // NEWS
     fetchedNews: Ref<Array<News>>

@@ -1,6 +1,9 @@
 <script lang="ts">
-import data from "./../data.json"
-import { defineComponent } from 'vue'
+import type { Repository } from "@/database/interface/repositories"
+import { databaseClient } from "@/database/implementation"
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+import { useRoute } from "vue-router"
 
 const activeTab: String = "chat"
 
@@ -10,20 +13,26 @@ function formatDate(timestamp: number) {
     return date.toISOString().split('T')[0].split('-').reverse().join('/')
 }
 
-function getDataFromId(id: string, data: Array<object>): object {
-    return data.filter(repo => {
-        
-        return repo.id == parseInt(id)
-    })[0]
+function getDataFromId(id: string | number): Repository {
+    const dataRef: Ref<Array<Repository>> = ref([])
+    databaseClient.getRepos(Number(id)).then(repos => {
+        dataRef.value = repos
+    }).catch(error => {
+        throw error
+    })
+    console.log(dataRef.value)
+    return dataRef.value[0]
 }
 
-export default defineComponent({
+export default {
+    setup() {
+    },
     data(): object {
         return {
             
-            repoData: getDataFromId(this.$route.params.id, data),
+            repoData: getDataFromId(this.$route.params.id[0]),
             
-            dates: getDataFromId(this.$route.params.id, data).content.map(repo => {
+            dates: getDataFromId(this.$route.params.id[0]).content.map(repo => {
                 return formatDate(repo.date)
             }),
             activeTab: activeTab,
@@ -52,14 +61,15 @@ export default defineComponent({
     computed: {
         date(): string {
             
-            const timestamp = getDataFromId(this.$route.params.id, data).publication_date
+            const timestamp = getDataFromId(this.$route.params.id[0]).publication_date
             return  formatDate(parseInt(timestamp))
         },
         last_commit(): string {
             
-            const repoContent = getDataFromId(this.$route.params.id, data).content
+            const repoContentIds = getDataFromId(this.$route.params.id[0]).content
+            const repoContent = getDataFromId(this.$route.params.id[0]).content
             
-            const dates: Array<number> =repoContent.map(repo => {
+            const dates: Array<number> = repoContent.map(repo => {
                 return repo.date
             })
             
@@ -77,7 +87,7 @@ export default defineComponent({
             return lastestCommit
         }
     }
-})
+}
 </script>
 
 <template>

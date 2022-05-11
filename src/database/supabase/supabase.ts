@@ -10,6 +10,8 @@ import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
+import SupabaseFile from '../supabase/supabase_file'
+import type { Username } from '../interface/username'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -26,6 +28,11 @@ export class SupabaseClient implements DatabaseClient {
      * The email of the connected user or null if the user is not connected
      */
     email: Ref<string | null> = ref(null)
+
+    /**
+     * The uuid of the connected user or null if the user is not connected
+     */
+    uuid: Ref<string | null> = ref(null)
 
     /**
      * All the permissions of the user
@@ -58,8 +65,8 @@ export class SupabaseClient implements DatabaseClient {
             email: email,
             password: password
         })
-
-        const accountCreated = !error && user != null // Here the account exists, but the email is not verified yet
+        // Here the account exists, but the email is not verified yet
+        const accountCreated = !error && user != null
         console.log("Account created:", accountCreated)
         return accountCreated
     }
@@ -97,13 +104,16 @@ export class SupabaseClient implements DatabaseClient {
         this.isConnected.value = supabase.auth.session() != null
 
         this.email.value = supabase.auth.user()?.email ?? null
+        this.uuid.value = supabase.auth.user()?.id ?? null
 
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
                 try {
-                    this.permissions.value = (result['data'] as unknown as Array<number>).map(e => Object.values(Permission)[e])
+                    this.permissions.value = (result['data'] as unknown as Array<number>)
+                    .map(e => Object.values(Permission)[e])
                 } catch (error) {
-                    console.log("Error while updating permissions, probably caused by changes in the database", error)
+                    console.log(`Error while updating permissions, 
+                    probably caused by changes in the database`, error)
                 }
             })
             .catch(error => {
@@ -127,7 +137,8 @@ export class SupabaseClient implements DatabaseClient {
     async fetchNews(quantity: number): Promise<void> {
         console.log(`Try to fetch ${quantity} news from ${this.newsOffset}`)
 
-        return await supabase.functions.invoke('fetch-news', { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
+        return await supabase.functions.invoke('fetch-news',
+        { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
             .then(result => {
                 const { news: array, maxNewsReached } = result['data']
 
@@ -141,7 +152,8 @@ export class SupabaseClient implements DatabaseClient {
                         ))
                     })
                 } catch (error) {
-                    console.log("Error while updating permissions, probably caused by changes in the database", error)
+                    console.log(`Error while updating permissions, 
+                    probably caused by changes in the database`, error)
                 }
 
                 this.newsOffset += quantity
@@ -191,61 +203,77 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async getRepos(): Promise<any> {
+    async getRepos(id?: number): Promise<any> {
         console.log("Trying to fetch deposits in the database")
 
         // Here we can directly manipulate the database as deposits are public
-        const { data, error } = await supabase.from('deposits').select()
-
-        if (error) {
-            console.log("Error while fetching deposits", error)
+        let { data, error } = !id ? await supabase.from('deposits').select() :
+        await supabase.from('deposits').select().eq("id", id).maybeSingle()
+       
+        if (id) {
+            data = [data]
         }
 
-        if (data == null) {
-            console.log('No data fetched')
-            return
-        }
-
-        try {
-            return data.map(repositories => {
-                return new SupabaseRepository(
-                    repositories['id'],
-                    repositories['title'],
-                    repositories['level'],
-                    repositories['creation_date'],
-                    repositories['description'],
-                    repositories['image_link'],
-                    repositories['content'],
-                )
-            })
-        } catch (error) {
-            console.log("Error while fetching deposits, probably caused by changes in the database", error)
-        }
+        return new Promise((resolve, reject) => {
+            if (error == null && data) {
+                resolve(data.map((repositories: Repository) => {
+                    return new SupabaseRepository(
+                        repositories['id'],
+                        repositories['title'],
+                        repositories['level'],
+                        repositories['publication_date'],
+                        repositories['description'],
+                        repositories['image'],
+                        repositories['content'],
+                    )
+                }))
+            } else if (error) {
+                reject(`Error while fetching deposits, 
+                probably caused by changes in the database: ` + error.message)
+            }
+        })
+        
     }
 
-    async getUsernames(): Promise<any> {
-        // TODO: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
-        const { data, error } = await supabase.from('usernames').select()
+    async getUsername(id?: number): Promise<any> {
+        // Laurian: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
+        // Éric: No, with this we link uuids with usernames, without we cannot display usernames in the chat.
+        const { data, error } = id ? await supabase.from('usernames')
+        .select().eq("id", id).maybeSingle() : 
+        await supabase.from('usernames').select()
 
-        if (error) {
-            console.log("Error while fetching deposits", error)
-        }
-
-        if (data == null) {
-            console.log('No data fetched')
-            return
-        }
-
-        try {
-            return data.map(username => {
-                return new SupabaseUsername(
-                    username['id'],
-                    username['username'],
-                    username['user'],
+        return new Promise((resolve, reject) => {
+            if (!error && (data != null)) {
+                resolve(
+                    data.map((username: Username) => {
+                        new SupabaseUsername(
+                            username['id'],
+                            username['username'],
+                            username['user'],
+                        )
+                    })
                 )
-            })
-        } catch (error) {
-            console.log("Error while user name, probably caused by changes in the database", error)
-        }
+            } else if (error) {
+                reject("Error while fetching data : " + error)
+            } else if (data == null) {
+                reject("No data fetched")
+            }
+        })
+    }
+
+    async getFile(id: number): Promise<any> {
+        const { data, error } = await supabase.from('repository_file')
+        .select().eq('id', id).maybeSingle()
+
+        return new Promise((resolve, reject) => {
+            resolve(new SupabaseFile(
+                data.id,
+                data.name,
+                data.icon,
+                data.date,
+                data.last_commit_author,
+                data.last_commit_date
+            ))
+        })
     }
 }

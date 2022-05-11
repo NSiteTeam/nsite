@@ -3,7 +3,7 @@
     import { computed, ref } from "vue"
     import type { Ref } from "vue"
     import type { Repository } from "@/database/interface/repositories"
-    import Card from "../components/Card.vue"
+    import Card from "@/components/Card.vue"
 
     enum Sort {
         PUBLICATION_DATE = "Par date",

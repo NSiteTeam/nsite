@@ -26,9 +26,5 @@
 
     const usernames: Ref<Array<Username>> = ref([])
 
-    
-
-    // databaseClient.getUsernames(res => {
-    //     usernames.value = res
-    // })
+    databaseClient.getUsername()
 </script>
