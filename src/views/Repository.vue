@@ -2,6 +2,7 @@
 import type { Repository } from "@/database/interface/repositories"
 import { databaseClient } from "@/database/implementation"
 import { ref } from 'vue'
+import { toRaw } from 'vue';
 import type { Ref } from 'vue'
 import { useRoute } from "vue-router"
 
@@ -14,14 +15,18 @@ function formatDate(timestamp: number) {
 }
 
 function getDataFromId(id: string | number): Repository {
-    const dataRef: Ref<Array<Repository>> = ref([])
-    databaseClient.getRepos(Number(id)).then(repos => {
-        dataRef.value = repos
+    id = Number(id)
+    databaseClient.getRepos(id).then(repos => {
+        if (!toRaw(databaseClient.dataRef.value).map(repo => {
+            return repo.id
+        }).includes(repos[0].id)) {
+            databaseClient.dataRef.value.push(repos[0])
+        }
     }).catch(error => {
         throw error
     })
-    console.log(dataRef.value)
-    return dataRef.value[0]
+    console.log([... databaseClient.dataRef.value])
+    return databaseClient.dataRef.value[0]
 }
 
 export default {

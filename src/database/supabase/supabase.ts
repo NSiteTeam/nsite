@@ -19,6 +19,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export class SupabaseClient implements DatabaseClient {
+    dataRef: Ref<Array<Repository>> = ref([])
     /**
      * The value of this ref is true if the user is connected to the database
      */
@@ -203,7 +204,7 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async getRepos(id?: number): Promise<any> {
+    async getRepos(id?: number): Promise<Repository[]> {
         console.log("Trying to fetch deposits in the database")
 
         // Here we can directly manipulate the database as deposits are public
