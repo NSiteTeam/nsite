@@ -12,6 +12,7 @@ import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
 import SupabaseFile from '../supabase/supabase_file'
 import type { Username } from '../interface/username'
+import type File from './../interface/file'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -19,25 +20,22 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export class SupabaseClient implements DatabaseClient {
-    dataRef: Ref<Array<Repository>> = ref([])
-    /**
-     * The value of this ref is true if the user is connected to the database
-     */
+    // The value of this ref is the fetched files
+    files: Ref<File[]> = ref([])
+
+    // The value of this ref is the fetched repositories
+    repositories: Ref<Repository[]> = ref([])
+
+    // The value of this ref is true if the user is connected to the database
     isConnected: Ref<boolean> = ref(false)
 
-    /**
-     * The email of the connected user or null if the user is not connected
-     */
+    //  The email of the connected user or null if the user is not connected
     email: Ref<string | null> = ref(null)
 
-    /**
-     * The uuid of the connected user or null if the user is not connected
-     */
+    // The uuid of the connected user or null if the user is not connected
     uuid: Ref<string | null> = ref(null)
 
-    /**
-     * All the permissions of the user
-     */
+    // All the permissions of the user
     permissions: Ref<Array<Permission>> = ref(Array())
 
     /**
@@ -48,9 +46,7 @@ export class SupabaseClient implements DatabaseClient {
     private newsOffset: number = 0
     maxNewsReached: Ref<boolean> = ref(false)
 
-    /**
-     * A list of history points fetched from the database
-     */
+    // A list of history points fetched from the database
     fetchedHistory: Array<HistoryPoint> = []
 
     /**
@@ -217,6 +213,7 @@ export class SupabaseClient implements DatabaseClient {
 
         return new Promise((resolve, reject) => {
             if (error == null && data) {
+                this.repositories.value.push(data[0])
                 resolve(data.map((repositories: Repository) => {
                     return new SupabaseRepository(
                         repositories['id'],
@@ -265,7 +262,7 @@ export class SupabaseClient implements DatabaseClient {
     async getFile(id: number): Promise<any> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()
-
+        this.files.value.push(data)
         return new Promise((resolve, reject) => {
             resolve(new SupabaseFile(
                 data.id,
