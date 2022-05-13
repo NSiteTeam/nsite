@@ -4,6 +4,8 @@ import { databaseClient } from "@/database/implementation"
 import { useRoute } from "vue-router"
 import type { Ref } from 'vue'
 import type File from "@/database/interface/file";
+import CustomDate from "@/utils/classes/CustomDate";
+import type date from "@/utils/interface/date";
 
 const id = Number(useRoute().params.id[0])
 const files: Ref<File[]> = databaseClient.files
@@ -14,77 +16,25 @@ databaseClient.getRepos(id).then(repos => {
     })
 })
 
-
 const activeTab: String = "content"
-</script>
 
-<script lang="ts">
-// import { defineComponent, ref } from 'vue'
-// import { toRaw } from 'vue';
-// import type { Ref } from 'vue'
-// import { useRoute } from "vue-router"
-
-// const activeTab: String = "chat"
-
-// function formatDate(timestamp: number) {
-//     const date = new Date(timestamp)
-    
-//     return date.toISOString().split('T')[0].split('-').reverse().join('/')
-// }
-
-// function getDataFromId(id: string | number): Repository {
-//     id = Number(id)
-//     const repos: Ref<Repository[]> = databaseClient.repositories
-//     databaseClient.getRepos(id)
-//     // console.log(toRaw(repos.value))
-//     return toRaw(repos.value)[0]
-// }
-
-// export default defineComponent({
-//     setup() {
-//         const id = Number(useRoute().params.id[0])
-//         const repos: Ref<Repository[]> = databaseClient.repositories
-//         databaseClient.getRepos(id)
-//         console.log(toRaw(repos.value))
-//     },
-//     data(): object {
-//         return {
-//             repoData: getDataFromId(this.$route.params.id[0]),
-//             dates: getDataFromId(this.$route.params.id[0]).content.map(repo => {
-//                 return formatDate(repo.date)
-//             }),
-//             activeTab: activeTab,
-//             items:[],
-            
-//             Chat: ''
-            
-//         }
-//     },
-//     methods: {
-//         setActiveTab(tabId: String): void {
-//             this.activeTab = tabId
-//         },
-//         formatDate,
-//         addMessage: function() {
-//             this.items.push({message:this.Chat});
-//             this.Chat = '';
-//         }
-
-//     },
-//     computed: {
-//         date(): string {
-//             const timestamp = getDataFromId(this.$route.params.id[0]).publication_date
-//             return  formatDate(parseInt(timestamp))
-//         }
-//     }
-// })
+function formatDate(rawDate: string) {
+    const customDate: date = new CustomDate(
+        Number(rawDate.split('T')[1].split(':')[2].split('.')[0]), 
+        Number(rawDate.split('T')[1].split(':')[1]),
+        Number(rawDate.split('T')[1].split(':')[0]),
+        Number(rawDate.split('T')[0].split('-')[2]),
+        Number(rawDate.split('T')[0].split('-')[1]),
+        Number(rawDate.split('T')[0].split('-')[0]),
+    )
+    return customDate
+}
 </script>
 
 <template>
-    {{ files }}
     <!-- ensemble -->
     <div id="repo">
-        <h3 id="repo-title">{{ repoData[0].title }} <i>Niveau : {{ repoData.level }}ème</i></h3>
+        <h3 id="repo-title">{{ repoData[0].title }} <i>Niveau : {{ repoData[0].level }}ème ; Date : {{ formatDate(repoData[0].publication_date).beautify() }}</i></h3>
         <ul id="repo-menu">
             <li id="content" :class="activeTab == 'content' ? 'active' : ''" @click="setActiveTab('content')">
                 <span class="icon material-icons">
@@ -101,7 +51,7 @@ const activeTab: String = "content"
         </ul>
         <div id="repo-body">
             <div id="repo-content" v-if="activeTab == 'content'">
-                <div class="repo-content-row" v-for="(data, index) in repoData.content" :key="data.id">
+                <div class="repo-content-row" v-for="data in files" :key="data.id">
                     <span class="file-title">
                         <span class="material-icons">
                             {{ data.icon }}
@@ -112,11 +62,11 @@ const activeTab: String = "content"
                     </span>
                     <div class="file-last-commit">
                         <span class="file-last-commit-author">
-                            {{ data.last_commit.author }}
+                            {{ data.last_commit_author }}
                         </span> :
-                        {{ data.last_commit.text }}
+                        {{ data.last_commit_text }}
                     </div>
-                    <span class="date">{{ dates[index] }}</span>
+                    <span class="date">{{ formatDate(data.date).beautify() }}</span>
                 </div>
             </div>
             <div v-if="activeTab == 'content'" class="repo-descr">

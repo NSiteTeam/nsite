@@ -8,6 +8,7 @@ export default interface date {
     year: number
     digits: Array<number>
 
+    beautify(): string
     isGreaterThan(otherDate: date): boolean
     isLessThan(otherDate: date): boolean
     isGreaterThan(otherDate: date): boolean

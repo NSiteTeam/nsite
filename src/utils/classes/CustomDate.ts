@@ -1,7 +1,7 @@
 import type date from '../interface/date'
 
 // ###########################################################################
-// ############ The purpose of this class is manage dates easier #############
+// ############ The purpose of this class is manage dates easely #############
 // ###########################################################################
 
 class CustomDate implements date {
@@ -31,6 +31,17 @@ class CustomDate implements date {
             this.month,
             this.year
         ]
+    }
+
+    static ISOStringToCustomDate(rawDate: string): date {
+        return new CustomDate(
+            Number(rawDate.split('T')[1].split(':')[2].split('.')[0]),
+            Number(rawDate.split('T')[1].split(':')[1]),
+            Number(rawDate.split('T')[1].split(':')[0]),
+            Number(rawDate.split('T')[0].split('-')[2]),
+            Number(rawDate.split('T')[0].split('-')[1]),
+            Number(rawDate.split('T')[0].split('-')[0]),
+        )
     }
 
     beautify(shortened: boolean = true): string {
