@@ -4,7 +4,21 @@ import type date from '../interface/date'
 // ############ The purpose of this class is manage dates easely #############
 // ###########################################################################
 
-class CustomDate implements date {
+const months = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+]
+
+export default class CustomDate implements date {
     seconds: number
     minutes: number
     hours: number
@@ -12,6 +26,7 @@ class CustomDate implements date {
     month: number
     year: number
     digits: Array<number>
+    
 
     constructor(seconds: number = 0, minutes: number = 0, hours: number = 0,
         day: number = 1, month: number = 1, year: number = 1970) {
@@ -44,11 +59,21 @@ class CustomDate implements date {
         )
     }
 
+    static maxDate(dates: date[]): date {
+        let max = dates[0]
+        dates.forEach(date => {
+            if (max < date) {
+                max = date
+            }
+        })
+        return max
+    }
+
     beautify(shortened: boolean = true): string {
         if (shortened) {
             return `${this.day}/${this.month}/${this.year}`
         } else {
-            return `${this.day}/${this.month}/${this.year}, ${this.hours}:${this.minutes}:${this.seconds}`
+            return `le ${this.day} ${months[this.month - 1]} ${this.year} à ${this.hours}h${this.minutes}`
         }
     }
 
@@ -88,5 +113,3 @@ class CustomDate implements date {
         return true
     }
 }
-
-export default CustomDate
