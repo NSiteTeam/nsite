@@ -69,18 +69,18 @@ export default class CustomDate implements date {
         return max
     }
 
-    static sortDates(dates: date[], reverse: boolean = false): date[] {
-        return dates.sort((a, b) => {
-            if (a.isGreaterThan(b)) {
-                return 1
-            }
-            if (a.isLessThan(b)) {
-                return -1
-            }
-            else {
-                return 0
-            }
-        })
+    static subDates(a: date, b: date, reverse: boolean = false): number {
+        const reverseCoef = reverse ? 1 : -1
+        if (a.isGreaterThan(b)) {
+            return 1 * reverseCoef
+        }
+        if (a.isLessThan(b)) {
+            return -1 * reverseCoef
+        }
+        else {
+            return 0
+        }
+        
     }
 
     beautify(shortened: boolean = true): string {

@@ -46,7 +46,8 @@ import CustomDate from "@/utils/classes/CustomDate"
                 case Sort.LEVEL:
                     return data.value.sort((a, b) => reverseCoef * (a.level - b.level))
                 case Sort.PUBLICATION_DATE:
-                    return CustomDate.sortDates(data.value, reversed.value)
+                    return data.value.sort((a, b) => CustomDate.subDates(CustomDate.ISOStringToCustomDate(a.publication_date),
+                     CustomDate.ISOStringToCustomDate(b.publication_date), reversed.value))
                 default:
                     throw Error('Unknown sort')
             }
