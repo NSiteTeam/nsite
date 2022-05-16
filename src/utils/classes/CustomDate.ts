@@ -69,6 +69,20 @@ export default class CustomDate implements date {
         return max
     }
 
+    static sortDates(dates: date[], reverse: boolean = false): date[] {
+        return dates.sort((a, b) => {
+            if (a.isGreaterThan(b)) {
+                return 1
+            }
+            if (a.isLessThan(b)) {
+                return -1
+            }
+            else {
+                return 0
+            }
+        })
+    }
+
     beautify(shortened: boolean = true): string {
         if (shortened) {
             return `${this.day}/${this.month}/${this.year}`
