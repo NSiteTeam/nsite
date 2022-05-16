@@ -3,6 +3,7 @@ import type { News } from './news';
 import type { Permission } from './permissions';
 import type { HistoryPoint } from './history_point';
 import type { Repository } from './repositories';
+import type File from './file';
 
 export interface DatabaseClient {
     // USER
@@ -17,7 +18,9 @@ export interface DatabaseClient {
 
     // Repositories
     getRepos(id?: number): Promise<Repository[]>
-    dataRef: Ref<Repository[]>
+    getFile(id?: number): Promise<File[]>
+    repositories: Ref<Repository[]>
+    files: Ref<File[]>
 
     // NEWS
     fetchedNews: Ref<Array<News>>

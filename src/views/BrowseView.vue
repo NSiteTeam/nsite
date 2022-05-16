@@ -4,6 +4,7 @@
     import type { Ref } from "vue"
     import type { Repository } from "@/database/interface/repositories"
     import Card from "@/components/Card.vue"
+import CustomDate from "@/utils/classes/CustomDate"
 
     enum Sort {
         PUBLICATION_DATE = "Par date",
@@ -45,7 +46,7 @@
                 case Sort.LEVEL:
                     return data.value.sort((a, b) => reverseCoef * (a.level - b.level))
                 case Sort.PUBLICATION_DATE:
-                    return data.value.sort((a, b) => reverseCoef * (a.publication_date - b.publication_date))
+                    return CustomDate.sortDates(data.value, reversed.value)
                 default:
                     throw Error('Unknown sort')
             }

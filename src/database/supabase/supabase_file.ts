@@ -6,15 +6,15 @@ export default class SupabaseFile implements File {
     icon: string
     date: string
     last_commit_author: string
-    last_commit_date: string
+    last_commit_text: string
 
     constructor(id: number, name: string, icon: string,
-    date: string, last_commit_author: string, last_commit_date: string) {
+    date: string, last_commit_author: string, last_commit_text: string) {
         this.id = id
         this.name = name
         this.icon = icon
         this.date = date
         this.last_commit_author = last_commit_author
-        this.last_commit_date = last_commit_date
+        this.last_commit_text = last_commit_text
     }
 }
