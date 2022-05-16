@@ -83,9 +83,13 @@ export default class CustomDate implements date {
         
     }
 
+    static oneToTwoDigits(digit: number): string | number {
+        return digit < 10 ? "0" + digit : digit
+    }
+
     beautify(shortened: boolean = true): string {
         if (shortened) {
-            return `${this.day}/${this.month}/${this.year}`
+            return `${this.day}/${CustomDate.oneToTwoDigits(this.month)}/${this.year}`
         } else {
             return `le ${this.day} ${months[this.month - 1]} ${this.year} à ${this.hours}h${this.minutes}`
         }
@@ -97,7 +101,7 @@ export default class CustomDate implements date {
 
     isGreaterThan(otherDate: date): boolean {
         // Loops through all the digits of the date from right to left
-        for (let i = this.digits.length ; i >= 0 ; i++) {
+        for (let i = this.digits.length ; i >= 0 ; i--) {
             if (this.digits[i] > otherDate.digits[i]) {
                 return true
             } else if (this.digits[i] < otherDate.digits[i]) return false
@@ -109,7 +113,7 @@ export default class CustomDate implements date {
 
     // Those methods are working the same as the method on the top
     isLessThan(otherDate: date): boolean {
-        for (let i = this.digits.length ; i >= 0 ; i++) {
+        for (let i = this.digits.length ; i >= 0 ; i--) {
             if (this.digits[i] < otherDate.digits[i]) {
                 return true
             } else if (this.digits[i] > otherDate.digits[i]) return false

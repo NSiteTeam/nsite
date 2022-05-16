@@ -20,7 +20,7 @@ const router = createRouter({
       component: () => import("../views/RegisterView.vue"),
     },
     {
-      path: "/browse",
+      path: "/browse/:level?",
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
     },

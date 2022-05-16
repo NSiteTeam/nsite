@@ -206,7 +206,7 @@ export class SupabaseClient implements DatabaseClient {
         // Here we can directly manipulate the database as deposits are public
         let { data, error } = !id ? await supabase.from('deposits').select() :
         await supabase.from('deposits').select().eq("id", id).maybeSingle()
-       
+        
         if (id) {
             data = [data]
         }

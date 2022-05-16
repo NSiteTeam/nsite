@@ -10,11 +10,6 @@ import type date from "@/utils/interface/date";
 import type Message from "@/database/interface/message";
 import SupabaseMessage from "@/database/supabase/supabase_message";
 
-interface Commit {
-    author: string
-    text: string
-}
-
 const messages: Ref<Message[]> = ref([])
 const chatContent: Ref<string> = ref("")
 const id = Number(useRoute().params.id[0])
