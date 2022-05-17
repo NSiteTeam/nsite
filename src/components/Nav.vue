@@ -12,12 +12,7 @@
         </div>
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
-                <div class="browse-links">
-                    <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
-                    <div class="level-links">
-                        <RouterLink v-for="(level, index) in levels" :key="level" :to="'/browse/' + index" class="level-link">{{ level }}</RouterLink>
-                    </div>
-                </div>
+                <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
                 <RouterLink
                     v-if="connected"
                     to="/profile"

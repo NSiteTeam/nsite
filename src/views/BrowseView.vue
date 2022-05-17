@@ -83,50 +83,52 @@ function levels(): Array<number> {
 
 
 <template>
-    <h2>Type de tri :</h2>
+    <div class="filters">
+        <ul class="level-buttons">
+            <h2>Niveaux :</h2>
+            <li
+                :class="(selectedLevel == null) ? 'active': ''"
+                class="level-button-all" @click="selectLevel(null)"
+            >
+            <RouterLink to="/browse/">
+                Tout
+            </RouterLink>
+            </li>
+            <li
+                v-bind:class="{ 'active': level == selectedLevel }"
+                class="level-button"
+                @click="selectLevel(level)"
+                v-for="level in levels()"
+                :key="level"
+            >
+            <RouterLink :to="'/browse/' + level">
+                {{ level }}ème
+            </RouterLink>
+            </li>
+        </ul>
+        
+        <ul class="sort-keys">
+            <h2>Type de tri :</h2>
+            <button class="change-order-button" @click="changeOrder()">
+                <span v-if="reversed" class="material-icons">
+                    arrow_drop_up
+                </span>
+                <span v-else class="material-icons">
+                    arrow_drop_down
+                </span>
+                Ordre {{ reversed ? "Croissant" : "Décroissant" }}
+            </button>
 
-    <ul class="sort-keys">
-        <button class="change-order-button" @click="changeOrder()">
-            <span v-if="reversed" class="material-icons">
-                arrow_drop_up
-            </span>
-            <span v-else class="material-icons">
-                arrow_drop_down
-            </span>
-            Changer l'ordre
-        </button>
-
-        <li
-            @click="changeSort(sortType)"
-            v-bind:class="{ 'active': sort == sortType }"
-            v-for="sortType in Sort"
-            :key="sortType"
-        >
-            {{ sortType }}
-        </li>
-
-        <li
-            :class="(selectedLevel == null) ? 'active': ''"
-            class="level-button-all" @click="selectLevel(null)"
-        >
-        <RouterLink :to="'/browse/'">
-            Tout
-        </RouterLink>
-        </li>
-
-        <li
-            v-bind:class="{ 'active': level == selectedLevel }"
-            class="level-button"
-            @click="selectLevel(level)"
-            v-for="level in levels()"
-            :key="level"
-        >
-        <RouterLink :to="'/browse/' + level">
-            {{ level }}ème
-        </RouterLink>
-        </li>
-    </ul>
-
+            <li
+                @click="changeSort(sortType)"
+                v-bind:class="{ 'active': sort == sortType }"
+                v-for="sortType in Sort"
+                :key="sortType"
+            >
+                {{ sortType }}
+            </li>
+        </ul>
+    </div>
     <h2>Résultats :</h2>
 
     <div id="browse-container">
