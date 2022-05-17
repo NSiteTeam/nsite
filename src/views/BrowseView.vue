@@ -9,8 +9,7 @@ import CustomDate from "@/utils/classes/CustomDate"
 
 enum Sort {
     PUBLICATION_DATE = "Par date",
-    ALPHABETICAL = "Alphabétique",
-    LEVEL = "Par niveau"
+    ALPHABETICAL = "Alphabétique"
 }
 
 const data: Ref<Array<Repository>> = ref([])
@@ -58,8 +57,6 @@ const output = computed(
         switch (sort.value) {
             case Sort.ALPHABETICAL:
                 return selectedData.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
-            case Sort.LEVEL:
-                return selectedData.value.sort((a, b) => reverseCoef * (a.level - b.level))
             case Sort.PUBLICATION_DATE:
                 return selectedData.value.sort((a, b) => CustomDate.subDates(
                     CustomDate.ISOStringToCustomDate(a.publication_date),
@@ -109,10 +106,12 @@ function levels(): Array<number> {
         </li>
 
         <li
-            :v-bind:class="{ 'active': selectedLevel == null }"
+            :class="(selectedLevel == null) ? 'active': ''"
             class="level-button-all" @click="selectLevel(null)"
         >
+        <RouterLink :to="'/browse/'">
             Tout
+        </RouterLink>
         </li>
 
         <li
@@ -122,8 +121,9 @@ function levels(): Array<number> {
             v-for="level in levels()"
             :key="level"
         >
-            {{ level }}
-            <sup>ème</sup> <!--TODO: Use table join-->
+        <RouterLink :to="'/browse/' + level">
+            {{ level }}ème
+        </RouterLink>
         </li>
     </ul>
 
