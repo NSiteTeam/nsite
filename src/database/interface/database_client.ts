@@ -15,6 +15,7 @@ export interface DatabaseClient {
 
     signIn(email: string, password: string): any
     login(email: string, password: string): any
+    logout(): any
 
     // Repositories
     getRepos(id?: number): Promise<Repository[]>

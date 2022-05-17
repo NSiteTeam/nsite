@@ -1,0 +1,15 @@
+.disconnected-box {
+    width: 20vw;
+    height: 20vh;
+    background-color: $space-cadet;
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    justify-content: center;
+
+
+    p {
+        color: aliceblue;
+    }
+
+}
