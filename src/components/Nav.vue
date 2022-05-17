@@ -12,7 +12,7 @@
         </div>
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
-                <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
+                <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
                 <RouterLink
                     v-if="connected"
                     to="/profile"
@@ -47,6 +47,15 @@
     const toggleMenu = ref(false)
     const windowWidth = width
     const connected = databaseClient.isConnected
+    const levels = [
+        'Terminale',
+        'Première',
+        'Seconde',
+        'Troisième',
+        'Quatrième',
+        'Cinquième',
+        'Sixième',
+    ]
 
     function toggleMenuFunction() {
         toggleMenu.value = !toggleMenu.value

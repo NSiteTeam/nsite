@@ -1,6 +1,8 @@
 <script setup lang="ts">
-    const props = defineProps(['exercise'])
-    const repo = props.exercise //<!-- TODO: Rename-->
+import CustomDate from '@/utils/classes/CustomDate';
+
+const props = defineProps(['exercise'])
+const repo = props.exercise //<!-- TODO: Rename-->
 </script>
 
 
@@ -11,8 +13,7 @@
         <!--TODO: Change this -->
         <i>Niveau: {{ repo.level }}ème • Ajouté le
         {{
-            (new Date(parseInt(repo.publication_date)))
-            .toISOString().split('T')[0].split('-').reverse().join('/')
+            CustomDate.ISOStringToCustomDate(repo.publication_date).beautify()
         }}
         </i>
         <p class="card-descr">{{ repo.description }}</p>
