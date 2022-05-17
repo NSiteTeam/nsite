@@ -9,9 +9,9 @@ import CustomDate from "@/utils/classes/CustomDate";
 import type date from "@/utils/interface/date";
 import type Message from "@/database/interface/message";
 import SupabaseMessage from "@/database/supabase/supabase_message";
+// @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
+import Chat from "../components/Chat.vue";
 
-const messages: Ref<Message[]> = ref([])
-const chatContent: Ref<string> = ref("")
 const id = Number(useRoute().params.id[0])
 const files: Ref<File[]> = databaseClient.files
 const repoData: Ref<Repository[]> = databaseClient.repositories
@@ -25,11 +25,6 @@ const activeTab: Ref<String> = ref("content")
 
 function setActiveTab(tab: string) {
     activeTab.value = tab
-}
-
-function addMessage(message: string) {
-    messages.value.push(new SupabaseMessage(message))
-    chatContent.value = ""
 }
 </script>
 
@@ -77,13 +72,6 @@ function addMessage(message: string) {
             </div>
         </div>
         <!-- CHAT -->
-        <div id="repo-chat" v-if="activeTab == 'chat'">
-            <div class="conversation">
-                    <div class="message" i v-for="message in messages" :key="message.content" align="right">
-                        <p>{{message.content}}</p>                  
-                    </div>
-            </div>
-            <input type="text" placeholder="Votre message" v-model="chatContent" v-on:keyup.enter="addMessage(chatContent)">
-        </div>
+        <Chat id="repo-chat" :depoId="repoData[0].id" v-if="activeTab == 'chat'" />
     </div>
 </template>

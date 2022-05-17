@@ -96,6 +96,8 @@
         background-color: $space-cadet-light;
         border-radius: 20px;
         position: relative;
+        overflow-y: scroll;
+        margin-bottom: 20px;
 
         input {
             position: absolute;
@@ -125,7 +127,6 @@
         .conversation {
             background-color: rgba(0, 255, 0, 0);
             height: 280px;
-            // overflow-y: hidden;
             overflow-y: scroll;
             flex-direction: column;
 
@@ -138,18 +139,17 @@
                 background-color: $viridian-green;
                 float: right;
                 clear: right;
-                margin: 5px;
                 max-width: 40%;
                 display: block;
                 padding-right: 1%;
                 padding-left: 1%;
+                margin-bottom: 50px;
                 border-radius: 20px 20px 5px 20px;
-                
-                p {
-                    // margin: 5%;
-                }       
             }
-
+                
+            &:last-child {
+                margin: 5px;
+            }
         }
     }
 

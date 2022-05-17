@@ -48,6 +48,10 @@ export default class CustomDate implements date {
         ]
     }
 
+    // #######################################################################
+    // ########################## Static utilities ###########################
+    // #######################################################################
+
     static ISOStringToCustomDate(rawDate: string): date {
         return new CustomDate(
             Number(rawDate.split('T')[1].split(':')[2].split('.')[0]),
@@ -57,6 +61,11 @@ export default class CustomDate implements date {
             Number(rawDate.split('T')[0].split('-')[1]),
             Number(rawDate.split('T')[0].split('-')[0]),
         )
+    }
+
+    static Now(): date {
+        const classicDate = new Date(Date.now())
+        return this.ISOStringToCustomDate(classicDate.toISOString())
     }
 
     static maxDate(dates: date[]): date {

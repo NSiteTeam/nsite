@@ -23,6 +23,7 @@
 .filters {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 ul.level-buttons {
@@ -30,6 +31,7 @@ ul.level-buttons {
     display: flex;
     align-items: center;
     padding-left: 0;
+    flex-wrap: wrap;
 
     .active {
         @include shadow2;
@@ -53,6 +55,7 @@ ul.level-buttons {
     display: flex;
     align-items: center;
     flex-direction: row;
+    flex-wrap: wrap;
     
     h2 {
         margin-right: 10px;

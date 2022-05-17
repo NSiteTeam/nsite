@@ -10,9 +10,12 @@ import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
+import type date from '@/utils/interface/date'
 import SupabaseFile from '../supabase/supabase_file'
 import type { Username } from '../interface/username'
 import type File from './../interface/file'
+import type Message from '../interface/message'
+import SupabaseMessage from './supabase_message'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -25,6 +28,9 @@ export class SupabaseClient implements DatabaseClient {
 
     // The value of this ref is the fetched repositories
     repositories: Ref<Repository[]> = ref([])
+
+    // The value of this ref is the fetched messages
+    messages: Ref<Repository[]> = ref([])
 
     // The value of this ref is true if the user is connected to the database
     isConnected: Ref<boolean> = ref(false)
@@ -278,7 +284,7 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async getFile(id: number): Promise<any> {
+    async getFile(id: number): Promise<File> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()
         this.files.value.push(data)
@@ -291,6 +297,59 @@ export class SupabaseClient implements DatabaseClient {
                 data.last_commit_author,
                 data.last_commit_date
             ))
+        })
+    }
+
+    async fetchMessages(repoId: number): Promise<Message[]> {
+        const { data, error } = await supabase.from(`deposits_chat_messages`)
+        .select().eq('depoId', repoId)
+
+        return new Promise((resolve, reject) => {
+            if (error) {
+                reject(error)
+            } else if (data === null) {
+                reject("No messages fetched")
+            } else {
+                resolve(
+                    data.map((message: Message) => {
+                        return new SupabaseMessage(
+                            message.content,
+                            message.author,
+                            message.date,
+                            message.id,
+                        )
+                    })
+                )
+            }
+        })
+    }
+
+    async postMessage(date: date, author: string, content: string, depoId: number): Promise<Message[]> {
+        const { data, error } = await supabase.from(`deposits_chat_messages`)
+        .insert([{
+            date: date,
+            author: author,
+            content: content,
+            depoId: depoId
+        }])
+
+        return new Promise((resolve, reject) => {
+            if (error) {
+                reject(error)
+            } else if (data === null) {
+                reject("No messages fetched")
+            } else {
+                resolve(
+                    data.map((message: Message) => {
+                        return new SupabaseMessage(
+                            message.content,
+                            message.author,
+                            message.date,
+                            message.id,
+                        )
+                    })
+                )
+            }
         })
     }
 }
