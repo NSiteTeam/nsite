@@ -25,7 +25,7 @@
 
 <template>
     <div class="container">
-        {{ historyPoints }}
+        <h2>Petite histoire des mathématiques :</h2>
         <ul>
             <li v-for="(history, index) in historyPoints" :key="index">
                 <span class="number">

@@ -4,5 +4,5 @@ export default interface File {
     icon: string
     date: string
     last_commit_author: string
-    last_commit_date: string
+    last_commit_text: string
 }

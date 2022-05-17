@@ -13,7 +13,9 @@
     // si vous utilisez webpack 2+ ou rollup, permettre le tree shaking :
     "module": "esnext",
     "moduleResolution": "node",
-    "allowJs": true
+    "allowJs": true,
+    "isolatedModules": false,
+    "allowSyntheticDefaultImports": true
   },
   "vueCompilerOptions": {
     "experimentalDisableTemplateSupport": true
