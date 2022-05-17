@@ -12,7 +12,12 @@
         </div>
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
-                <RouterLink to="/browse" class="navbar-link">Parcourir</RouterLink>
+                <div class="browse-links">
+                    <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
+                    <div class="level-links">
+                        <RouterLink v-for="(level, index) in levels" :key="level" :to="'/browse/' + index" class="level-link">{{ level }}</RouterLink>
+                    </div>
+                </div>
                 <RouterLink
                     v-if="connected"
                     to="/profile"
@@ -47,6 +52,15 @@
     const toggleMenu = ref(false)
     const windowWidth = width
     const connected = databaseClient.isConnected
+    const levels = [
+        'Terminale',
+        'Première',
+        'Seconde',
+        'Troisième',
+        'Quatrième',
+        'Cinquième',
+        'Sixième',
+    ]
 
     function toggleMenuFunction() {
         toggleMenu.value = !toggleMenu.value

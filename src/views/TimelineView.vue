@@ -25,7 +25,6 @@
 
 <template>
     <div class="container">
-        {{ historyPoints }}
         <ul>
             <li v-for="(history, index) in historyPoints" :key="index">
                 <span class="number">

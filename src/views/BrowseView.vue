@@ -1,4 +1,4 @@
-<script setup lang="ts">
+ <script setup lang="ts">
 import { databaseClient } from "@/database/implementation"
 import { computed, ref } from "vue"
 import type { Ref } from "vue"

@@ -28,6 +28,34 @@ header {
             font-size: 24px;
         }
     }
+
+    .level-links {
+        display: none;
+    }
+
+    .browse-links:hover {
+        position: relative;
+
+        .level-links {
+            position: absolute;
+            flex-direction: column;
+            display: flex;
+            background-color: $space-cadet-light;
+            padding: 5px;
+            border-radius: 5px;
+
+            .level-link {
+                background-color: $space-cadet;
+                border-radius: 5px;
+                padding: 5px;
+                margin: 5px;
+
+                &:hover {
+                    @include shadow1
+                }
+            }
+        }
+    }
     
     .search {
         display: flex;
