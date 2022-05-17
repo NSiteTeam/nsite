@@ -27,6 +27,8 @@ export class SupabaseClient implements DatabaseClient {
      */
     email: Ref<string | null> = ref(null)
 
+    uuid: Ref<string | null> = ref(null)
+
     /**
      * All the permissions of the user
      */
@@ -97,6 +99,8 @@ export class SupabaseClient implements DatabaseClient {
         this.isConnected.value = supabase.auth.session() != null
 
         this.email.value = supabase.auth.user()?.email ?? null
+
+        this.uuid.value = supabase.auth.user()?.id ?? null
 
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {

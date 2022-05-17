@@ -21,15 +21,22 @@
     import type { Ref } from 'vue';
     import type { Username } from '@/database/interface/username'
     import type CustomDate from '../utils/classes/CustomDate'
+import { SupabaseUsername } from '@/database/supabase/supabase_username';
 
     // TODO: Display all usernames in the database
     const email = databaseClient.email
+    const uuid = databaseClient.uuid
+    // const ID = databaseClient.
     const val_email = email.value
     const usernameRef: Ref<Array<any>> = ref([])
-
+    
     const usernames = databaseClient.getUsernames().then(usernames => {
         usernameRef.value = (usernames.filter((supabaseUsername: Username) => {
-            return supabaseUsername.id = databaseClient.uuid
+            if (supabaseUsername.user == uuid) {
+                console.log(supabaseUsername.username)
+                return supabaseUsername.username
+            }
+
         }))
     }).catch(error => {
         throw error
