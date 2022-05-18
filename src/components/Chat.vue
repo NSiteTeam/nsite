@@ -25,7 +25,6 @@ import CustomDate from '@/utils/classes/CustomDate'
 const messages: Ref<Message[]> = ref([])
 const chatContent: Ref<string> = ref("")
 const props = defineProps(['depoId'])
-console.log(props)
 
 databaseClient.fetchMessages(props.depoId).then((res) => {
     messages.value = res
@@ -43,8 +42,17 @@ function addMessage(message: string) {
             message,
             databaseClient.uuid.value,
             CustomDate.Now(),
-            Math.random() * 100000
+            Math.floor(Math.random() * 100000)
         ))
+        console.log(CustomDate.Now().toISOString())
+        databaseClient.postMessage(
+            CustomDate.Now().toISOString(),
+            databaseClient.uuid.value,
+            message,
+            Math.random() * 100000
+        ).catch(error => {
+            console.log(error)
+        })
         // Clears the content of the input
         chatContent.value = ""
     }

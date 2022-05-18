@@ -54,7 +54,7 @@ export default class CustomDate implements date {
 
     static ISOStringToCustomDate(rawDate: string): date {
         return new CustomDate(
-            Number(rawDate.split('T')[1].split(':')[2].split('.')[0]),
+            Number(rawDate.split('T')[1].split(':')[2].split('+')[0]),
             Number(rawDate.split('T')[1].split(':')[1]),
             Number(rawDate.split('T')[1].split(':')[0]),
             Number(rawDate.split('T')[0].split('-')[2]),
@@ -89,12 +89,25 @@ export default class CustomDate implements date {
         else {
             return 0
         }
-        
     }
 
     static oneToTwoDigits(digit: number): string | number {
         return digit < 10 ? "0" + digit : digit
     }
+
+    toNativeDate(): Date {
+        return new Date(this.toISOString())
+    }
+
+    toMilliseconds(): number {
+        return Date.parse(this.toISOString())
+    }
+
+    toISOString(): string {
+        return `${this.year}-${this.month}-${this.day}T
+        ${this.hours}:${this.minutes}:${this.seconds}.0Z`
+    }
+
 
     beautify(shortened: boolean = true): string {
         if (shortened) {

@@ -15,6 +15,7 @@ import Chat from "../components/Chat.vue";
 const id = Number(useRoute().params.id[0])
 const files: Ref<File[]> = databaseClient.files
 const repoData: Ref<Repository[]> = databaseClient.repositories
+databaseClient.clearFiles()
 databaseClient.getRepos(id).then(repos => {
     repos[0].content.map((fileID: string | number) => {
         databaseClient.getFile(Number(fileID))

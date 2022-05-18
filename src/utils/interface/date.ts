@@ -9,6 +9,8 @@ export default interface date {
     digits: Array<number>
 
     beautify(): string
+    toNativeDate(): Date
+    toISOString(): string
     isGreaterThan(otherDate: date): boolean
     isLessThan(otherDate: date): boolean
     isEqualTo(otherDate: date): boolean

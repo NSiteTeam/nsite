@@ -284,6 +284,10 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
+    clearFiles() {
+        this.files.value = []
+    }
+
     async getFile(id: number): Promise<File> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()
@@ -324,15 +328,16 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async postMessage(date: date, author: string, content: string, depoId: number): Promise<Message[]> {
+    async postMessage(date: string, author: string, content: string, depoId: number): Promise<Message[]> {
         const { data, error } = await supabase.from(`deposits_chat_messages`)
         .insert([{
             date: date,
             author: author,
             content: content,
-            depoId: depoId
-        }])
+            depoId: Math.floor(depoId)
+        }]).eq("depoId", depoId)
 
+        console.log(error)
         return new Promise((resolve, reject) => {
             if (error) {
                 reject(error)
