@@ -103,13 +103,13 @@
             position: absolute;
             color: $cream-white;
             font-size: 14px;
-            bottom: 0;
-            border-top: 1px solid white;
-            border-bottom: 0;
+            top: 0;
+            border-bottom: 1px solid white;
+            border-top: 0;
             border-left: 0;
             border-right: 0;
             padding: 15px;
-            border-radius: 0 0 20px 20px;
+            border-radius: 20px 20px 0 0;
             width: calc(100% - 30px);
             background-color: $space-cadet-light;
             height: 20px;
@@ -127,7 +127,8 @@
         .conversation {
             background-color: rgba(0, 255, 0, 0);
             height: 280px;
-            overflow-y: scroll;
+            margin-top: 60px;
+            overflow-y: visible;
             flex-direction: column;
 
             &::-webkit-scrollbar {
@@ -137,18 +138,30 @@
 
             .message {
                 background-color: $viridian-green;
-                float: right;
+                border: $cream-white 1px solid;
+                // float: right;
                 clear: right;
-                max-width: 40%;
+                // max-width: 40%;
                 display: block;
                 padding-right: 1%;
-                padding-left: 1%;
-                margin-bottom: 50px;
-                border-radius: 20px 20px 5px 20px;
+                margin: 10px;
+                padding: 1%;
+                border-radius: 20px;
+
+                .author {
+                    text-decoration: underline;
+                    display: inline;
+                    font-size: large;
+                }
+
+                .date {
+                    font-style: italic;
+                    display: inline;
+                }
             }
                 
             &:last-child {
-                margin: 5px;
+                margin-bottom: 50px;
             }
         }
     }

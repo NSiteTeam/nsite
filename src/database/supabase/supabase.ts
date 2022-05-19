@@ -358,7 +358,6 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     watchMessages(depoId: number) {
-        console.log("hello")
         supabase.from(`deposits_chat_messages:depoId=eq.${depoId}`)
         .on("*", (payload: any) => {
             console.log(payload)

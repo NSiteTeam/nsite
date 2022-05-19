@@ -2,9 +2,9 @@
     <div id="repo-chat">
         <div class="conversation">
             <div class="message" i v-for="message in messages" :key="message.content" align="right">
-                <p>{{ message.author }}</p>
-                <p>{{ formatDate(message.date) }}</p>
-                <p>{{ message.content }}</p>
+                <p class="author">{{ message.author }}</p>
+                <p class="date">{{ formatDate(message.date) }}</p>
+                <p class="content">{{ message.content }}</p>
             </div>
         </div>
         <input type="text" 
@@ -28,7 +28,7 @@ const props = defineProps(['depoId'])
 databaseClient.watchMessages(props.depoId)
 
 databaseClient.fetchMessages(props.depoId).then((res) => {
-    messages.value = res
+    messages.value = res.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
 })
 
 function formatDate(ISOdate: string) {
@@ -45,7 +45,8 @@ function addMessage(message: string) {
     // Verifies if the user is well connected
     // if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
-        messages.value.push(new SupabaseMessage(
+        const test = messages.value
+        messages.value.unshift(new SupabaseMessage(
             message,
             uuid,
             CustomDate.Now().toISOString(),
