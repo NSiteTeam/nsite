@@ -8,9 +8,10 @@
         </span>
         {{ usernames }}
         <ul class="table-part">
-            <li class="white">Adresse mail: <i>{{ val_email }}</i></li>
-            <li class="white">Nom d'utilisateur: <i>{{ usernameRef }}</i></li>
+            <li class="white">Adresse mail: <i>{{ mail }}</i></li>
+            <li class="white">Nom d'utilisateur: <i>{{ MyUsername }}</i></li>
             <li class="white">Dernière date de connection: <i>{{ date }}</i></li>
+            <li class="white">ID : <i>{{ uuid }}</i></li>
         </ul>
     </div>
 </template>
@@ -21,20 +22,20 @@
     import type { Ref } from 'vue';
     import type { Username } from '@/database/interface/username'
     import type CustomDate from '../utils/classes/CustomDate'
-import { SupabaseUsername } from '@/database/supabase/supabase_username';
+    import { SupabaseUsername } from '@/database/supabase/supabase_username';
 
     // TODO: Display all usernames in the database
-    const email = databaseClient.email
+    const email = databaseClient.email.value
     const uuid = databaseClient.uuid
     // const ID = databaseClient.
-    const val_email = email.value
-    const usernameRef: Ref<Array<any>> = ref([])
+    const usernameRef: Ref<Array<Username>> = ref([])
+    const MyUsername: Ref<string> = ref("")
     
-    const usernames = databaseClient.getUsernames().then(usernames => {
-        usernameRef.value = (usernames.filter((supabaseUsername: Username) => {
-            if (supabaseUsername.user == uuid) {
-                console.log(supabaseUsername.username)
-                return supabaseUsername.username
+    const usernamesAttribute = databaseClient.getUsernames().then((usernames: Username[]) => {
+        usernameRef.value = (usernames.filter((supabaseUsername) => {
+            console.log(supabaseUsername.username)
+            if (supabaseUsername.user == databaseClient.uuid.value){
+                MyUsername.value = supabaseUsername.username
             }
 
         }))
@@ -42,5 +43,11 @@ import { SupabaseUsername } from '@/database/supabase/supabase_username';
         throw error
     })
 
-    console.log(usernames)
+    // var usernames = usernameRef.value
+
+    // for (var username in usernameRef) {
+    //     console.log(username)
+    // }
+    
+
 </script>
