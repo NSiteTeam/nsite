@@ -1,20 +1,6 @@
 <template>
     <div id="profile-container"  class="shadow2">
-        <span class="profile-title">
-            <span class="material-icons white">
-                account_circle
-            </span>
-            Mon profil:
-        </span>
-        {{ usernames }}
-        <ul class="table-part">
-            <li class="white">Adresse mail: <i>{{ val_email }}</i></li>
-            <li class="white">Nom d'utilisateur: <i>{{ usernames }}</i></li>
-            <li class="white">Admin ? :<i>{{ databaseClient.permissions  }}</i></li>
-        </ul>
-
-        
-        <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
+        salut les tchoupis fans
 
     </div>
 </template>
