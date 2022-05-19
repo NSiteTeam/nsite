@@ -25,6 +25,7 @@ import CustomDate from '@/utils/classes/CustomDate'
 const messages: Ref<Message[]> = ref([])
 const chatContent: Ref<string> = ref("")
 const props = defineProps(['depoId'])
+databaseClient.watchMessages(props.depoId)
 
 databaseClient.fetchMessages(props.depoId).then((res) => {
     messages.value = res
@@ -35,26 +36,31 @@ function formatDate(ISOdate: string) {
 }
 
 function addMessage(message: string) {
+    let uuid = ""
+    if (databaseClient.uuid.value == null) {
+        uuid = "anonyme"
+    } else {
+        uuid = databaseClient.uuid.value
+    }
     // Verifies if the user is well connected
-    if (databaseClient.uuid.value) {
+    // if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
         messages.value.push(new SupabaseMessage(
             message,
-            databaseClient.uuid.value,
-            CustomDate.Now(),
-            Math.floor(Math.random() * 100000)
+            uuid,
+            CustomDate.Now().toISOString(),
+            props.depoId
         ))
-        console.log(CustomDate.Now().toISOString())
         databaseClient.postMessage(
             CustomDate.Now().toISOString(),
-            databaseClient.uuid.value,
+            uuid,
             message,
-            Math.random() * 100000
+            props.depoId
         ).catch(error => {
             console.log(error)
         })
         // Clears the content of the input
         chatContent.value = ""
     }
-}
+// }
 </script>

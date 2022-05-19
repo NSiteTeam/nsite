@@ -29,6 +29,7 @@ export interface DatabaseClient {
     // Messages
     fetchMessages(repoId: number): Promise<Message[]>
     postMessage(date: string, author: string, content: string, depoId: number): Promise<Message[]>
+    watchMessages(depoId: number): void
     messages: Ref<Repository[]>
 
     // NEWS

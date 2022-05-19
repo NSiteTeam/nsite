@@ -4,5 +4,5 @@ export default interface Message {
     id: number
     content: string;
     author: string;
-    date: date;
+    date: string;
 }

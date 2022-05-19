@@ -337,7 +337,6 @@ export class SupabaseClient implements DatabaseClient {
             depoId: Math.floor(depoId)
         }]).eq("depoId", depoId)
 
-        console.log(error)
         return new Promise((resolve, reject) => {
             if (error) {
                 reject(error)
@@ -356,5 +355,13 @@ export class SupabaseClient implements DatabaseClient {
                 )
             }
         })
+    }
+
+    watchMessages(depoId: number) {
+        console.log("hello")
+        supabase.from(`deposits_chat_messages:depoId=eq.${depoId}`)
+        .on("*", (payload: any) => {
+            console.log(payload)
+        }).subscribe()
     }
 }

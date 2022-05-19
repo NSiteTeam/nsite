@@ -54,7 +54,7 @@ export default class CustomDate implements date {
 
     static ISOStringToCustomDate(rawDate: string): date {
         return new CustomDate(
-            Number(rawDate.split('T')[1].split(':')[2].split('+')[0]),
+            Number(rawDate.split('T')[1].split(':')[2].split('+')[0].split('Z')[0]),
             Number(rawDate.split('T')[1].split(':')[1]),
             Number(rawDate.split('T')[1].split(':')[0]),
             Number(rawDate.split('T')[0].split('-')[2]),
@@ -105,7 +105,7 @@ export default class CustomDate implements date {
 
     toISOString(): string {
         return `${this.year}-${this.month}-${this.day}T
-        ${this.hours}:${this.minutes}:${this.seconds}.0Z`
+        ${this.hours}:${this.minutes}:${this.seconds}Z`
     }
 
 

@@ -5,9 +5,9 @@ export default class SupabaseMessage implements Message {
     id: number
     content: string
     author: string
-    date: date
+    date: string
 
-    constructor(content: string, author: string, date: date, id: number) {
+    constructor(content: string, author: string, date: string, id: number) {
         this.id = id
         this.content = content
         this.author = author
