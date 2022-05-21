@@ -360,7 +360,19 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    editMessage(messageId: number, newMessage: Message) {
+    async deleteMessage(messageId: number) {
+        const { data, error } = await supabase.from('deposits_chat_messages')
+        .delete()
+        .match({ id: messageId })
+        if (error) {
+            console.warn(error)
+        } else {
+            console.log("Successfully deleted message " + messageId)
+        }
+        this.deleteMessageInTheCache(messageId)
+    }
+
+    editMessageInTheCache(messageId: number, newMessage: Message) {
         // Checks every message to find the good one
         this.fetchedMessages.value.forEach(message => {
             if (message.id == messageId) {
@@ -371,30 +383,30 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    deleteMessage(messageId: number) {
+    deleteMessageInTheCache(messageId: number) {
         // Checks every message to find the good one
         this.fetchedMessages.value.forEach(message => {
             if (message.id == messageId) {
+                console.log(this.fetchedMessages.value)
                 // Performs the deletion
                 let index = this.fetchedMessages.value.indexOf(message)
-                this.fetchedMessages.value.splice(index, index)
+                this.fetchedMessages.value.splice(index, index+1)
+                console.log(this.fetchedMessages.value)
             }
         })
     }
 
     watchMessages(depoId: number) {
         supabase.from(`deposits_chat_messages:depoId=eq.${depoId}`)
-        .on("*", (payload: any) => {
-            console.log(payload)
-        })
         .on("INSERT", (payload: any) => {
             this.fetchedMessages.value.unshift(payload.new)
         })
         .on("UPDATE", (payload: any) => {
-            this.editMessage(payload.new.id, payload.new)
+            this.editMessageInTheCache(payload.new.id, payload.new)
         })
         .on("DELETE", (payload: any) => {
-            this.deleteMessage(payload.old.id)
+            console.log(payload)
+            this.deleteMessageInTheCache(payload.old.id)
         }).subscribe()
     }
 

@@ -1,10 +1,15 @@
 <template>
     <div id="repo-chat">
         <div class="conversation">
-            <div class="message" i v-for="message in databaseClient.fetchedMessages.value" :key="message.content" align="right">
+            <div class="message" 
+            v-for="message in databaseClient.fetchedMessages.value" 
+            :key="message.content" align="right">
                 <p class="author">{{ message.author }} </p>
                 <p class="date">{{ formatDate(message.date) }}</p>
                 <p class="content">{{ message.content }}</p>
+                <button class="message-button">Mofifier</button>
+                <button @click="databaseClient.deleteMessage(message.id)" 
+                class="message-button">Supprimer</button>
             </div>
         </div>
         <input type="text" 
@@ -18,7 +23,6 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import type Message from '@/database/interface/message'
-import SupabaseMessage from '@/database/supabase/supabase_message'
 import { databaseClient } from '@/database/implementation'
 import CustomDate from '@/utils/classes/CustomDate'
 

@@ -1,0 +1,87 @@
+// CHAT
+#repo-chat {
+    height: 300px;
+    background-color: $space-cadet-light;
+    border-radius: 20px;
+    position: relative;
+    overflow-y: scroll;
+    margin-bottom: 20px;
+
+    input {
+        position: absolute;
+        color: $cream-white;
+        font-size: 14px;
+        top: 0;
+        border-bottom: 1px solid white;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        padding: 15px;
+        border-radius: 20px 20px 0 0;
+        width: calc(100% - 30px);
+        background-color: $space-cadet-light;
+        height: 20px;
+
+        &:focus {
+            outline: none;
+        }
+
+        &::placeholder {
+            color: white;
+            font-weight: bold;
+        }
+    }
+
+    .conversation {
+        background-color: rgba(0, 255, 0, 0);
+        height: 280px;
+        margin-top: 60px;
+        overflow-y: visible;
+        flex-direction: column;
+
+        &::-webkit-scrollbar {
+            background-color: rgba(0,0,0,0);
+            width: 0px;
+        }
+
+        .message {
+            background-color: $viridian-green;
+            border: $cream-white 1px solid;
+            // float: right;
+            clear: right;
+            // max-width: 40%;
+            display: block;
+            padding-right: 1%;
+            margin: 10px;
+            padding: 1%;
+            border-radius: 20px;
+
+            .author {
+                text-decoration: underline;
+                display: inline;
+                font-size: large;
+            }
+
+            .date {
+                font-style: italic;
+                display: inline;
+            }
+
+            &-button {
+                background-color: transparent;
+                color: $cream-white;
+                border: 0;
+                text-decoration: underline;
+                font-size: 15px;
+
+                &:active {
+                    font-weight: bold;
+                }
+            }
+        }
+            
+        &:last-child {
+            margin-bottom: 50px;
+        }
+    }
+}
