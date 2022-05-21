@@ -26,6 +26,44 @@
     flex-wrap: wrap;
 }
 
+.search {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px 8px 12px;
+    width: 90%;
+    margin-right: 10px;
+    border-radius: 15px;
+
+    .material-icons {
+        font-size: 35px;
+        background-color: transparent;
+        border: 0;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    &-input {
+        width: 100%;
+        padding: 2%;
+        border: 0;
+        color: $cream-white;
+        background-color: transparent;
+        font-size: 24px;
+
+        &::placeholder {
+            color: $cream-white;
+            font-size: 24px;
+        }
+
+        &:focus {
+            outline:  none;
+        }
+    }
+}
+
 ul.level-buttons {
     list-style: none;
     display: flex;

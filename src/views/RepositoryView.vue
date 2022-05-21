@@ -22,7 +22,13 @@ await databaseClient.getRepos(id)
 <template>
     <!-- ensemble -->
     <div id="repo">
-        <h3 id="repo-title">{{ repoData[0].title }} <i>Niveau : {{ repoData[0].level }}ème, {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}</i></h3>
+        <h3 id="repo-title">
+            {{ repoData[0].title }}
+            <i>
+                Niveau : {{ repoData[0].level }}ème, 
+                {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+            </i>
+        </h3>
         <ul id="repo-menu">
             <RouterLink id="content" :to="'/repository/content/' + useRoute().params.id"
             :class="useRoute().params.content == 'content' ? 'active' : ''" >

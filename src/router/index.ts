@@ -32,7 +32,7 @@ const router = createRouter({
     {
       path: "/repository/:content/:id",
       name: "repository",
-      component: () => import("../views/Repository.vue"),
+      component: () => import("../views/RepositoryView.vue"),
     },
     {
       path: "/admin/users",

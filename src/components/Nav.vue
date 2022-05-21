@@ -4,12 +4,6 @@
             <img src="../../src/assets/logo-white.svg" width="64" height="64" class="logo">
             <h2 v-if="windowWidth > 1440">Les mathématiques à Saint Jean Hulst</h2>
         </RouterLink>
-        <div class="search">
-            <button class="material-icons white">
-                search
-            </button>
-            <input autocomplete="off" name="search-input" class="search-input" placeholder="Rechercher">
-        </div>
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
                 <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>

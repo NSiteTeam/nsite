@@ -19,12 +19,12 @@ databaseClient.getRepos().then(res =>
     data.value = res
 )
 
-
 const reversed = ref(false)
 const sort = ref(Sort.PUBLICATION_DATE)
 const selectedLevel: Ref<number | null> = ref(
     useRoute().params.level[0] ? Number(useRoute().params.level[0]) : null
 )
+const searchbarContent: Ref<string> = ref("")
 
 
 function changeOrder() {
@@ -55,6 +55,10 @@ const output = computed(
             selectedData.value = data.value
         }
 
+        selectedData.value =selectedData.value.filter(deposit => {
+            return deposit.title.includes(searchbarContent.value)
+        })
+
         switch (sort.value) {
             case Sort.ALPHABETICAL:
                 return selectedData.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
@@ -83,6 +87,14 @@ function levels(): Array<number> {
 </script>
 
 <template>
+    <div class="search">
+        <input type="text" v-model="searchbarContent" 
+        autocomplete="off" name="search-input" 
+        class="search-input" placeholder="Rechercher">
+        <button class="material-icons white">
+            search
+        </button>
+    </div>
     <div class="filters">
         <ul class="level-buttons">
             <h2>Niveaux :</h2>
@@ -130,9 +142,9 @@ function levels(): Array<number> {
         </ul>
     </div>
     <h2>Résultats :</h2>
-
-    <div id="browse-container">
-        <Card :exercise=repo v-for="repo in output" :key="repo.id" />
-    </div>
-
+    <Transition name="fade">
+        <div id="browse-container">
+            <Card :exercise=repo v-for="repo in output" :key="repo.id" />
+        </div>
+    </Transition>
 </template>
