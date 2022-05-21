@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import("../views/BrowseView.vue"),
     },
     {
-      path: "/repository/:id",
+      path: "/repository/:content/:id",
       name: "repository",
       component: () => import("../views/Repository.vue"),
     },

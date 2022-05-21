@@ -3,6 +3,7 @@ import { databaseClient } from "@/database/implementation"
 import { computed, ref } from "vue"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
+// @ts-ignore C'est un bug
 import Card from "@/components/Card.vue"
 import { useRoute } from "vue-router"
 import CustomDate from "@/utils/classes/CustomDate"
@@ -80,7 +81,6 @@ function levels(): Array<number> {
 }
 
 </script>
-
 
 <template>
     <div class="filters">

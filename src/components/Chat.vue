@@ -44,7 +44,7 @@ function addMessage(message: string) {
         uuid = databaseClient.uuid.value
     }
     // Verifies if the user is well connected
-    if (databaseClient.uuid.value) {
+    // if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
         const test = messages.value
         databaseClient.postMessage(
@@ -58,5 +58,5 @@ function addMessage(message: string) {
         // Clears the content of the input
         chatContent.value = ""
     }
-}
+// }
 </script>

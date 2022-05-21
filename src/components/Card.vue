@@ -7,7 +7,7 @@ const repo = props.exercise //<!-- TODO: Rename-->
 
 
 <template>
-    <RouterLink :to="'/repository/' + repo.id" class="card">
+    <RouterLink :to="'/repository/content/' + repo.id" class="card">
         <img :src="repo.image" alt="placeholder" class="card-image">
         <h3 class="card-title">{{ repo.title }}</h3>
         <!--TODO: Change this -->
