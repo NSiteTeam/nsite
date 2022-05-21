@@ -1,8 +1,8 @@
 <template>
     <div id="repo-chat">
         <div class="conversation">
-            <div class="message" i v-for="message in messages" :key="message.content" align="right">
-                <p class="author">{{ message.author }}</p>
+            <div class="message" i v-for="message in databaseClient.fetchedMessages.value" :key="message.content" align="right">
+                <p class="author">{{ message.author }} </p>
                 <p class="date">{{ formatDate(message.date) }}</p>
                 <p class="content">{{ message.content }}</p>
             </div>
@@ -24,11 +24,12 @@ import CustomDate from '@/utils/classes/CustomDate'
 
 const messages: Ref<Message[]> = ref([])
 const chatContent: Ref<string> = ref("")
-const props = defineProps(['depoId'])
-databaseClient.watchMessages(props.depoId)
+const { depoId } = defineProps(['depoId'])
+databaseClient.clearFiles()
+databaseClient.watchMessages(depoId)
 
-databaseClient.fetchMessages(props.depoId).then((res) => {
-    messages.value = res.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+databaseClient.fetchMessages(depoId).then((res) => {
+    databaseClient.fetchedMessages.value = res.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
 })
 
 function formatDate(ISOdate: string) {
@@ -38,30 +39,24 @@ function formatDate(ISOdate: string) {
 function addMessage(message: string) {
     let uuid = ""
     if (databaseClient.uuid.value == null) {
-        uuid = "anonyme"
+        uuid = "anonymous"
     } else {
         uuid = databaseClient.uuid.value
     }
     // Verifies if the user is well connected
-    // if (databaseClient.uuid.value) {
+    if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
         const test = messages.value
-        messages.value.unshift(new SupabaseMessage(
-            message,
-            uuid,
-            CustomDate.Now().toISOString(),
-            props.depoId
-        ))
         databaseClient.postMessage(
             CustomDate.Now().toISOString(),
             uuid,
             message,
-            props.depoId
+            depoId
         ).catch(error => {
-            console.log(error)
+            console.warn(error)
         })
         // Clears the content of the input
         chatContent.value = ""
     }
-// }
+}
 </script>

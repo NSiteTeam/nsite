@@ -29,6 +29,9 @@ export class SupabaseClient implements DatabaseClient {
     // The value of this ref is the fetched repositories
     repositories: Ref<Repository[]> = ref([])
 
+    // The value of this ref is fetched permissions
+    fetchedMessages: Ref<Message[]> = ref([])
+
     // The value of this ref is the fetched messages
     messages: Ref<Repository[]> = ref([])
 
@@ -357,10 +360,45 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
+    editMessage(messageId: number, newMessage: Message) {
+        // Checks every message to find the good one
+        this.fetchedMessages.value.forEach(message => {
+            if (message.id == messageId) {
+                // Performs the change to the content
+                let index = this.fetchedMessages.value.indexOf(message)
+                this.fetchedMessages.value[index].content = newMessage.content
+            }
+        })
+    }
+
+    deleteMessage(messageId: number) {
+        // Checks every message to find the good one
+        this.fetchedMessages.value.forEach(message => {
+            if (message.id == messageId) {
+                // Performs the deletion
+                let index = this.fetchedMessages.value.indexOf(message)
+                this.fetchedMessages.value.splice(index, index)
+            }
+        })
+    }
+
     watchMessages(depoId: number) {
         supabase.from(`deposits_chat_messages:depoId=eq.${depoId}`)
         .on("*", (payload: any) => {
             console.log(payload)
+        })
+        .on("INSERT", (payload: any) => {
+            this.fetchedMessages.value.unshift(payload.new)
+        })
+        .on("UPDATE", (payload: any) => {
+            this.editMessage(payload.new.id, payload.new)
+        })
+        .on("DELETE", (payload: any) => {
+            this.deleteMessage(payload.old.id)
         }).subscribe()
+    }
+
+    clearMessages() {
+        this.fetchedMessages.value = []   
     }
 }
