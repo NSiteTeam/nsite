@@ -131,6 +131,8 @@ export class SupabaseClient implements DatabaseClient {
         this.email.value = supabase.auth.user()?.email ?? null
         this.uuid.value = supabase.auth.user()?.id ?? null
 
+        this.uuid.value = supabase.auth.user()?.id ?? null
+
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
                 try {
