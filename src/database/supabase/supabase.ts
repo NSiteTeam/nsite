@@ -274,7 +274,6 @@ export class SupabaseClient implements DatabaseClient {
             if (!error && (data != null)) {
                 resolve(
                     new SupabaseUsername(
-                        data['id'],
                         data['username'],
                         data['user'],
                     )

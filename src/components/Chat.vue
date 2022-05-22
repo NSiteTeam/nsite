@@ -4,7 +4,9 @@
             <div class="message" 
             v-for="(message, index) in databaseClient.fetchedMessages.value" 
             :key="index" align="right">
-                <p class="author">{{ message.author ? message.author : "anonyme" }} </p>
+                <p class="author">
+                    {{ uuidToUsername(message.author) }}
+                </p>
                 <p class="date">{{ formatDate(message.date) }}</p>
                 <input class="message-edition-input" v-if="getEditModeByMessageId(message.id)"
                 v-model="message.content" type="text" :key="index">
@@ -33,6 +35,7 @@ import type { Ref } from 'vue'
 import type Message from '@/database/interface/message'
 import { databaseClient } from '@/database/implementation'
 import CustomDate from '@/utils/classes/CustomDate'
+import type { Username } from '@/database/interface/username'
 
 interface EditModeState {
     messageId: number
@@ -50,6 +53,14 @@ databaseClient.fetchMessages(depoId).then((res) => {
     databaseClient.fetchedMessages.value = res.sort((a, b) => 
     Date.parse(b.date) - Date.parse(a.date))
 })
+
+function uuidToUsername(uuid: string): Ref<string> {
+    const username: Ref<string> = ref("anonyme")
+    databaseClient.getUsername(uuid).then(res => {
+        username.value = res.username
+    })
+    return username
+}
 
 function formatDate(ISOdate: string) {
     return CustomDate.ISOStringToCustomDate(ISOdate).beautify()

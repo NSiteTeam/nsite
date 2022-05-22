@@ -33,7 +33,7 @@
     const usernameRef: Ref<Username | null> = ref(null)
 
     if (uuid.value != null) {
-        const usernamesAttribute = databaseClient.getUsername(uuid.value).then((username: Username) => {
+        databaseClient.getUsername(uuid.value).then((username: Username) => {
             usernameRef.value = username
         }).catch(error => {
             throw error
