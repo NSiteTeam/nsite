@@ -3,7 +3,6 @@ import type { News } from './news';
 import type { Permission } from './permissions';
 import type { HistoryPoint } from './history_point';
 import type { Repository } from './repositories';
-import type date from '@/utils/interface/date';
 import type File from './file';
 import type Message from './message';
 
@@ -33,6 +32,7 @@ export interface DatabaseClient {
     watchMessages(depoId: number): void
     deleteMessageInTheCache(messageId: number): void
     deleteMessage(messageId: number): void
+    editMessage(messageId: number, newContent: string): void
     clearMessages(): void
     fetchedMessages: Ref<Message[]>
 

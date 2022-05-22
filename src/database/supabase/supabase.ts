@@ -372,6 +372,28 @@ export class SupabaseClient implements DatabaseClient {
         this.deleteMessageInTheCache(messageId)
     }
 
+    async editMessage(messageId: number, newContent: string): Promise<void> {
+        const { data, error } = await supabase.from('deposits_chat_messages')
+        .update({
+            content: newContent,
+        })
+        .match({
+            id: messageId
+        }).maybeSingle()
+        if (error) {
+            console.warn(error)
+        } else {
+            console.log(`Successfully edited message ${messageId} 
+            from ${newContent} to ${data.content}`)
+        }
+        this.editMessageInTheCache(messageId, new SupabaseMessage(
+            data.content,
+            data.author,
+            data.date,
+            data.id
+        ))
+    }
+
     editMessageInTheCache(messageId: number, newMessage: Message) {
         // Checks every message to find the good one
         this.fetchedMessages.value.forEach(message => {
