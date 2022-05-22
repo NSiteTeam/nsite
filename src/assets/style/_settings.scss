@@ -98,3 +98,13 @@ h2 {
 .bold {
     font-weight: bold;
 }
+
+.fade-enter-from, 
+.fade-leave-to {
+    transition: opacity 0.5s ease-out;
+}
+
+.fade-enter-from, 
+.fade-leave-to {
+  opacity: 0;
+}

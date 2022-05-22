@@ -13,6 +13,10 @@
             <li class="white">Dernière date de connection: <i>{{ date }}</i></li>
             <li class="white">ID : <i>{{ uuid }}</i></li>
         </ul>
+
+        
+        <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
+
     </div>
 </template>
 
@@ -42,12 +46,5 @@
     }).catch(error => {
         throw error
     })
-
-    // var usernames = usernameRef.value
-
-    // for (var username in usernameRef) {
-    //     console.log(username)
-    // }
     
-
 </script>

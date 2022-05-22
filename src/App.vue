@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-ignore Bug de vue
 import Nav from "./components/Nav.vue";
 import Footer from "./components/Footer.vue";
 </script>
@@ -6,7 +7,9 @@ import Footer from "./components/Footer.vue";
 <template>
   <Nav />
   <main>
-    <RouterView />
+    <Suspense>
+        <RouterView />
+    </Suspense>
   </main>
   <div class="wave" :class="this.$route.name == 'home' ? 'display-none' : 'display-block'"></div>
   <Footer />

@@ -1,4 +1,6 @@
-#profile-container {
+#dashboard-container {
+
+
     align-items: center;
     height: max-content;
     width: max-content;
@@ -39,8 +41,18 @@
         @media (max-width: $mobile-width) {
             margin-top: 15px;
         }
+    }
 
-    
+    button {
+        width: 50px;
+        height: 50px;
+        background-color: aqua;
+        border: none;
+        display: flex;
+        p {
+            font-size: 20px;
+            color: rgb(255, 0, 0);
+        }
 
     }
 }

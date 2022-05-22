@@ -15,19 +15,24 @@ const router = createRouter({
       component: () => import("../views/LoginView.vue"),
     },
     {
+      path: "/logout",
+      name: "logout",
+      component: () => import("../views/LogoutView.vue"),
+    },
+    {
       path: "/register",
       name: "register",
       component: () => import("../views/RegisterView.vue"),
     },
     {
-      path: "/browse",
+      path: "/browse/:level?",
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
     },
     {
-      path: "/repository/:id",
+      path: "/repository/:content/:id",
       name: "repository",
-      component: () => import("../views/Repository.vue"),
+      component: () => import("../views/RepositoryView.vue"),
     },
     {
       path: "/admin/users",
@@ -48,6 +53,11 @@ const router = createRouter({
       path: "/profile",
       name: "account",
       component: () => import("../views/ProfileView.vue")
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("../views/admin/Dashboard.vue")
     },
   ],
 });
