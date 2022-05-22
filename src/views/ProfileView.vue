@@ -8,13 +8,12 @@
         </span>
         {{ usernames }}
         <ul class="table-part">
-            <li class="white">Adresse mail: <i>{{ mail }}</i></li>
-            <li class="white">Nom d'utilisateur: <i>{{ MyUsername }}</i></li>
-            <li class="white">Dernière date de connection: <i>{{ date }}</i></li>
-            <li class="white">ID : <i>{{ uuid }}</i></li>
+            <!-- <li class="white">Adresse mail: <i>{{ mail }}</i></li> -->
+            <li class="white">Nom d'utilisateur: <i>{{ usernameRef ? usernameRef.username : "" }}</i></li>
+            <!-- <li class="white">Dernière date de connection: <i>{{ date }}</i></li> -->
+            <li class="white">Uuid : <i>{{ uuid }}</i></li>
         </ul>
 
-        
         <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
 
     </div>
@@ -31,20 +30,14 @@
     // TODO: Display all usernames in the database
     const email = databaseClient.email.value
     const uuid = databaseClient.uuid
-    // const ID = databaseClient.
-    const usernameRef: Ref<Array<Username>> = ref([])
-    const MyUsername: Ref<string> = ref("")
-    
-    const usernamesAttribute = databaseClient.getUsernames().then((usernames: Username[]) => {
-        usernameRef.value = (usernames.filter((supabaseUsername) => {
-            console.log(supabaseUsername.username)
-            if (supabaseUsername.user == databaseClient.uuid.value){
-                MyUsername.value = supabaseUsername.username
-            }
+    const usernameRef: Ref<Username | null> = ref(null)
 
-        }))
-    }).catch(error => {
-        throw error
-    })
+    if (uuid.value != null) {
+        const usernamesAttribute = databaseClient.getUsername(uuid.value).then((username: Username) => {
+            usernameRef.value = username
+        }).catch(error => {
+            throw error
+        })
+    }
     
 </script>

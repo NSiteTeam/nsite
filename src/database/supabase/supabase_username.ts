@@ -4,9 +4,9 @@ import type { User } from "../interface/user"
 export class SupabaseUsername implements Username {
     id: number
     username: string
-    user: User
+    user: string
 
-    constructor(id: number, username: string, user: User) {
+    constructor(id: number, username: string, user: string) {
             this.username = username
             this.user = user
             this.id = id

@@ -12,8 +12,7 @@ export interface DatabaseClient {
     permissions: Ref<Array<Permission>>
     email: Ref<string | null>
     uuid: Ref<string | null>
-    getUsernames(): Promise<any>
-    getUsername(id?: number): Promise<any>
+    getUsername(uuid: string): Promise<any>
 
     signIn(email: string, password: string): any
     login(email: string, password: string): any

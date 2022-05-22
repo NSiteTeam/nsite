@@ -263,26 +263,24 @@ export class SupabaseClient implements DatabaseClient {
         
     }
 
-    async getUsername(id?: number): Promise<any> {
+    async getUsername(uuid: string): Promise<any> {
         // Laurian: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
         // Éric: No, with this we link uuids with usernames, without we cannot display usernames in the chat.
-        const { data, error } = id ? await supabase.from('usernames')
-        .select().eq("id", id).maybeSingle() : 
+        const { data, error } = uuid ? await supabase.from('usernames')
+        .select().eq("user", uuid).maybeSingle() : 
         await supabase.from('usernames').select()
 
         return new Promise((resolve, reject) => {
             if (!error && (data != null)) {
                 resolve(
-                    data.map((username: Username) => {
-                        new SupabaseUsername(
-                            username['id'],
-                            username['username'],
-                            username['user'],
-                        )
-                    })
+                    new SupabaseUsername(
+                        data['id'],
+                        data['username'],
+                        data['user'],
+                    )
                 )
             } else if (error) {
-                reject("Error while fetching data : " + error)
+                reject("Error while fetching data : " + error.message)
             } else if (data == null) {
                 reject("No data fetched")
             }
