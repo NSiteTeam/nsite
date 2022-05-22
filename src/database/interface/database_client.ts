@@ -27,7 +27,7 @@ export interface DatabaseClient {
 
     // Messages
     fetchMessages(repoId: number): Promise<Message[]>
-    postMessage(date: string, author: string, content: string, depoId: number): Promise<Message[]>
+    postMessage(date: string, author: string | null, content: string, depoId: number): Promise<Message[]>
     fetchMessages(repoId: number): Promise<Message[]>
     watchMessages(depoId: number): void
     deleteMessageInTheCache(messageId: number): void

@@ -331,7 +331,7 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async postMessage(date: string, author: string, content: string, depoId: number): Promise<Message[]> {
+    async postMessage(date: string, author: string, content: string | null, depoId: number): Promise<Message[]> {
         const { data, error } = await supabase.from(`deposits_chat_messages`)
         .insert([{
             date: date,

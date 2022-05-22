@@ -4,15 +4,20 @@
             <div class="message" 
             v-for="(message, index) in databaseClient.fetchedMessages.value" 
             :key="index" align="right">
-                <p class="author">{{ message.author }} </p>
+                <p class="author">{{ message.author ? message.author : "anonyme" }} </p>
                 <p class="date">{{ formatDate(message.date) }}</p>
                 <input class="message-edition-input" v-if="getEditModeByMessageId(message.id)"
                 v-model="message.content" type="text" :key="index">
                 <p class="content" v-else>{{ message.content }}</p>
-                <button @click="setEditMode(message.id, !getEditModeByMessageId(message.id), 
-                message.content)" class="message-button">Modifier</button>
-                <button @click="databaseClient.deleteMessage(message.id)"
-                class="message-button">Supprimer</button>
+                <div v-if="message.author == databaseClient.uuid.value || message.author == null" 
+                class="messageButtons">
+                    <button @click="setEditMode(message.id, !getEditModeByMessageId(message.id), 
+                    message.content)" class="message-button">
+                        {{ getEditModeByMessageId(message.id) ? "Valider" : "Modifier" }}
+                    </button>
+                    <button @click="databaseClient.deleteMessage(message.id)"
+                    class="message-button">Supprimer</button>
+                </div>
             </div>
         </div>
         <input id="chatInputBox" type="text" 
@@ -76,6 +81,7 @@ function setEditMode(messageId: number, newEditMode: boolean, newContent: string
         // If editMode goes from true to false, perform changes
         if (editMode && !newEditMode) {
             databaseClient.editMessage(messageId, newContent)
+        // Else if editMode goes from false to true, set the focus 
         }
     }
     // Else simply append it to the array
@@ -85,12 +91,7 @@ function setEditMode(messageId: number, newEditMode: boolean, newContent: string
 }
 
 function addMessage(message: string) {
-    let uuid = ""
-    if (databaseClient.uuid.value == null) {
-        uuid = "anonymous"
-    } else {
-        uuid = databaseClient.uuid.value
-    }
+    const uuid = databaseClient.uuid.value
     // Verifies if the user is well connected
     // if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
