@@ -1,40 +1,11 @@
-<template>
-    <div id="repo-chat">
-        <div class="conversation">
-            <div class="message" 
-            v-for="(message, index) in databaseClient.fetchedMessages.value" 
-            :key="index" align="right">
-                <p class="author">
-                    {{ uuidToUsername(message.author) }}
-                </p>
-                <p class="date">{{ formatDate(message.date) }}</p>
-                <input class="message-edition-input" v-if="getEditModeByMessageId(message.id)"
-                v-model="message.content" type="text" :key="index">
-                <p class="content" v-else>{{ message.content }}</p>
-                <div v-if="message.author == databaseClient.uuid.value || message.author == null" 
-                class="messageButtons">
-                    <button @click="setEditMode(message.id, !getEditModeByMessageId(message.id), 
-                    message.content)" class="message-button">
-                        {{ getEditModeByMessageId(message.id) ? "Valider" : "Modifier" }}
-                    </button>
-                    <button @click="databaseClient.deleteMessage(message.id)"
-                    class="message-button">Supprimer</button>
-                </div>
-            </div>
-        </div>
-        <input id="chatInputBox" type="text" 
-        placeholder="Votre message" 
-        v-model="chatContent" 
-        v-on:keyup.enter="addMessage(chatContent)">
-    </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import type Message from '@/database/interface/message'
 import { databaseClient } from '@/database/implementation'
 import CustomDate from '@/utils/classes/CustomDate'
+// @ts-ignore bug de vue
+import ChatMessage from '@/components/ChatMessage.vue'
 import type { Username } from '@/database/interface/username'
 
 interface EditModeState {
@@ -120,3 +91,35 @@ function addMessage(message: string) {
     }
 // }
 </script>
+
+<template>
+    <div id="repo-chat">
+        <div class="conversation">
+            <div class="message" 
+            v-for="(message, index) in databaseClient.fetchedMessages.value" 
+            :key="index">
+                <ChatMessage :key="index" :message=message />
+                <p class="author">
+                    {{ uuidToUsername(message.author) }}
+                </p>
+                <p class="date">{{ formatDate(message.date) }}</p>
+                <input class="message-edition-input" v-if="getEditModeByMessageId(message.id)"
+                v-model="message.content" type="text" :key="index">
+                <p class="content" v-else>{{ message.content }}</p>
+                <div v-if="message.author == databaseClient.uuid.value || message.author == null" 
+                class="messageButtons">
+                    <button @click="setEditMode(message.id, !getEditModeByMessageId(message.id), 
+                    message.content)" class="message-button">
+                        {{ getEditModeByMessageId(message.id) ? "Valider" : "Modifier" }}
+                    </button>
+                    <button @click="databaseClient.deleteMessage(message.id)"
+                    class="message-button">Supprimer</button>
+                </div>
+            </div>
+        </div>
+        <input id="chatInputBox" type="text" 
+        placeholder="Votre message" 
+        v-model="chatContent" 
+        v-on:keyup.enter="addMessage(chatContent)">
+    </div>
+</template>
