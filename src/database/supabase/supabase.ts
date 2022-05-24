@@ -16,6 +16,9 @@ import type { Username } from '../interface/username'
 import type File from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
+import { SupabaseRole } from '/workspace/nsite/src/database/interface/Role'
+// import { resolve } from 'path'
+// import { rejects } from 'assert'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -301,9 +304,25 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getRole(uuid: string): Promise<any>{
-        // JB: We should finish that asap.
-        // JB: I'll begin. I'm pretty sure that could be usefull.
+        // JB: Trying to create a function to get roles. I hope it'll work.
         const { data, error } = uuid ? await supabase.from('profiles')
+        .select().eq("user", uuid).maybeSingle():
+        await supabase.from('profiles').select()
+
+        return new Promise((resolve, reject) => {
+            if (!error && (data != null)) {
+                resolve(
+                    new SupabaseRole(
+                        data['uuid'],
+                        data['role']
+                    ) 
+                )
+            } else if (error) {
+                reject("Error while fetching data : " + error.message)
+            } else if (data == null) {
+                reject("No data fetched")
+            }
+        })
     } 
 
     async getFile(id: number): Promise<File> {
