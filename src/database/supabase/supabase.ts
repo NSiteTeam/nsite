@@ -305,6 +305,8 @@ export class SupabaseClient implements DatabaseClient {
 
     async getRole(uuid: string): Promise<any>{
         // JB: Trying to create a function to get roles. I hope it'll work.
+        // JB: It actually doesn(t work: no data fetched.
+        // I'll try to fix that.
         const { data, error } = uuid ? await supabase.from('profiles')
         .select().eq("user", uuid).maybeSingle():
         await supabase.from('profiles').select()
