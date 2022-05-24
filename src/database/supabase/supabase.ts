@@ -39,7 +39,7 @@ export class SupabaseClient implements DatabaseClient {
     messages: Ref<Repository[]> = ref([])
 
     // The value of this ref is true if the user is connected to the database
-    isConnected: Ref<boolean> = ref(false)
+    isConnected: Ref<boolean> = ref(true)
 
     //  The email of the connected user or null if the user is not connected
     email: Ref<string | null> = ref(null)

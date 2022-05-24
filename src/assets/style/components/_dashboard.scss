@@ -1,58 +1,52 @@
 #dashboard-container {
-
-
     align-items: center;
     height: max-content;
-    width: max-content;
+    width: 20vw;
+    border-radius: 30px;
+    padding: 3%;
+    color: $cream-white;
+    background-color: $space-cadet-light;
+    display: flex;
+
+    button {
+        border: none;
+        background-color: rgba(0,0,0,0);
+        justify-content: center;
+        margin-left: 0%;
+        width: min-content;
+        height: min-content;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            background-color: $space-cadet;
+            color: aliceblue;
+            font-size: 40px;
+            border-radius: 10px;
+            transition: 1s;
+
+
+            &:hover {
+                transition: 0.05s;
+                @include shadow1();
+            }
+        }
+    }
+    p {
+        margin-left: 10%;
+    }
+}
+
+#dashboard-set {
+    margin-top: 5%;
+    align-items: center;
+    height: max-content;
+    width: 20vw;
     border-radius: 30px;
     padding: 3%;
     color: $cream-white;
     background-color: $space-cadet-light;
 
-    .profile-title {
-        display: flex;
-        align-items: center;
-        font-size: 32px;
-    }
-
-    .material-icons {
-        @include size(64px);
-    }
-
-    .navbar-link {
-        margin-right: 10px;
-        padding: 10px;
-        background-color: $space-cadet;
-        border-radius: 10px;
-        color: $cream-white;
-        height: 20px;
-        display:flex;
-        align-items: center;
-        justify-content: center;
-
-        &:hover {
-            @include shadow1;
-        }
-
-        &:active {
-            @include shadow2;
-        }
-
-        @media (max-width: $mobile-width) {
-            margin-top: 15px;
-        }
-    }
-
-    button {
-        width: 50px;
-        height: 50px;
+    .depo {
         background-color: aqua;
-        border: none;
-        display: flex;
-        p {
-            font-size: 20px;
-            color: rgb(255, 0, 0);
-        }
-
+        margin: 5%;
     }
 }
