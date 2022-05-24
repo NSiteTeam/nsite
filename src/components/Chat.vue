@@ -98,7 +98,7 @@ function addMessage(message: string) {
             <div class="message" 
             v-for="(message, index) in databaseClient.fetchedMessages.value" 
             :key="index">
-                <ChatMessage :key="index" :message=message />
+                <!-- <ChatMessage :key="index" :message=message /> -->
                 <p class="author">
                     {{ uuidToUsername(message.author) }}
                 </p>

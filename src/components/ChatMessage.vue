@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { databaseClient } from "@/database/implementation"
 import CustomDate from "@/utils/classes/CustomDate"
-import { Ref, ref } from "vue";
+import { ref } from "vue";
+import type { Ref } from "vue"
 
 const { message } = defineProps(['message'])
 const editMode: Ref<boolean> = ref(false)
