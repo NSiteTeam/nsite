@@ -15,6 +15,7 @@ export interface DatabaseClient {
     last_date: Ref<string | null>
     first_date: Ref<string | null>
     getUsername(uuid: string): Promise<any>
+    getRole(uuid: string): Promise<any>
 
     signIn(email: string, password: string): any
     login(email: string, password: string): any

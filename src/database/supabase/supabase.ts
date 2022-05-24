@@ -300,6 +300,12 @@ export class SupabaseClient implements DatabaseClient {
         this.files.value = []
     }
 
+    async getRole(uuid: string): Promise<any>{
+        // JB: We should finish that asap.
+        // JB: I'll begin. I'm pretty sure that could be usefull.
+        const { data, error } = uuid ? await supabase.from('profiles')
+    } 
+
     async getFile(id: number): Promise<File> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()

@@ -13,6 +13,7 @@
             <li class="white">Dernière date de connection: <i>{{ LastConnexion }}</i></li>
             <li class="white">Création du compte: <i>{{ CreationDate }}</i></li>
             <li class="white">Uuid : <i>{{ uuid }}</i></li>
+            <li class = "white">Rôle : <i> {{RoleRef}}</i></li>
         </ul>
 
         <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
@@ -25,6 +26,7 @@
     import { ref } from '@vue/reactivity';
     import type { Ref } from 'vue';
     import type { Username } from '@/database/interface/username'
+    import type { Role } from '@/database/interface/Role'
     import type CustomDate from '../utils/classes/CustomDate'
     import { SupabaseUsername } from '@/database/supabase/supabase_username';
 
@@ -34,13 +36,16 @@
     const LastConnexion = databaseClient.last_date.value
     const CreationDate = databaseClient.first_date.value
     const usernameRef: Ref<Username | null> = ref(null)
+    const RoleRef: Ref<Role | null> = ref(null)
 
     if (uuid.value != null) {
         databaseClient.getUsername(uuid.value).then((username: Username) => {
             usernameRef.value = username
+        databaseClient.getR
         }).catch(error => {
             throw error
         })
     }
+
     
 </script>
