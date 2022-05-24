@@ -4,7 +4,6 @@ import { computed, ref } from "vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
-import Card from "../../components/Card.vue"
 
 const data: Ref<Array<Repository>> = ref([])
 
@@ -14,39 +13,28 @@ await databaseClient.getRepos().then(res =>
 
 const output = computed(
     () => {
-        return data.value.filter()
+        const titles = data.value.map(repo => {
+            return repo.title
+        })
+        return titles
     }
 )
-
-// affichage documents
-const addDocuments = ref(false)
-function showToAddDocuments() {
-    if (addDocuments.value == false) {
-        addDocuments.value = true
-    }
-    else {
-        addDocuments.value = false
-    }
-}
 </script>
 
 <template>
-    <div id="dashboard-container" class="shadow2">
-        <button @click="showToAddDocuments()" class="add-documents">
-            <span v-if="addDocuments==false" class="material-symbols-outlined">file_upload</span>
-            <span v-if="addDocuments" class="material-symbols-outlined">arrow_drop_up</span>
-        </button>
-        <p>Ajouter des documents au site</p>
-
-    </div>
-
-    <div v-if="addDocuments" id="dashboard-set" class="shadow2">
-        Choisissez votre dépot :
-
-        <div v-for="(depo, index) in output" :key="index" :exercise="depo" class="depo">
-            {{ depo }}
+    <div id="dashboard-container">
+        <div class="dashboard-item">
+            <div class="action-title">
+                <span class="material-icons white">
+                    file_upload
+                </span>
+                <h3>Ajouter des documents au site :</h3>
+            </div>
+            <h4>Choisissez votre dépot :</h4>
+            <div v-for="(depo, index) in output" :key="index" :exercise="depo" class="depo highlight">
+                {{ depo }}
+            </div>
         </div>
-
     </div>
 
 </template>

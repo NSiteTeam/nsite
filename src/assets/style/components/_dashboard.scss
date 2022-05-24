@@ -1,52 +1,51 @@
 #dashboard-container {
-    align-items: center;
-    height: max-content;
-    width: 20vw;
-    border-radius: 30px;
-    padding: 3%;
-    color: $cream-white;
-    background-color: $space-cadet-light;
     display: flex;
+    flex-wrap: wrap;
 
-    button {
+    .dashboard-item {
+        background-color: $space-cadet-light;
+        color: $cream-white;
+        justify-content: space-around;
+        flex-direction: column;
+        display: flex;
+        width: 20vw;
+        border-radius: 30px;
+        padding: 3%;
+        margin-right: 10px;
+
+        .action-title {
+            display: flex;
+            align-items: center;
+
+            .material-icons {
+                margin-right: 10px;
+                font-size: 40px;
+            }
+        }
+
+        .depo {
+            margin: 5px;
+        }
+
+        h3 {
+            margin-left: 10px;
+        }
+    }
+
+    .highlight {
         border: none;
         background-color: rgba(0,0,0,0);
         justify-content: center;
         margin-left: 0%;
-        width: min-content;
-        height: min-content;
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
-            background-color: $space-cadet;
-            color: aliceblue;
-            font-size: 40px;
-            border-radius: 10px;
-            transition: 1s;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        background-color: $space-cadet;
+        padding: 5px;
+        color: aliceblue;
+        border-radius: 10px;
 
-
-            &:hover {
-                transition: 0.05s;
-                @include shadow1();
-            }
+        &:hover {
+            transition: 0.05s;
+            @include shadow1();
         }
-    }
-    p {
-        margin-left: 10%;
-    }
-}
-
-#dashboard-set {
-    margin-top: 5%;
-    align-items: center;
-    height: max-content;
-    width: 20vw;
-    border-radius: 30px;
-    padding: 3%;
-    color: $cream-white;
-    background-color: $space-cadet-light;
-
-    .depo {
-        background-color: aqua;
-        margin: 5%;
     }
 }

@@ -17,7 +17,7 @@ const files: Ref<File[]> = databaseClient.files
 const repoData: Ref<Repository[]> = databaseClient.repositories
 databaseClient.clearFiles()
 await databaseClient.getRepos(id)
-// console.log(repoData[0])
+console.log("Got data :", repoData.value)
 </script>
 
 <template>
