@@ -5,7 +5,7 @@
     import { ref } from 'vue';
 
     const { fileIds } = defineProps(['fileIds'])
-    console.log(fileIds)
+
     databaseClient.clearFiles()
     fileIds.map((fileID: string | number) => {
         databaseClient.getFile(Number(fileID))
@@ -15,22 +15,24 @@
 
 <template>
     <div id="repo-content">
-        <div class="repo-content-row" v-for="data in files" :key="data.id">
-            <span class="file-title">
-                <span class="material-icons">
-                    {{ data.icon }}
+        <div class="repo-content-row" v-for="file in files" :key="file.id">
+            <a target="_blank" :href="file.file_url">
+                <span class="file-title">
+                    <span class="material-icons">
+                        {{ file.icon }}
+                    </span>
+                    <div class="file-title-name">
+                        {{ file.name }}
+                    </div>
                 </span>
-                <div class="file-title-name">
-                    {{ data.name }}
+                <div class="file-last-commit">
+                    <span class="file-last-commit-author">
+                        {{ file.last_commit_author }}
+                    </span> :
+                    {{ file.last_commit_text }}
                 </div>
-            </span>
-            <div class="file-last-commit">
-                <span class="file-last-commit-author">
-                    {{ data.last_commit_author }}
-                </span> :
-                {{ data.last_commit_text }}
-            </div>
-            <span class="date">{{ CustomDate.ISOStringToCustomDate(data.date).beautify() }}</span>
+                <span class="date">{{ CustomDate.ISOStringToCustomDate(file.date).beautify() }}</span>
+            </a>
         </div>
     </div>
 </template>

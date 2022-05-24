@@ -50,9 +50,6 @@
 
         .repo-content-row {
             padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             cursor: pointer;
 
             &:not(&:last-child) {
@@ -63,6 +60,13 @@
                 &-author {
                     text-decoration: underline;
                 }
+            }
+
+            a {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
             }
 
             .file-title {

@@ -16,9 +16,7 @@ import type { Username } from '../interface/username'
 import type File from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
-import { SupabaseRole } from '/workspace/nsite/src/database/interface/Role'
-// import { resolve } from 'path'
-// import { rejects } from 'assert'
+import { SupabaseRole } from '@/database/interface/Role'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -338,7 +336,8 @@ export class SupabaseClient implements DatabaseClient {
                 data.icon,
                 data.date,
                 data.last_commit_author,
-                data.last_commit_date
+                data.last_commit_date,
+                data.file_url
             ))
         })
     }
