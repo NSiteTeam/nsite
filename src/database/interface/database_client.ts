@@ -12,6 +12,8 @@ export interface DatabaseClient {
     permissions: Ref<Array<Permission>>
     email: Ref<string | null>
     uuid: Ref<string | null>
+    last_date: Ref<string | null>
+    first_date: Ref<string | null>
     getUsername(uuid: string): Promise<any>
 
     signIn(email: string, password: string): any

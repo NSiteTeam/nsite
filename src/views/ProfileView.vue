@@ -8,9 +8,10 @@
         </span>
         {{ usernames }}
         <ul class="table-part">
-            <!-- <li class="white">Adresse mail: <i>{{ mail }}</i></li> -->
+            <li class="white">Adresse mail: <i>{{ email }}</i></li>
             <li class="white">Nom d'utilisateur: <i>{{ usernameRef ? usernameRef.username : "" }}</i></li>
-            <!-- <li class="white">Dernière date de connection: <i>{{ date }}</i></li> -->
+            <li class="white">Dernière date de connection: <i>{{ LastConnexion }}</i></li>
+            <li class="white">Création du compte: <i>{{ CreationDate }}</i></li>
             <li class="white">Uuid : <i>{{ uuid }}</i></li>
         </ul>
 
@@ -30,6 +31,8 @@
     // TODO: Display all usernames in the database
     const email = databaseClient.email.value
     const uuid = databaseClient.uuid
+    const LastConnexion = databaseClient.last_date.value
+    const CreationDate = databaseClient.first_date.value
     const usernameRef: Ref<Username | null> = ref(null)
 
     if (uuid.value != null) {

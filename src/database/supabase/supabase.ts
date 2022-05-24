@@ -44,6 +44,12 @@ export class SupabaseClient implements DatabaseClient {
     // The uuid of the connected user or null if the user is not connected
     uuid: Ref<string | null> = ref(null)
 
+    first_date: Ref<string | null> = ref(null)/// <reference path="" />
+    
+
+    // The last connection date of the connected user or null if the user is not connected
+    last_date: Ref<string | null>  = ref(null)
+
     // All the permissions of the user
     permissions: Ref<Array<Permission>> = ref(Array())
 
@@ -132,6 +138,10 @@ export class SupabaseClient implements DatabaseClient {
         this.uuid.value = supabase.auth.user()?.id ?? null
 
         this.uuid.value = supabase.auth.user()?.id ?? null
+
+        this.last_date.value = supabase.auth.user()?.last_sign_in_at ?? null
+
+        this.first_date.value = supabase.auth.user()?.created_at ?? null
 
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
