@@ -10,7 +10,7 @@ const username: Ref<string> = ref("anonyme")
 
 if (message.author != null) {
     await databaseClient.getUsername(message.author).then(res => {
-        username.value = res
+        username.value = res.username
     })
 } else {
     username.value = "anonyme"

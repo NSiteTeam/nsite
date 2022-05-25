@@ -16,6 +16,7 @@
         .action-title {
             display: flex;
             align-items: center;
+            width: fit-content;
 
             .material-icons {
                 margin-right: 10px;
@@ -30,6 +31,19 @@
         h3 {
             margin-left: 10px;
         }
+    }
+
+    .popup {
+        position: absolute;
+        z-index: 4;
+        transition: 0.1s;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: $space-cadet-light;
+        padding: 50px;
+        border-radius: 50px;
+        @include shadow1;
     }
 
     .highlight {
