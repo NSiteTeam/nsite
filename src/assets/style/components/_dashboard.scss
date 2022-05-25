@@ -1,7 +1,8 @@
 #dashboard-container {
     display: flex;
     flex-wrap: wrap;
-
+    color: $cream-white;
+    
     .dashboard-item {
         background-color: $space-cadet-light;
         color: $cream-white;
@@ -12,6 +13,11 @@
         border-radius: 30px;
         padding: 3%;
         margin-right: 10px;
+
+        &:hover {
+            transition: 0.05s;
+            @include shadow1();
+        }
 
         .action-title {
             display: flex;
@@ -24,10 +30,6 @@
             }
         }
 
-        .depo {
-            margin: 5px;
-        }
-
         h3 {
             margin-left: 10px;
         }
@@ -35,6 +37,8 @@
 
     .popup {
         position: absolute;
+        display: flex;
+        flex-direction: column;
         z-index: 4;
         transition: 0.1s;
         top: 50%;
@@ -44,6 +48,16 @@
         padding: 50px;
         border-radius: 50px;
         @include shadow1;
+
+        .close-container {
+            display: flex;
+            justify-content: flex-end;
+            margin: -25px -25px 0 0;
+
+            .material-icons {
+                cursor: pointer;
+            }
+        }
     }
 
     .highlight {
@@ -54,9 +68,8 @@
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
         background-color: $space-cadet;
         padding: 5px;
-        color: aliceblue;
         border-radius: 10px;
-
+        
         &:hover {
             transition: 0.05s;
             @include shadow1();

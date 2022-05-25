@@ -1,0 +1,14 @@
+.add-depo {
+    display: flex;
+    flex-direction: column;
+
+    .add-depo-input {
+        display: block;
+        padding: 10px;
+        color: $cream-white;
+        border-radius: 10px;
+        margin-top: 10px;
+        border: 1px solid $cream-white;
+        background-color: $space-cadet-light;
+    }
+}
