@@ -3,17 +3,18 @@ import { databaseClient } from "@/database/implementation";
 import { ref } from "vue"
 import type { Ref } from "vue"
 
-const logedOut: Ref<string> = ref("Logging out")
+const loggedOut: Ref<string> = ref("Déconnexion")
 databaseClient.logout().then((message: string) => {
-    logedOut.value = message
+    databaseClient.isConnected.value = false
+    loggedOut.value = message
 }).catch((message: string) => {
-    logedOut.value = message
+    loggedOut.value = message
     console.warn("Error while logging out,", message)
 })
 </script>
 
 <template>
     <div class="disconnected-box">
-        <p>{{ logedOut }}</p>
+        <p>{{ loggedOut }}</p>
     </div>
 </template>

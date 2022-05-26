@@ -80,8 +80,12 @@ export class SupabaseClient implements DatabaseClient {
         })
         // Here the account exists, but the email is not verified yet
         const accountCreated = !error && user != null
+        console.log("Error :", error)
         console.log("Account created:", accountCreated)
-        return accountCreated
+        return {
+            "accountCreated": accountCreated,
+            "error": error,
+        }
     }
 
     /**
@@ -109,10 +113,10 @@ export class SupabaseClient implements DatabaseClient {
      * @param password The password of the user
      * @returns If the login was successful or not
      */
-    async login(email: string, password: string): Promise<boolean> {
+    async login(email: string, password: string): Promise<any> {
         console.log("Try to login with email: ", email)
 
-        await supabase.auth.signIn({
+        const { error } = await supabase.auth.signIn({
             email: email,
             password: password
         })
@@ -121,7 +125,10 @@ export class SupabaseClient implements DatabaseClient {
 
         console.log("Connection status:", this.isConnected.value)
 
-        return this.isConnected.value
+        return {
+            "connectionStatus": this.isConnected.value,
+            "error": error,
+        }
     }
 
     /**
@@ -136,8 +143,6 @@ export class SupabaseClient implements DatabaseClient {
         this.isConnected.value = supabase.auth.session() != null
 
         this.email.value = supabase.auth.user()?.email ?? null
-        this.uuid.value = supabase.auth.user()?.id ?? null
-
         this.uuid.value = supabase.auth.user()?.id ?? null
 
         this.last_date.value = supabase.auth.user()?.last_sign_in_at ?? null
@@ -169,7 +174,6 @@ export class SupabaseClient implements DatabaseClient {
 
     /**
      * Add more new to the fetchedNews property
-     *
      * @param quantity the quantity of new to fetch
      */
     async fetchNews(quantity: number): Promise<void> {
@@ -303,7 +307,7 @@ export class SupabaseClient implements DatabaseClient {
 
     async getRole(uuid: string): Promise<any>{
         // JB: Trying to create a function to get roles. I hope it'll work.
-        // JB: It actually doesn(t work: no data fetched.
+        // JB: It actually doesn't work: no data fetched.
         // I'll try to fix that.
         const { data, error } = uuid ? await supabase.from('profiles')
         .select().eq("user", uuid).maybeSingle():

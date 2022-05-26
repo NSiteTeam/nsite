@@ -22,6 +22,19 @@
     background-color: $color;
 }
 
-@mixin size($size: 64px){
+@mixin size($size: 64px) {
     font-size: $size;
+}
+
+@mixin message($color) {
+    position: absolute;
+    z-index: 10000;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    background: $color;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
 }

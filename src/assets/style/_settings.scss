@@ -19,7 +19,6 @@ $little-screen-width: 1250px;
     src: url("/../src/assets/Open_Sans/static/OpenSans/OpenSans-Regular.ttf");
 }
 
-
 body {
     margin: 0;
     color: $cream-white;
@@ -44,6 +43,18 @@ main {
 
 h2 {
     color: $cream-white;
+}
+
+.error {
+    @include message(hsla(0, 100%, 55%, 0.5));
+}
+
+.indication {
+    @include message(hsla(198, 100%, 55%, 0.5));
+}
+
+.good {
+    @include message(hsla(106, 100%, 55%, 0.5));
 }
 
 .wave2 {

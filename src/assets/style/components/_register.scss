@@ -25,6 +25,10 @@
         &::placeholder {
             color: $cream-white;
         }
+
+        &[type="submit"]:hover {
+            @include shadow1()
+        }
     }
 
     input:not([type="submit"]) {

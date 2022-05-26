@@ -1,6 +1,15 @@
 <template>
     <div class="login-container">
-        <form id="register" @submit.prevent="handleLogin">
+        <form id="register" @submit.prevent="handleRegister">
+            <div class="good" v-if="!loading && success && !failure">
+                Vérifiez votre adresse email pour vous connecter
+            </div>
+            <div v-else-if="!loading && failure && !success" class="error">
+                {{ failure.message }}
+            </div>
+            <div class="indication" v-else-if="loading">
+                Tentative de connection ...
+            </div>
             <h2>S'inscrire</h2>
             <input
                 type="email"
@@ -28,11 +37,20 @@
     const email = ref("")
     const password = ref("")
     const loading = ref(false)
+    const failure = ref(false)
+    const success = ref(false)
 
-    async function handleLogin() {
+    const errorMessages = {
+        "Request Failed": `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
+        "Password should be at least 6 characters": `Le mot de passe doit contenir au moins 6 caractères`
+    }
+
+    async function handleRegister() {
         loading.value = true
-        const result = await databaseClient.signIn(email.value, password.value)
+        const { error, accountCreated } = await databaseClient.signIn(email.value, password.value)
         loading.value = false
+        failure.value = error
+        success.value = accountCreated
 
         // TODO: Ask to the user to verify his email
     }
