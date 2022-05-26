@@ -22,6 +22,7 @@ export interface DatabaseClient {
     logout(): any
 
     // Repositories
+    postDeposit(title: string, level: string, description: string) : Promise<void>
     getRepos(id?: number): Promise<Repository[]>
     getFile(id: number): Promise<File>
     clearFiles(): void
@@ -30,7 +31,7 @@ export interface DatabaseClient {
 
     // Messages
     fetchMessages(repoId: number): Promise<Message[]>
-    postMessage(date: string, author: string | null, content: string, depoId: number): Promise<Message[]>
+    postMessage(author: string | null, content: string, depoId: number): Promise<Message[]>
     fetchMessages(repoId: number): Promise<Message[]>
     watchMessages(depoId: number): void
     deleteMessageInTheCache(messageId: number): void

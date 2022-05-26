@@ -32,7 +32,6 @@ function addMessage(message: string) {
         // Pushes message to the window, but not the database
         const test = messages.value
         databaseClient.postMessage(
-            CustomDate.Now().toISOString(),
             uuid,
             message,
             depoId

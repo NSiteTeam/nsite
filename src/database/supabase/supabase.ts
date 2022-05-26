@@ -365,10 +365,9 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async postMessage(date: string, author: string, content: string | null, depoId: number): Promise<Message[]> {
+    async postMessage(author: string, content: string | null, depoId: number): Promise<Message[]> {
         const { data, error } = await supabase.from(`deposits_chat_messages`)
         .insert([{
-            date: date,
             author: author,
             content: content,
             depoId: Math.floor(depoId)
@@ -468,5 +467,17 @@ export class SupabaseClient implements DatabaseClient {
 
     clearMessages() {
         this.fetchedMessages.value = []   
+    }
+
+    async postDeposit(title: string, level: string, description: string) : Promise<void> {
+        const insertedData = {
+            "title": title,
+            "level": level,
+            "description": description,
+        }
+        const { data, error } = await supabase.from('deposits').insert([insertedData])
+
+        if (error) throw error.message
+        console.log(`Added one deposit to the database : ${insertedData}`)
     }
 }

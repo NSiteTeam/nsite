@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue";
 import { ref } from "vue";
 
@@ -16,8 +17,12 @@ const title: Ref<string> = ref("")
 const level: Ref<string> = ref("")
 const description: Ref<string> = ref("")
 
-function reversed(intitialArray: Array<any>) {
-    return intitialArray.reverse()
+function handleSubmit() {
+    databaseClient.postDeposit(
+        title.value,
+        level.value, 
+        description.value
+    )
 }
 </script>
 
@@ -29,12 +34,14 @@ function reversed(intitialArray: Array<any>) {
         <label for="level"><h3>Niveau</h3></label>
         <select v-model="level">
             <option selected value="" disabled>-- Sélectionnez un niveau --</option>
-            <option :value="index" v-for="(level, index) in levels" :key="level" class="add-depo-input" id="level" placeholder="Niveau">
+            <option :value="index" v-for="(level, index) in levels" :key="level" 
+            class="add-depo-input" id="level" placeholder="Niveau">
                 {{ level }}
             </option>
         </select>
         <label for="description"><h3>Description</h3></label>
-        <textarea style="height: 100px;" class="add-depo-input" id="description" placeholder="Description" v-model="description" />
-        <div class="submit">Créer le dépôt</div>
+        <textarea style="height: 100px;" class="add-depo-input" 
+        id="description" placeholder="Description" v-model="description" />
+        <div class="submit" @click="handleSubmit()">Créer le dépôt</div>
     </div>
 </template>
