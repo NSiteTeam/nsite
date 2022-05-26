@@ -2,13 +2,6 @@
 // The stylesheet rules the timeline styles
 // ###########################################################################
 
-.img {
-    // JB c'est pas du tout responsive, démerde-toi pour que ça le soit
-    border-radius: 15%;
-    margin-left: 1000px;
-    margin-top: 73px;
-}
-
 .container {
     height: 100vh;
 
@@ -81,7 +74,7 @@
         span {
             position: absolute;
             font-size: 10px;
-            left: -50px;
+            left: -70px;
             font-weight: bold;
             margin-right: 10px;
 

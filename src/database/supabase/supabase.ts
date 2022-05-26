@@ -262,7 +262,6 @@ export class SupabaseClient implements DatabaseClient {
                         repositories['level'],
                         repositories['publication_date'],
                         repositories['description'],
-                        repositories['image'],
                         repositories['content'],
                     )
                 }))

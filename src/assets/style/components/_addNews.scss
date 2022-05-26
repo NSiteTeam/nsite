@@ -1,0 +1,17 @@
+.add-news {
+    display: flex;
+    flex-direction: column;
+
+    textarea {
+        height: 100px;
+    }
+
+    textarea, input {
+        display: block;
+        padding: 15px;
+        border-radius: 15px;
+        color: $cream-white;
+        background-color: $space-cadet;
+        border: 1px solid $cream-white;
+    }
+}

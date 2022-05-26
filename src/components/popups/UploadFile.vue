@@ -29,14 +29,16 @@ const output = computed(
 <template>
     <div class="file-upload">
         <h3>Choisissez votre dépot pour y téléverser du contenu</h3>
-        <select v-model="selected">
-            <option disabled value="" class="highlight white">
-                -- Sélectionnez un dépot --
-            </option>
-            <option :value="depo" class="highlight white" v-for="(depo, index) in output" :key="index">
-                {{ depo }}
-            </option>
-        </select>
+        <div class="custom-select">
+            <select v-model="selected">
+                <option disabled value="" class="highlight white">
+                    -- Sélectionnez un dépot --
+                </option>
+                <option :value="depo" class="highlight white" v-for="(depo, index) in output" :key="index">
+                    {{ depo }}
+                </option>
+            </select>
+        </div>
         <div class="chose-file" v-if="selected">
             <h3>Choisissez votre fichier</h3>
             <input type="file" class="highlight">

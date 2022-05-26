@@ -4,6 +4,5 @@ export interface Repository {
     level: number
     publication_date: string
     description: string
-    image: string
     content: Array<number | string>
 }

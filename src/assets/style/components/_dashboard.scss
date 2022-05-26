@@ -10,9 +10,11 @@
         flex-direction: column;
         display: flex;
         width: 20vw;
+        min-width: 180px;
         border-radius: 30px;
         padding: 3%;
         margin-right: 10px;
+        margin-top: 10px;
 
         &:hover {
             transition: 0.05s;

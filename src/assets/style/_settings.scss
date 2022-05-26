@@ -124,3 +124,14 @@ h2 {
 .overflow-hidden {
     overflow: hidden;
 }
+
+.submit {
+    padding: 10px;
+    cursor: pointer;
+    color: $cream-white;
+    font-weight: bold;
+    margin: 10px 0 0 75px;
+    border-radius: 10px;
+    border: 1px solid $cream-white;
+    background-color: $space-cadet;
+}
