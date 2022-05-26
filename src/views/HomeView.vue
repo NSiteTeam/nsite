@@ -41,7 +41,7 @@
     import type { News } from "@/database/interface/news"
     import type { Ref } from "vue"
 
-    const NUMBER_OF_FETCHED_NEWS = 10
+    const NUMBER_OF_FETCHED_NEWS = 20
 
     const news: Ref<Array<News>> = databaseClient.fetchedNews
     databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)

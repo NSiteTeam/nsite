@@ -5,9 +5,9 @@ export class SupabaseNews implements News {
     title: string
     subtitle: string
     date: string
-    concerned: Array<Level>
+    concerned: Array<Level> | null
 
-    constructor(title: string, subtitle: string, date: string, concerned: Array<Level>) {
+    constructor(title: string, subtitle: string, date: string, concerned: Array<Level> | null) {
         this.title = title
         this.subtitle = subtitle
         this.date = date

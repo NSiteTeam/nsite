@@ -4,5 +4,5 @@ export interface News {
     title: string
     subtitle: string
     date: string
-    concerned: Array<Level>
+    concerned: Array<Level> | null
 }

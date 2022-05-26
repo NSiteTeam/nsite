@@ -186,7 +186,8 @@ export class SupabaseClient implements DatabaseClient {
                             news['title'],
                             news['subtitle'],
                             news['date'],
-                            news['concerned'].map((level: number) => Object.values(Level)[level])
+                            news['concerned'] ?
+                            news['concerned'].map((level: number) => Object.values(Level)[level]) : null
                         ))
                     })
                 } catch (error) {
