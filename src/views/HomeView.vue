@@ -15,7 +15,7 @@
           <h1>Actualités</h1>
           <div class="liste-actualites">
             <ul>
-              <li v-for="(news, index) in news" :key="index">
+              <li v-for="(news, index) in sortedNews" :key="index">
                 <div class="news-item">
                   <p>{{ news.title }} <i>{{ formatDate(news.date) }}</i></p>
                   <p>{{ news.subtitle }}</p>
@@ -36,17 +36,30 @@
 </template>
 
 <script setup lang="ts">
-    import { timestampToFrenchDate } from "../utils/date"
-    import { databaseClient } from "@/database/implementation"
-    import type { News } from "@/database/interface/news"
-    import type { Ref } from "vue"
+import { timestampToFrenchDate } from "../utils/date"
+import { databaseClient } from "@/database/implementation"
+import type { News } from "@/database/interface/news"
+import { computed } from "vue"
+import type { Ref } from "vue"
+import CustomDate from "@/utils/classes/CustomDate"
 
-    const NUMBER_OF_FETCHED_NEWS = 20
+const NUMBER_OF_FETCHED_NEWS = 20
 
-    const news: Ref<Array<News>> = databaseClient.fetchedNews
-    databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
+const news: Ref<Array<News>> = databaseClient.fetchedNews
+databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 
-    function formatDate(date: string): string {
-        return timestampToFrenchDate(date)
-    }
+const sortedNews = computed(
+  () => {
+    return news.value.sort((a: News, b: News) => {
+      return CustomDate.subDates(
+        CustomDate.ISOStringToCustomDate(a.date),
+        CustomDate.ISOStringToCustomDate(b.date),
+      )
+    })
+  }
+)
+
+function formatDate(date: string): string {
+    return timestampToFrenchDate(date)
+}
 </script>

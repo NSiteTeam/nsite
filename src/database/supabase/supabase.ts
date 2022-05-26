@@ -479,7 +479,10 @@ export class SupabaseClient implements DatabaseClient {
         const { data, error } = await supabase.from('deposits').insert([insertedData])
 
         if (error) throw error.message
-        console.log(`Added one deposit to the database : ${insertedData.title}`)
+        else {
+            console.log(`Added one deposit to the database : ${insertedData.title}`)
+            return new Promise((resolve, reject) => resolve())
+        }
     }
 
     async postHistotyPoint(title: string, content: string, date: string) : Promise<void> {

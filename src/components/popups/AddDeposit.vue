@@ -15,6 +15,7 @@ const levels = [
 
 const title: Ref<string> = ref("")
 const level: Ref<string> = ref("")
+const submitted: Ref<boolean> = ref(false)
 const description: Ref<string> = ref("")
 
 function handleSubmit() {
@@ -22,12 +23,17 @@ function handleSubmit() {
         title.value,
         level.value, 
         description.value
-    )
+    ).then(_ => {
+        submitted.value = true
+    })
 }
 </script>
 
 <template>
-    <div class="add-depo">
+    <div class="submitted" v-if="submitted">
+        Votre dépôt à bien été créé
+    </div>
+    <div class="add-depo" v-else>
         <h3>Ajouter un dépôt de cours</h3>
         <label for="title"><h3>Titre</h3></label>
         <input class="add-depo-input" id="title" placeholder="Titre" v-model="title" />
