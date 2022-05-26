@@ -44,8 +44,10 @@ export interface DatabaseClient {
     fetchedNews: Ref<Array<News>>
     maxNewsReached: Ref<boolean>
     fetchNews(quantity: number): Promise<void>
+    postNews(title: string, content: string) : Promise<void>
 
     // TIMELINE
+    postHistotyPoint(title: string, content: string, date: string) : Promise<void>
     getHistoryPoints(): Promise<Array<HistoryPoint>>
     fetchedHistory: Array<HistoryPoint>
 }

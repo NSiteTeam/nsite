@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import { ref } from "vue"
 
 const title: Ref<string> = ref("")
 const content: Ref<string> = ref("")
+
+function handleSubmit() {
+    databaseClient.postNews(title.value, content.value)
+}
 </script>
 
 <template>
@@ -18,6 +23,6 @@ const content: Ref<string> = ref("")
         </label>
         <textarea v-model="content" id="content" type="text" placeholder="Contenu">
         </textarea>
-        <button class="submit">Envoyer</button>
+        <button class="submit" @click="handleSubmit()">Envoyer</button>
     </div>
 </template>

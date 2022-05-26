@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import { ref } from "vue"
 
 const title: Ref<string> = ref("")
 const content: Ref<string> = ref("")
 const date: Ref<string> = ref("")
+
+function handleSubmit() {
+    databaseClient.postHistotyPoint(title.value, content.value, date.value)
+}
 </script>
 
 <template>
@@ -23,6 +28,6 @@ const date: Ref<string> = ref("")
             <h3>Date</h3>
         </label>
         <input v-model="date" id="date" type="text" placeholder="Date">
-        <button class="submit">Envoyer</button>
+        <button class="submit" @click="handleSubmit()">Envoyer</button>
     </div>
 </template>

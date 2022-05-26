@@ -466,7 +466,7 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     clearMessages() {
-        this.fetchedMessages.value = []   
+        this.fetchedMessages.value = []  
     }
 
     async postDeposit(title: string, level: string, description: string) : Promise<void> {
@@ -478,6 +478,29 @@ export class SupabaseClient implements DatabaseClient {
         const { data, error } = await supabase.from('deposits').insert([insertedData])
 
         if (error) throw error.message
-        console.log(`Added one deposit to the database : ${insertedData}`)
+        console.log(`Added one deposit to the database : ${insertedData.title}`)
+    }
+
+    async postHistotyPoint(title: string, content: string, date: string) : Promise<void> {
+        const insertedData = {
+            "title": title,
+            "content": content,
+            "date": date,
+        }
+        const { data, error } = await supabase.from('history_points').insert([insertedData])
+
+        if (error) throw error.message
+        console.log(`Added one history point : ${insertedData.title}`)
+    }
+
+    async postNews(title: string, content: string) : Promise<void> {
+        const insertedData = {
+            "title": title,
+            "subtitle": content,
+        }
+        const { data, error } = await supabase.from('news').insert([insertedData])
+
+        if (error) throw error.message
+        console.log(`Added one news to the database : ${insertedData.title}`)
     }
 }
