@@ -512,8 +512,15 @@ export class SupabaseClient implements DatabaseClient {
         console.log(`Added one news to the database : ${insertedData.title}`)
     }
 
+    /* What it does : 
+        1: uploads the file to a storage bucket
+        2: registers the file object in the dB
+        3: selects the already present files in the depo
+        4: updates the content in the depo */
     async uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string> {
+        // Removes the diacritics from the file name
         const author = this.uuid.value ? await this.getUsername( this.uuid.value) : "anonyme"
+        // Uploads data to the storage bucket
         const escapedFile = new File([file], file.name
             .normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {type: file.type});
         console.log(escapedFile.name)
@@ -524,6 +531,7 @@ export class SupabaseClient implements DatabaseClient {
             }
         )
         if (data != null) {
+            // Registers the file in the database
             const url = encodeURI(`https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/${data.Key}`)
             const res = await supabase.from("repository_file").insert([{
                 file_url: url,
@@ -535,6 +543,7 @@ export class SupabaseClient implements DatabaseClient {
             res.data ? console.log(res.data) : null
 
             if (res.data && !res.error) {
+                // Gets the files that are already in the depo
                 const responseForTheSelect = await supabase.from("deposits")
                 // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
                 .select().eq("title", deposit).maybeSingle()
@@ -542,15 +551,16 @@ export class SupabaseClient implements DatabaseClient {
                 // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
                 res.data ? console.log(responseForTheSelect.data) : null
 
+                // Adds the file to the depo
                 const responseForTheUpdate = await supabase.from("deposits")
-                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                // @ts-ignore res.data is any so he is not happy
                 .update([{ "content": responseForTheSelect.data.content.concat(res.data[0].id) }]).match({ "title": deposit })
                 res.error ? console.warn(responseForTheUpdate.error) : null
-                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                // @ts-ignore res.data is any so he is not happy
                 res.data ? console.log(responseForTheUpdate.data) : null
             }
         }
-
+        // OMG that was a long jouney to upload a file 😅
         return new Promise((resolve, reject) => {
             if (error) {
                 reject(error)
