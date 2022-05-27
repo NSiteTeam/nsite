@@ -11,4 +11,15 @@
         flex-direction: column;
         justify-content: center;
     }
+
+    input {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        color: $cream-white;
+        border-radius: 10px;
+        margin-top: 10px;
+        border: 1px solid $cream-white;
+        background-color: $space-cadet;
+    }
 }

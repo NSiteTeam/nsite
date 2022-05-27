@@ -13,7 +13,7 @@ import type { Repository } from '../interface/repositories'
 import type date from '@/utils/interface/date'
 import SupabaseFile from '../supabase/supabase_file'
 import type { Username } from '../interface/username'
-import type File from './../interface/file'
+import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
 import { SupabaseRole } from '@/database/interface/Role'
@@ -25,7 +25,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export class SupabaseClient implements DatabaseClient {
     // The value of this ref is the fetched files
-    files: Ref<File[]> = ref([])
+    files: Ref<CustomFile[]> = ref([])
 
     // The value of this ref is the fetched repositories
     repositories: Ref<Repository[]> = ref([])
@@ -329,7 +329,7 @@ export class SupabaseClient implements DatabaseClient {
         })
     } 
 
-    async getFile(id: number): Promise<File> {
+    async getFile(id: number): Promise<CustomFile> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()
         this.files.value.push(data)
@@ -501,7 +501,7 @@ export class SupabaseClient implements DatabaseClient {
         console.log(`Added one history point : ${insertedData.title}`)
     }
 
-    async postNews(title: string, content: string) : Promise<void> {
+    async postNews(title: string, content: string): Promise<void> {
         const insertedData = {
             "title": title,
             "subtitle": content,
@@ -510,5 +510,53 @@ export class SupabaseClient implements DatabaseClient {
 
         if (error) throw error.message
         console.log(`Added one news to the database : ${insertedData.title}`)
+    }
+
+    async uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string> {
+        const author = this.uuid.value ? await this.getUsername( this.uuid.value) : "anonyme"
+        const escapedFile = new File([file], file.name
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {type: file.type});
+        console.log(escapedFile.name)
+        const { data, error } = await supabase.storage.from('depositsfiles').upload(
+            escapedFile.name, escapedFile, {
+                cacheControl: '3600',
+                upsert: false
+            }
+        )
+        if (data != null) {
+            const url = encodeURI(`https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/${data.Key}`)
+            const res = await supabase.from("repository_file").insert([{
+                file_url: url,
+                last_commit_text: message,
+                last_commit_author: author,
+                name: file.name
+            }])
+            res.error ? console.warn(res.error.message) : null
+            res.data ? console.log(res.data) : null
+
+            if (res.data && !res.error) {
+                const responseForTheSelect = await supabase.from("deposits")
+                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                .select().eq("title", deposit).maybeSingle()
+                res.error ? console.warn(responseForTheSelect.error) : null
+                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                res.data ? console.log(responseForTheSelect.data) : null
+
+                const responseForTheUpdate = await supabase.from("deposits")
+                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                .update([{ "content": responseForTheSelect.data.content.concat(res.data[0].id) }]).match({ "title": deposit })
+                res.error ? console.warn(responseForTheUpdate.error) : null
+                // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
+                res.data ? console.log(responseForTheUpdate.data) : null
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            if (error) {
+                reject(error)
+            } else {
+                resolve("Le fichier a bien été téléversé")
+            }
+        })
     }
 }

@@ -7,8 +7,8 @@ const loggedOut: Ref<string> = ref("Déconnexion")
 databaseClient.logout().then((message: string) => {
     databaseClient.isConnected.value = false
     loggedOut.value = message
-}).catch((message: string) => {
-    loggedOut.value = message
+}).catch((message: any) => {
+    loggedOut.value = message.message
     console.warn("Error while logging out,", message)
 })
 </script>

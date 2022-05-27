@@ -3,7 +3,7 @@ import type { News } from './news';
 import type { Permission } from './permissions';
 import type { HistoryPoint } from './history_point';
 import type { Repository } from './repositories';
-import type File from './file';
+import type CustomFile from './file';
 import type Message from './message';
 
 export interface DatabaseClient {
@@ -24,10 +24,11 @@ export interface DatabaseClient {
     // Repositories
     postDeposit(title: string, level: string, description: string) : Promise<void>
     getRepos(id?: number): Promise<Repository[]>
-    getFile(id: number): Promise<File>
+    getFile(id: number): Promise<CustomFile>
     clearFiles(): void
     repositories: Ref<Repository[]>
-    files: Ref<File[]>
+    files: Ref<CustomFile[]>
+    uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
 
     // Messages
     fetchMessages(repoId: number): Promise<Message[]>

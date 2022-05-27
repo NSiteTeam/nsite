@@ -1,4 +1,4 @@
-export default interface File {
+export default interface CustomFile {
     id: number
     name: string
     icon: string

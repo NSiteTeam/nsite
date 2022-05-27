@@ -4,7 +4,7 @@ import { databaseClient } from "@/database/implementation"
 import { useRoute } from "vue-router"
 import { ref, computed, onMounted } from 'vue'
 import type { Ref } from "vue"
-import type File from "@/database/interface/file";
+import type CustomFile from "@/database/interface/file";
 import SupabaseMessage from "@/database/supabase/supabase_message";
 import CustomDate from '@/utils/classes/CustomDate'
 // @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
@@ -13,7 +13,7 @@ import Chat from "../components/Chat.vue";
 import Files from '../components/Files.vue';
 
 const id = Number(useRoute().params.id[0])
-const files: Ref<File[]> = databaseClient.files
+const files: Ref<CustomFile[]> = databaseClient.files
 const repoData: Ref<Repository[]> = databaseClient.repositories
 databaseClient.clearFiles()
 await databaseClient.getRepos(id)

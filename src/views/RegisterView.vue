@@ -42,7 +42,8 @@
 
     const errorMessages = {
         "Request Failed": `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-        "Password should be at least 6 characters": `Le mot de passe doit contenir au moins 6 caractères`
+        "Password should be at least 6 characters": `Le mot de passe doit contenir au moins 6 caractères`,
+        "User already registered": "L'utilisateur a déjà été inscrit"
     }
 
     async function handleRegister() {

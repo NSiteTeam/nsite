@@ -1,6 +1,6 @@
-import type File from "../interface/file"
+import type CustomFile from "../interface/file"
 
-export default class SupabaseFile implements File {
+export default class SupabaseFile implements CustomFile {
     id: number
     name: string
     icon: string

@@ -7,8 +7,11 @@ import { ref } from "vue"
 
 const data: Ref<Repository[]> = ref([])
 const fileName: Ref<string> = ref("")
-const selected: Ref<string> = ref("")
-const submitted: Ref<boolean> = ref(false)
+const selectedDepo: Ref<string> = ref("")
+const fileInput: Ref<HTMLElement | null> = ref(null)
+const message: Ref<string> = ref("")
+const submitted: Ref<boolean | string> = ref(false)
+const error: Ref<boolean | string> = ref(false)
 databaseClient.getRepos().then(res => {
     data.value = res
 })
@@ -17,8 +20,25 @@ function handleFileSelection(event: any) {
     fileName.value = event.data
 }
 
-function handleSubmit() {
-    submitted.value = true
+async function handleSubmit() {
+    console.log(fileInput.value)
+    if (fileInput.value) {
+        // @ts-ignore Vue considère qu'un élément HTML n'a pas l'attribut files alors que si
+        console.log(fileInput.value.files[0])
+        await databaseClient.uploadFileToDeposit(
+            // @ts-ignore Vue considère qu'un élément HTML n'a pas l'attribut files alors que si
+            fileInput.value.files[0], selectedDepo.value, message.value
+        )
+        .then(message => {
+            submitted.value = message
+        }).catch(message => {
+            console.warn(message)
+            error.value = message
+        })
+    } else {
+        error.value = "Pas de fichier selectionné :("
+        submitted.value = false
+    }
 }
 
 const output = computed(
@@ -33,13 +53,16 @@ const output = computed(
 
 <template>
     <div class="file-upload">
-        <div class="submitted" v-if="submitted">
-            Votre fichier a bien été envoyé
+        <div class="good" v-if="submitted">
+            {{ submitted }}
         </div>
-        <div v-else>
+        <div class="error" v-else-if="error">
+            {{ error }}
+        </div>
+        <div>
             <h3>Choisissez votre dépot pour y téléverser du contenu</h3>
             <div class="custom-select">
-                <select v-model="selected">
+                <select v-model="selectedDepo">
                     <option disabled value="" class="highlight white">
                         -- Sélectionnez un dépot --
                     </option>
@@ -48,9 +71,10 @@ const output = computed(
                     </option>
                 </select>
             </div>
-            <div class="chose-file" v-if="selected">
+            <div class="chose-file" v-if="selectedDepo">
                 <h3>Choisissez votre fichier</h3>
-                <input type="file" class="highlight">
+                <input type="file" class="highlight" ref="fileInput">
+                <input type="text" placeholder="Ajoutez un message pour décrire votre fichier" v-model="message" />
                 <button class="submit" @click="handleSubmit()">Envoyer</button>
             </div>
         </div>
