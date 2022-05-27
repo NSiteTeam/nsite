@@ -301,10 +301,6 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    clearFiles() {
-        this.files.value = []
-    }
-
     async getRole(uuid: string): Promise<any>{
         // JB: Trying to create a function to get roles. I hope it'll work.
         // JB: It actually doesn't work: no data fetched.
@@ -340,7 +336,7 @@ export class SupabaseClient implements DatabaseClient {
                 data.icon,
                 data.date,
                 data.last_commit_author,
-                data.last_commit_date,
+                data.last_commit_text,
                 data.file_url
             ))
         })

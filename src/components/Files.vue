@@ -1,16 +1,18 @@
 <script setup lang="ts">
     import { databaseClient } from '@/database/implementation';
+    import type CustomFile from '@/database/interface/file';
     import CustomDate from '@/utils/classes/CustomDate';
     import type { Ref } from 'vue';
     import { ref } from 'vue';
 
     const { fileIds } = defineProps(['fileIds'])
-
-    databaseClient.clearFiles()
+    const files: Ref<CustomFile[]> = ref([])
+    
+    console.log(fileIds)
     fileIds.map((fileID: string | number) => {
-        databaseClient.getFile(Number(fileID))
+        console.log(Number(fileID))
+        databaseClient.getFile(Number(fileID)).then(res => files.value.push(res))
     })
-    const files = databaseClient.files.value
 </script>
 
 <template>

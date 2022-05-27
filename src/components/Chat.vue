@@ -17,7 +17,6 @@ const messages: Ref<Message[]> = ref([])
 const chatContent: Ref<string> = ref("")
 const editMode: Ref<EditModeState[]> = ref([])
 const { depoId } = defineProps(['depoId'])
-databaseClient.clearFiles()
 databaseClient.watchMessages(depoId)
 
 databaseClient.fetchMessages(depoId).then((res) => {

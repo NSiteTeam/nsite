@@ -25,7 +25,6 @@ export interface DatabaseClient {
     postDeposit(title: string, level: string, description: string) : Promise<void>
     getRepos(id?: number): Promise<Repository[]>
     getFile(id: number): Promise<CustomFile>
-    clearFiles(): void
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
     uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
