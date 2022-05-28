@@ -30,10 +30,10 @@ function handleSubmit() {
 </script>
 
 <template>
-    <div class="submitted" v-if="submitted">
+    <div class="good" v-if="submitted">
         Votre dépôt à bien été créé
     </div>
-    <div class="add-depo" v-else>
+    <div class="add-depo">
         <h3>Ajouter un dépôt de cours</h3>
         <label for="title"><h3>Titre</h3></label>
         <input class="add-depo-input" id="title" placeholder="Titre" v-model="title" />

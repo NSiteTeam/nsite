@@ -336,7 +336,7 @@ export class SupabaseClient implements DatabaseClient {
                 data.icon,
                 data.date,
                 data.last_commit_author,
-                data.last_commit_text,
+                data.last_commit_author,
                 data.file_url
             ))
         })
@@ -532,7 +532,7 @@ export class SupabaseClient implements DatabaseClient {
             const res = await supabase.from("repository_file").insert([{
                 file_url: url,
                 last_commit_text: message,
-                last_commit_author: author,
+                last_commit_author: author.username,
                 name: file.name
             }])
             res.error ? console.warn(res.error.message) : null

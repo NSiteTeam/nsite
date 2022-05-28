@@ -53,10 +53,10 @@ const output = computed(
 
 <template>
     <div class="file-upload">
-        <div class="good" v-if="submitted">
+        <div class="good" v-if="submitted && !error">
             {{ submitted }}
         </div>
-        <div class="error" v-else-if="error">
+        <div class="error" v-else-if="error && !submitted">
             {{ error }}
         </div>
         <div>
