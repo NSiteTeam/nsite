@@ -25,8 +25,14 @@ console.log("Got data :", repoData.value)
         <h3 id="repo-title">
             {{ repoData[0].title }}
             <i>
-                Niveau : {{ repoData[0].level }}ème, 
-                {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+                <div v-if=" repoData[0].level==2">
+                    Niveau : {{ repoData[0].level }}nde, 
+                    {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+                </div>
+                <div v-else>
+                    Niveau : {{ repoData[0].level }}ème, 
+                    {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+                </div>
             </i>
         </h3>
         <ul id="repo-menu">

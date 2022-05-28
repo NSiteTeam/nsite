@@ -114,7 +114,10 @@ function levels(): Array<number> {
                 :key="level"
             >
             <RouterLink :to="'/browse/' + level">
-                {{ level }}ème
+                <div v-if=" level  == 2"> {{level}}nde</div>
+
+                <div v-else>{{ level }}ème</div>
+
             </RouterLink>
             </li>
         </ul>
