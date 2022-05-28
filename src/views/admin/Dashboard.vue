@@ -1,33 +1,29 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue"
 // @ts-ignore Vue bug
-import UploadFile from "@/components/popups/UploadFile.vue"
+import UploadFile from "@/components/dashboard/add/UploadFile.vue"
 // @ts-ignore Vue bug
-import AddDeposit from "@/components/popups/AddDeposit.vue"
+import AddDeposit from "@/components/dashboard/add/AddDeposit.vue"
 // @ts-ignore Vue bug
-import AddNews from "@/components/popups/AddNews.vue"
-// @ts-ignore Vue bug
-import AddHistoryPoint from "@/components/popups/AddHistoryPoint.vue"
+import AddNews from "@/components/dashboard/add/AddNews.vue"
 // @ts-ignore Vue bug
 import AccesBlacklist from "@/components/popups/AccesBlacklist.vue"
+// @ts-ignore Vue bug
+import AddHistoryPoint from "@/components/dashboard/add/AddHistoryPoint.vue"
+// @ts-ignore Vue bug
+import EditNews from "@/components/dashboard/edit/EditNews.vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
+import { useRoute } from "vue-router"
 
 const data: Ref<Array<Repository>> = ref([])
-const displayPopup: Ref<null | string> = ref(null)
+const displayPopup = computed(() => useRoute().params.popup)
+const action = computed(() => useRoute().params.action)
 
 await databaseClient.getRepos().then(res =>
     data.value = res
 )
-
-function togglePopup(popupName: string) {
-    if (displayPopup.value) {
-        displayPopup.value = null
-    } else {
-        displayPopup.value = popupName
-    }
-}
 
 const output = computed(
     () => {
@@ -40,58 +36,74 @@ const output = computed(
 </script>
 
 <template>
-    <div v-if="displayPopup" @click="togglePopup()" class="full-page">
-    </div>
+    <RouterLink v-if="displayPopup" to="/dashboard" class="full-page">
+    </RouterLink>
     <div id="dashboard-container">
-        <div class="dashboard-item" @click="togglePopup('upload')">
+        <RouterLink class="dashboard-item" to="/dashboard/uploadFile/add">
             <div class="action-title">
                 <span class="material-icons white">
                     file_upload
                 </span>
                 <h3>Ajouter des documents</h3>
             </div>
-        </div>
-        <div class="dashboard-item" @click="togglePopup('add')">
+        </RouterLink>
+        <RouterLink class="dashboard-item" to="/dashboard/addDeposit/add">
             <div class="action-title">
                 <span class="material-icons white">
                     add
                 </span>
                 <h3>Ajouter des dépôts</h3>
             </div>
-        </div>
-        <div class="dashboard-item" @click="togglePopup('news')">
+        </RouterLink>
+        <RouterLink class="dashboard-item" to="/dashboard/addNews/add">
             <div class="action-title">
                 <span class="material-icons white">
                     newspaper
                 </span>
                 <h3>Ajouter une actualité</h3>
             </div>
-        </div>
-        <div class="dashboard-item" @click="togglePopup('history')">
+        </RouterLink>
+        <RouterLink class="dashboard-item" to="/dashboard/addHistoryPoint/add">
             <div class="action-title">
                 <span class="material-icons white">
                     functions
                 </span>
                 <h3>Ajouter un point d'histoire</h3>
             </div>
-        </div>
-        <div class="dashboard-item" @click="togglePopup('blacklist')">
+        </RouterLink>
+        <div v-if="displayPopup" class="popup">
+            <div class="close-container">
+                <RouterLink class="material-icons" to="/dashboard">close</RouterLink>
+            </div>
+            <div class="action-bar">
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/add'">Ajouter</RouterLink>
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/edit'">Modifier</RouterLink>
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/delete'">Supprimer</RouterLink>
+            </div>
+        <RouterLink class="dashboard-item" to="/dashboard/blacklist">
             <div class="action-title">
                 <span class="material-icons white">
                     receipt_long
                 </span>
                 <h3>Accéder à la blacklist des utilisateurs</h3>
             </div>
-        </div>
+        </RouterLink>
         <div v-if="displayPopup" class="popup">
             <div class="close-container">
-                <span class="material-icons" @click="togglePopup()">close</span>
+                <RouterLink class="material-icons" to="/dashboard">close</RouterLink>
             </div>
-            <UploadFile v-if="displayPopup == 'upload'" />
-            <AddDeposit v-if="displayPopup == 'add'" />
-            <AddNews v-if="displayPopup == 'news'" />
-            <AddHistoryPoint v-if="displayPopup == 'history'" />
+
+            <!-- Manage files components -->
+            <UploadFile v-if="displayPopup == 'uploadFile' && action == 'add'" />
+            <!-- Manage deposits components -->
+            <AddDeposit v-if="displayPopup == 'addDeposit' && action == 'add'" />
+            <!-- Manage news components -->
+            <AddNews v-if="displayPopup == 'addNews' && action == 'add'" />
+            <EditNews v-if="displayPopup == 'addNews' && action == 'edit'" />
+            <!-- Manage history points components -->
+            <AddHistoryPoint v-if="displayPopup == 'addHistoryPoint' && action == 'add'" />
             <AccesBlacklist v-if="displayPopup == 'blacklist'" />
+        </div>
         </div>
     </div>
 </template>
