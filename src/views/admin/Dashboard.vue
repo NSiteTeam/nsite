@@ -8,6 +8,8 @@ import AddDeposit from "@/components/popups/AddDeposit.vue"
 import AddNews from "@/components/popups/AddNews.vue"
 // @ts-ignore Vue bug
 import AddHistoryPoint from "@/components/popups/AddHistoryPoint.vue"
+// @ts-ignore Vue bug
+import AccesBlacklist from "@/components/popups/AccesBlacklist.vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
@@ -73,6 +75,14 @@ const output = computed(
                 <h3>Ajouter un point d'histoire</h3>
             </div>
         </div>
+        <div class="dashboard-item" @click="togglePopup('blacklist')">
+            <div class="action-title">
+                <span class="material-icons white">
+                    receipt_long
+                </span>
+                <h3>Accéder à la blacklist des utilisateurs</h3>
+            </div>
+        </div>
         <div v-if="displayPopup" class="popup">
             <div class="close-container">
                 <span class="material-icons" @click="togglePopup()">close</span>
@@ -81,6 +91,7 @@ const output = computed(
             <AddDeposit v-if="displayPopup == 'add'" />
             <AddNews v-if="displayPopup == 'news'" />
             <AddHistoryPoint v-if="displayPopup == 'history'" />
+            <AccesBlacklist v-if="displayPopup == 'blacklist'" />
         </div>
     </div>
 </template>
