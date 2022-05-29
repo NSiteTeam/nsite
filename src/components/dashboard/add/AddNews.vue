@@ -6,6 +6,7 @@ import { ref } from "vue"
 const title: Ref<string> = ref("")
 const content: Ref<string> = ref("")
 const submitted: Ref<boolean> = ref(false)
+databaseClient.fetchNews(10)
 
 function handleSubmit() {
     databaseClient.postNews(title.value, content.value)

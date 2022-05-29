@@ -45,6 +45,7 @@ export interface DatabaseClient {
     maxNewsReached: Ref<boolean>
     fetchNews(quantity: number): Promise<void>
     postNews(title: string, content: string) : Promise<void>
+    editNews(id:number, title: string, content: string): Promise<string>
 
     // TIMELINE
     postHistotyPoint(title: string, content: string, date: string) : Promise<void>

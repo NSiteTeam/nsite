@@ -1,0 +1,34 @@
+.news-editor {
+    display: flex;
+    flex-direction: column;
+
+    &-item {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        margin: 5px;
+        padding: 5px;
+        border-radius: 15px;
+
+        input {
+            border: 1px solid $cream-white;
+            background-color: $space-cadet;
+            border-radius: 5px;
+            color: $cream-white;
+            outline: none;
+            padding: 5px;
+        }
+
+        .pen {
+            cursor: pointer;
+        }
+
+        &-title {
+            margin: 10px;
+        }
+
+        &-content {
+            font-size: 10px;
+        }
+    }
+}

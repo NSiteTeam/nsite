@@ -9,16 +9,9 @@ const repo = props.exercise //<!-- TODO: Rename-->
 <template>
     <RouterLink :to="'/repository/content/' + repo.id" class="card">
         <h3 class="card-title">{{ repo.title }}</h3>
-        <!--TODO: Change this -->
         <i>
-            <div v-if="repo.level==2">
-                Niveau: {{ repo.level }}nde • Ajouté le
-                {{ CustomDate.ISOStringToCustomDate(repo.publication_date).beautify() }}
-            </div>
-            <div v-else>
-                Niveau: {{ repo.level }}ème • Ajouté le
-                {{ CustomDate.ISOStringToCustomDate(repo.publication_date).beautify() }}
-            </div>
+            Niveau: {{ repo.level }}{{ repo.level == 2 ? 'nde' : 'ème' }} • Ajouté le
+            {{ CustomDate.ISOStringToCustomDate(repo.publication_date).beautify() }}
         </i>
         <p class="card-descr">{{ repo.description }}</p>
     </RouterLink>

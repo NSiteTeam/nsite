@@ -187,6 +187,7 @@ export class SupabaseClient implements DatabaseClient {
                 try {
                     array.forEach((news: any) => {
                         this.fetchedNews.value.push(new SupabaseNews(
+                            news['id'],
                             news['title'],
                             news['subtitle'],
                             news['date'],
@@ -550,9 +551,10 @@ export class SupabaseClient implements DatabaseClient {
                 // Adds the file to the depo
                 const responseForTheUpdate = await supabase.from("deposits")
                 // @ts-ignore res.data is any so he is not happy
-                .update([{ "content": responseForTheSelect.data.content.concat(res.data[0].id) }]).match({ "title": deposit })
+                .update([{ "content": responseForTheSelect.data.content.concat(res.data[0].id) }])
+                .match({ "title": deposit })
+
                 res.error ? console.warn(responseForTheUpdate.error) : null
-                // @ts-ignore res.data is any so he is not happy
                 res.data ? console.log(responseForTheUpdate.data) : null
             }
         }
@@ -563,6 +565,15 @@ export class SupabaseClient implements DatabaseClient {
             } else {
                 resolve("Le fichier a bien été téléversé")
             }
+        })
+    }
+
+    async editNews(id: number, title: string, content: string): Promise<string> {
+        const { data, error } = await supabase.from('news')
+        .update({ title: title, subtitle: content }).match({ id: id })
+
+        return new Promise((resolve, reject) => {
+            (!error && data) ? resolve("L'évènment a bien été mis à jour") : reject(error.message)
         })
     }
 }
