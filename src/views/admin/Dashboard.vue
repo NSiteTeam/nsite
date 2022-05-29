@@ -7,7 +7,7 @@ import AddDeposit from "@/components/dashboard/add/AddDeposit.vue"
 // @ts-ignore Vue bug
 import AddNews from "@/components/dashboard/add/AddNews.vue"
 // @ts-ignore Vue bug
-import AccesBlacklist from "@/components/popups/AccesBlacklist.vue"
+import AccesBlacklist from "@/components/dashboard/add/AccesBlacklist.vue"
 // @ts-ignore Vue bug
 import AddHistoryPoint from "@/components/dashboard/add/AddHistoryPoint.vue"
 // @ts-ignore Vue bug
@@ -71,15 +71,6 @@ const output = computed(
                 <h3>Ajouter un point d'histoire</h3>
             </div>
         </RouterLink>
-        <div v-if="displayPopup" class="popup">
-            <div class="close-container">
-                <RouterLink class="material-icons" to="/dashboard">close</RouterLink>
-            </div>
-            <div class="action-bar">
-                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/add'">Ajouter</RouterLink>
-                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/edit'">Modifier</RouterLink>
-                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/delete'">Supprimer</RouterLink>
-            </div>
         <RouterLink class="dashboard-item" to="/dashboard/blacklist">
             <div class="action-title">
                 <span class="material-icons white">
@@ -92,7 +83,11 @@ const output = computed(
             <div class="close-container">
                 <RouterLink class="material-icons" to="/dashboard">close</RouterLink>
             </div>
-
+            <div class="action-bar">
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/add'">Ajouter</RouterLink>
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/edit'">Modifier</RouterLink>
+                <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/delete'">Supprimer</RouterLink>
+            </div>
             <!-- Manage files components -->
             <UploadFile v-if="displayPopup == 'uploadFile' && action == 'add'" />
             <!-- Manage deposits components -->
@@ -103,7 +98,6 @@ const output = computed(
             <!-- Manage history points components -->
             <AddHistoryPoint v-if="displayPopup == 'addHistoryPoint' && action == 'add'" />
             <AccesBlacklist v-if="displayPopup == 'blacklist'" />
-        </div>
         </div>
     </div>
 </template>
