@@ -1,7 +1,7 @@
 <template>
     <header class="shadow1">
         <RouterLink to="/" class="banner">
-            <img src="../../src/assets/logo-white.svg" width="64" height="64" class="logo">
+            <img src="../../src/assets/logo.svg" width="64" height="64" class="logo">
             <h2 v-if="windowWidth > 1440">Les mathématiques à Saint Jean Hulst</h2>
         </RouterLink>
         <nav>
