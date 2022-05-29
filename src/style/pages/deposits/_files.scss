@@ -1,0 +1,60 @@
+#repo-content {
+    height:300px;
+    min-width: 70%;
+    background-color: $space-cadet-light;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        background-color: rgba(0,0,255,0);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #5a6c9948;
+        border-radius: 50px;
+        box-shadow: -10px 5px 10px rgba(0, 0, 0, 0.11);
+        width: 50px;
+    }
+
+    .header {
+        background-color: $space-cadet-light;
+        position: sticky;
+        top: 0;
+        height: min-content;
+        padding: 20px;
+        border-bottom: 2px solid white;
+    }
+
+    .repo-content-row {
+        padding: 15px;
+        cursor: pointer;
+
+        &:not(&:last-child) {
+            border-bottom: 1px dashed white;
+        }
+
+        .file-last-commit {
+            &-author {
+                text-decoration: underline;
+            }
+        }
+
+        a {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-title {
+            display: flex;
+            align-items: center;
+            
+            &-name {
+                margin-left: 8px;
+            }
+        }
+    }
+}

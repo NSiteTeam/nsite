@@ -1,0 +1,33 @@
+// ##########################################################################
+// # Bundles every sass file into an index file that is imported in App.vue #
+// ##########################################################################
+
+// Common stylesheets
+@import 'common/_mixins.scss';
+@import 'common/_settings.scss';
+@import 'common/_nav.scss';
+@import 'common/_footer.scss';
+
+// Pages stylesheets
+@import 'pages/_home.scss';
+@import 'pages/_browse.scss';
+@import 'pages/_timeline.scss';
+
+// Deposits stylesheets
+@import 'pages/deposits/_repository';
+@import 'pages/deposits/_chat.scss';
+@import 'pages/deposits/_files.scss';
+
+// Authentication stylesheets
+@import 'auth/_logout.scss';
+@import 'auth/_register.scss';
+@import 'auth/_login.scss';
+@import 'auth/_profile.scss';
+
+// Dashboard stylesheets
+@import 'pages/dashboard/_accesBlacklist.scss';
+@import 'pages/dashboard/_uploadFile.scss';
+@import 'pages/dashboard/_addDeposit.scss';
+@import 'pages/dashboard/_addNews.scss';
+@import 'pages/dashboard/_dashboard';
+@import 'pages/dashboard/_editNews.scss';
