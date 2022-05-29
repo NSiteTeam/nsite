@@ -12,17 +12,17 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: () => import("../views/LoginView.vue"),
+      component: () => import("../views/auth/LoginView.vue"),
     },
     {
       path: "/logout",
       name: "logout",
-      component: () => import("../views/LogoutView.vue"),
+      component: () => import("../views/auth/LogoutView.vue"),
     },
     {
       path: "/register",
       name: "register",
-      component: () => import("../views/RegisterView.vue"),
+      component: () => import("../views/auth/RegisterView.vue"),
     },
     {
       path: "/browse/:level?",

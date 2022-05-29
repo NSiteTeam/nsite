@@ -32,7 +32,7 @@
 
 <script setup>
     import { ref } from "vue"
-    import { databaseClient } from '../database/implementation'
+    import { databaseClient } from '@/database/implementation'
 
     const email = ref("")
     const password = ref("")
