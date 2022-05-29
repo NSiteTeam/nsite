@@ -97,6 +97,7 @@ const output = computed(
             <EditNews v-if="displayPopup == 'addNews' && action == 'edit'" />
             <!-- Manage history points components -->
             <AddHistoryPoint v-if="displayPopup == 'addHistoryPoint' && action == 'add'" />
+            <!-- Manage muted users -->
             <AccesBlacklist v-if="displayPopup == 'blacklist'" />
         </div>
     </div>
