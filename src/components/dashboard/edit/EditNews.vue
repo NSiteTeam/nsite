@@ -18,9 +18,7 @@ newsPayload.value = databaseClient.fetchedNews.value
 <template>
     <h3>Modifier les actualités</h3>
     <div class="news-editor">
-        <div :news="news" v-for="(news, index) in databaseClient.fetchedNews" 
-        :key="index" class="news-editor-item">{{news}}</div>
-        <NewsItem :news="news" v-for="(news, index) in databaseClient.fetchedNews" 
+        <NewsItem :news="news" v-for="(news, index) in databaseClient.fetchedNews.value" 
         :key="index" class="news-editor-item" />
     </div>
 </template>

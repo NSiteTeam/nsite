@@ -1,7 +1,10 @@
 <template>
     <div class="news-editor-item">
         <span class="material-icons pen" @click="handleEdit()">
-            edit
+            {{ edit ? 'done' : 'edit' }}
+        </span>
+        <span class="material-icons pen" @click="handleEdit(true)">
+            {{ edit ? 'close' : '' }}
         </span>
         <h4 v-if="!edit" class="news-editor-item-title">{{ news.title }}</h4>
         <p v-if="!edit" class="news-editor-item-content">{{ news.subtitle }}</p>
