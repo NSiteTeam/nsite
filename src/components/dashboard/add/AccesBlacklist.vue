@@ -20,7 +20,10 @@ const date: Ref<string> = ref("")
             <h3>Blacklist des élèves</h3>
         </label>
         <div class="blacklist-users">
-            <!-- v-for avec les utilisateurs, mais demander de l'aide pour la base de donnée (avoir accès à l'ensemble des users) -->
+            <div class="user">test <button class='button'>X</button></div>
+            <div class="user">test <button class='button'>X</button></div>
+            <div class="user">test <button class='button'>X</button></div>
+            <div class="user">test <button class='button'>X</button></div>
         </div>
     </div>
 </template>

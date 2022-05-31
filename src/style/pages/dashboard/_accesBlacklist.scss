@@ -1,4 +1,25 @@
 .blacklist-users {
     display: flex;
     flex-direction: column;
+    background-color: $space-cadet;
+    border-radius: 5%;
+    padding: 5%;
+
+    
+    .user {
+        padding: 5%;
+        margin: 5%;
+        border-radius: 5%;
+        height: 1000%;
+        background-color: $space-cadet-light;
+
+        .button {
+            background-color: #a83232;
+            border: none;
+            margin-left: 50%;
+            // color: aliceblue;
+            // padding: 50px;
+        }
+    }
+
 }

@@ -85,7 +85,7 @@ const output = computed(
             <div class="close-container">
                 <RouterLink class="material-icons" to="/dashboard">close</RouterLink>
             </div>
-            <div class="action-bar">
+            <div class="action-bar" v-if="displayPopup != 'blacklist'">
                 <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/add'">Ajouter</RouterLink>
                 <RouterLink class="action-bar-item" :to="'/dashboard/' + displayPopup + '/edit'">Modifier</RouterLink>
             </div>
