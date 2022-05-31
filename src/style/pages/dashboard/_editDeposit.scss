@@ -1,3 +1,40 @@
 .edit-deposit {
-    color: red;
+    display: flex;
+    flex-direction: column;
+    
+    .depo-editor-item {
+        background-color: rgba(255, 255, 255, 0.1);
+        align-items: center;
+        border-radius: 15px;
+        display: flex;
+        padding: 5px;
+        margin: 5px;
+
+        input, textarea {
+            border: 1px solid $cream-white;
+            background-color: $space-cadet;
+            border-radius: 5px;
+            color: $cream-white;
+            outline: none;
+            padding: 5px;
+        }
+
+        &-content, &-level {
+            margin-left: 10px;
+        }
+
+        &-content {
+            font-size: 12px;
+        }
+
+        &-level {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .pen {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+    }
 }

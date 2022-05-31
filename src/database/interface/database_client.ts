@@ -46,6 +46,7 @@ export interface DatabaseClient {
     fetchNews(quantity: number): Promise<void>
     postNews(title: string, content: string) : Promise<void>
     editNews(id:number, title: string, content: string): Promise<string>
+    editDepo(id: number, title: string, description: string, level: number): Promise<string>
 
     // TIMELINE
     postHistotyPoint(title: string, content: string, date: string) : Promise<void>

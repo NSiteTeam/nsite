@@ -12,7 +12,8 @@ import AccesBlacklist from "@/components/dashboard/add/AccesBlacklist.vue"
 import AddHistoryPoint from "@/components/dashboard/add/AddHistoryPoint.vue"
 // @ts-ignore Vue bug
 import EditNews from "@/components/dashboard/edit/EditNews.vue"
-// import EditDeposit from "@/components/dashboard/edit/EditDeposit.vue"
+// @ts-ignore Vue bug
+import EditDeposit from "@/components/dashboard/edit/EditDeposit.vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
@@ -92,7 +93,7 @@ const output = computed(
             <UploadFile v-if="displayPopup == 'uploadFile' && action == 'add'" />
             <!-- Manage deposits components -->
             <AddDeposit v-if="displayPopup == 'addDeposit' && action == 'add'" />
-            <!-- <EditDeposit v-if="displayPopup == 'editDeposit' && action == 'edit'" /> -->
+            <EditDeposit v-if="displayPopup == 'addDeposit' && action == 'edit'" />
             <!-- Manage news components -->
             <AddNews v-if="displayPopup == 'addNews' && action == 'add'" />
             <EditNews v-if="displayPopup == 'addNews' && action == 'edit'" />

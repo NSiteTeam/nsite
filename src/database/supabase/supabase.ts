@@ -558,7 +558,7 @@ export class SupabaseClient implements DatabaseClient {
                 res.data ? console.log(responseForTheUpdate.data) : null
             }
         }
-        // OMG that was a long jouney to upload a file 😅
+        // OMG that was a long journey to upload a file 😅
         return new Promise((resolve, reject) => {
             if (error) {
                 reject(error)
@@ -574,6 +574,15 @@ export class SupabaseClient implements DatabaseClient {
 
         return new Promise((resolve, reject) => {
             (!error && data) ? resolve("L'évènment a bien été mis à jour") : reject(error.message)
+        })
+    }
+
+    async editDepo(id: number, title: string, description: string, level: number): Promise<string> {
+        const { data, error } = await supabase.from('deposits')
+        .update({ title: title, description: description, level: level }).match({ id: id })
+
+        return new Promise((resolve, reject) => {
+            (!error && data) ? resolve("Le dépôt a bien été mis à jour") : reject(error.message)
         })
     }
 }
