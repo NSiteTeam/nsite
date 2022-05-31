@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { databaseClient } from '@/database/implementation'
+// @ts-ignore
+import FileItem from './FileItem.vue'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
@@ -10,6 +12,7 @@ const content: Ref<HTMLElement | null> = ref(null)
 const edit: Ref<boolean> = ref(false)
 const error: Ref<string | null> = ref(null)
 const success: Ref<string | null> = ref(null)
+const expandFiles: Ref<boolean> = ref(false)
 
 const levels = [
     "Tale",
@@ -20,6 +23,10 @@ const levels = [
     "5eme",
     "6eme",
 ]
+
+function toggleExpand() {
+    expandFiles.value = !expandFiles.value
+}
 
 function handleEdit(cancel = false) {
     edit.value = !edit.value
@@ -60,6 +67,10 @@ function handleEdit(cancel = false) {
                 {{ level }}
             </option>
         </select>
+        <span @click='toggleExpand()' class="material-symbols-outlined expand">
+            expand_more
+        </span>
+        {{ expandFiles }}
     </div>
 </template>
 
