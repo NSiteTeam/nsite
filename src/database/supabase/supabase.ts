@@ -17,6 +17,7 @@ import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
 import { SupabaseRole } from '@/database/interface/Role'
+import { databaseClient } from '../implementation'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -175,13 +176,13 @@ export class SupabaseClient implements DatabaseClient {
             })
 
         const { data, error } = await supabase.from('usernames').select().eq('uuid', this.uuid.value).maybeSingle()
-        error || !data ? console.error('Error while updating username :', error) : this.username.value = data
+        error || !data ? console.error('Error while updating username :', error) : databaseClient.username.value = data
 
         console.log(
             `Just updated user infos:\n` +
             ` - User is connected: ${this.isConnected.value}\n` +
             ` - User's email : ${this.email.value}\n` +
-            ` - User's username : ${this.username.value}\n` +
+            ` - User's username : ${databaseClient.username.value}\n` +
             ` - User's permissions: ${this.permissions.value}`
         )
     }
