@@ -25,6 +25,11 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export class SupabaseClient implements DatabaseClient {
+    constructor() {
+        // At initialization we try to restore the previous session
+        this.updateUserInfos()
+    }
+
     // The value of this ref is the fetched files
     files: Ref<CustomFile[]> = ref([])
 
