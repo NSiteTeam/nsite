@@ -45,9 +45,11 @@ export class SupabaseClient implements DatabaseClient {
     // The uuid of the connected user or null if the user is not connected
     uuid: Ref<string | null> = ref(null)
 
-    first_date: Ref<string | null> = ref(null)/// <reference path="" />
+    // The username of the connected user or null if the user is not connected
+    username: Ref<string | null> = ref(null)
     
-
+    accountCreationDate: Ref<string | null> = ref(null)
+    
     // The last connection date of the connected user or null if the user is not connected
     last_date: Ref<string | null>  = ref(null)
 
@@ -71,13 +73,22 @@ export class SupabaseClient implements DatabaseClient {
      * @param password the password of the user
      * @returns if the account was created or not. The return can be true even if the email is not yet verified
      */
-    async signIn(email: string, password: string): Promise<any> {
+    async signIn(email: string, password: string, username: string): Promise<any> {
         console.log("Try to sign in with email: ", email)
 
-        const { user, error } = await supabase.auth.signUp({
+        let { user, error } = await supabase.auth.signUp({
             email: email,
             password: password
         })
+        console.log(user)
+
+        const res = await supabase.from('usernames').insert({
+            user: user?.id,
+            username: username
+        })
+        error && res.error ? error = {status: 500, message: error.message + ' ' + res.error?.message} : null
+        res.error ? error = {status: 500, message: res.error.message} : null
+        
         // Here the account exists, but the email is not verified yet
         const accountCreated = !error && user != null
         console.log("Error :", error)
@@ -147,7 +158,7 @@ export class SupabaseClient implements DatabaseClient {
 
         this.last_date.value = supabase.auth.user()?.last_sign_in_at ?? null
 
-        this.first_date.value = supabase.auth.user()?.created_at ?? null
+        this.accountCreationDate.value = supabase.auth.user()?.created_at ?? null
 
         await supabase.functions.invoke('fetch-permissions')
             .then(result => {
@@ -163,11 +174,14 @@ export class SupabaseClient implements DatabaseClient {
                 console.log("Error while fetching permissions", error)
             })
 
+        const { data, error } = await supabase.from('usernames').select().eq('uuid', this.uuid.value).maybeSingle()
+        error || !data ? console.error('Error while updating username :', error) : this.username.value = data
 
         console.log(
             `Just updated user infos:\n` +
             ` - User is connected: ${this.isConnected.value}\n` +
             ` - User's email : ${this.email.value}\n` +
+            ` - User's username : ${this.username.value}\n` +
             ` - User's permissions: ${this.permissions.value}`
         )
     }
@@ -301,30 +315,6 @@ export class SupabaseClient implements DatabaseClient {
             }
         })
     }
-
-    async getRole(uuid: string): Promise<any>{
-        // JB: Trying to create a function to get roles. I hope it'll work.
-        // JB: It actually doesn't work: no data fetched.
-        // I'll try to fix that.
-        const { data, error } = uuid ? await supabase.from('profiles')
-        .select().eq("user", uuid).maybeSingle():
-        await supabase.from('profiles').select()
-
-        return new Promise((resolve, reject) => {
-            if (!error && (data != null)) {
-                resolve(
-                    new SupabaseRole(
-                        data['uuid'],
-                        data['role']
-                    ) 
-                )
-            } else if (error) {
-                reject("Error while fetching data : " + error.message)
-            } else if (data == null) {
-                reject("No data fetched")
-            }
-        })
-    } 
 
     async getFile(id: number): Promise<CustomFile> {
         const { data, error } = await supabase.from('repository_file')

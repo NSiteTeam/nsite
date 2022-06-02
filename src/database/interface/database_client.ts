@@ -13,11 +13,10 @@ export interface DatabaseClient {
     email: Ref<string | null>
     uuid: Ref<string | null>
     last_date: Ref<string | null>
-    first_date: Ref<string | null>
+    accountCreationDate: Ref<string | null>
     getUsername(uuid: string): Promise<any>
-    getRole(uuid: string): Promise<any>
 
-    signIn(email: string, password: string): any
+    signIn(email: string, password: string, username: string): any
     login(email: string, password: string): any
     logout(): any
 
