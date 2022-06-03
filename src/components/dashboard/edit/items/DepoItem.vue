@@ -2,7 +2,8 @@
 import { databaseClient } from '@/database/implementation'
 // @ts-ignore
 import FileItem from './FileItem.vue'
-import { computed, Ref } from 'vue'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
 import { ref } from 'vue'
 
 const { depo } = defineProps(['depo'])
@@ -15,12 +16,7 @@ const title: Ref<HTMLElement | null> = ref(null)
 const content: Ref<HTMLElement | null> = ref(null)
 const fileInput: Ref<HTMLElement | null> = ref(null)
 const submitted: Ref<boolean | string> = ref(false)
-const toggleAddButton = computed(
-    _ => {
-        console.log(fileInput.value)
-        return fileInput.value
-    }
-)
+const toggleAddButton = ref(false)
 
 const levels = [
     "Tale",
@@ -32,8 +28,9 @@ const levels = [
     "6eme",
 ]
 
-function toggleExpand() {
-    expandFiles.value = !expandFiles.value
+function handleUpload(event: any) {
+    console.log(toggleAddButton.value)
+    toggleAddButton.value = !toggleAddButton.value
 }
 
 function handleEdit(cancel = false) {
@@ -66,10 +63,9 @@ async function performUpload() {
     }
 }
 
-function handleSubmit() {
-    submitted.value = !submitted.value
+function toggleExpandFiles() {
+    expandFiles.value = !expandFiles.value
 }
-
 </script>
 
 <template>
@@ -104,18 +100,17 @@ function handleSubmit() {
                 {{ level }}
             </option>
         </select>
-        <span @click='toggleExpand()' class="material-icons expand">
+        <span @click='toggleExpandFiles()' class="material-icons expand">
             {{ expandFiles ? 'expand_less' : 'expand_more' }}
         </span>
     </div>
     <div class="files" v-if="expandFiles">
-        <label for="file-input" class="add-file" @click="handleSubmit()">
+        <label for="file-input" class="add-file">
             <input ref="fileInput" type="file" name="file-input" id="file-input" />
             <span class="material-icons">
-                {{ fileInput ? 'done' : 'add' }}
+                {{ toggleAddButton ? 'done' : 'add' }}
             </span>
             Ajouter un fichier
-            {{ fileInput }}
         </label>
         <FileItem v-for="(fileId, index) in depo.content" :key="index" :fileId="fileId" />
     </div>
