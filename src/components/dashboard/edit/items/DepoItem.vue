@@ -2,17 +2,25 @@
 import { databaseClient } from '@/database/implementation'
 // @ts-ignore
 import FileItem from './FileItem.vue'
-import type { Ref } from 'vue'
+import { computed, Ref } from 'vue'
 import { ref } from 'vue'
 
 const { depo } = defineProps(['depo'])
 
-const title: Ref<HTMLElement | null> = ref(null)
-const content: Ref<HTMLElement | null> = ref(null)
 const edit: Ref<boolean> = ref(false)
 const error: Ref<string | null> = ref(null)
-const success: Ref<string | null> = ref(null)
 const expandFiles: Ref<boolean> = ref(false)
+const success: Ref<string | null> = ref(null)
+const title: Ref<HTMLElement | null> = ref(null)
+const content: Ref<HTMLElement | null> = ref(null)
+const fileInput: Ref<HTMLElement | null> = ref(null)
+const submitted: Ref<boolean | string> = ref(false)
+const toggleAddButton = computed(
+    _ => {
+        console.log(fileInput.value)
+        return fileInput.value
+    }
+)
 
 const levels = [
     "Tale",
@@ -37,6 +45,31 @@ function handleEdit(cancel = false) {
         .catch(res => error.value = res)
     }
 }
+
+async function performUpload() {
+    if (fileInput.value) {
+        // @ts-ignore Vue considère qu'un élément HTML n'a pas l'attribut files alors que si
+        console.log(fileInput.value.files[0])
+        await databaseClient.uploadFileToDeposit(
+            // @ts-ignore Vue considère qu'un élément HTML n'a pas l'attribut files alors que si
+            fileInput.value.files[0], depo.name, message.value
+        )
+        .then(message => {
+            success.value = message
+        }).catch(message => {
+            console.warn(message)
+            error.value = message
+        })
+    } else {
+        error.value = "Pas de fichier selectionné :("
+        success.value = null
+    }
+}
+
+function handleSubmit() {
+    submitted.value = !submitted.value
+}
+
 </script>
 
 <template>
@@ -47,13 +80,17 @@ function handleEdit(cancel = false) {
         {{ error }}
     </div>
     <div class="depo-editor-item">
-        <span class="material-icons pen" @click="handleEdit()">
-            {{ edit ? 'done' : 'edit' }}
-        </span>
-        <span class="material-icons pen" @click="handleEdit(true)">
-            {{ edit ? 'close' : '' }}
-        </span>
-        <h4 v-if="!edit" class="depo-editor-item-title">{{ depo.title }}</h4>
+        <div class="depo-editor-left">
+            <span class="material-icons pen" @click="handleEdit()">
+                {{ edit ? 'done' : 'edit' }}
+            </span>
+            <span class="material-icons pen" @click="handleEdit(true)">
+                {{ edit ? 'close' : '' }}
+            </span>
+            <h4 v-if="!edit" class="depo-editor-item-title">
+                {{ depo.title }}
+            </h4>
+        </div>
         <p v-if="!edit" class="depo-editor-item-content">{{ depo.description }}</p>
         <p v-if="!edit" class="depo-editor-item-level">
             Niveau: {{ levels[depo.level] }}
@@ -67,10 +104,20 @@ function handleEdit(cancel = false) {
                 {{ level }}
             </option>
         </select>
-        <span @click='toggleExpand()' class="material-symbols-outlined expand">
-            expand_more
+        <span @click='toggleExpand()' class="material-icons expand">
+            {{ expandFiles ? 'expand_less' : 'expand_more' }}
         </span>
-        {{ expandFiles }}
+    </div>
+    <div class="files" v-if="expandFiles">
+        <label for="file-input" class="add-file" @click="handleSubmit()">
+            <input ref="fileInput" type="file" name="file-input" id="file-input" />
+            <span class="material-icons">
+                {{ fileInput ? 'done' : 'add' }}
+            </span>
+            Ajouter un fichier
+            {{ fileInput }}
+        </label>
+        <FileItem v-for="(fileId, index) in depo.content" :key="index" :fileId="fileId" />
     </div>
 </template>
 

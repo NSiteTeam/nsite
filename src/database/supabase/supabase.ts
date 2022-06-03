@@ -333,7 +333,7 @@ export class SupabaseClient implements DatabaseClient {
                 data.icon,
                 data.date,
                 data.last_commit_author,
-                data.last_commit_author,
+                data.last_commit_text,
                 data.file_url
             ))
         })

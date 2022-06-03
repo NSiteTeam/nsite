@@ -7,6 +7,7 @@
         align-items: center;
         border-radius: 15px;
         display: flex;
+        justify-content: space-between;
         padding: 5px;
         margin: 5px;
 
@@ -35,6 +36,26 @@
         .pen {
             cursor: pointer;
             margin-right: 5px;
+        }
+    }
+
+    .depo-editor-left {
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .add-file {
+        background-color: #FFFFFF22;
+        align-items: center;
+        flex-direction: row;
+        border-radius: 10px;
+        display: flex;
+        padding: 10px;
+        margin: 10px;
+
+        .material-symbols-sharp {
+            margin-right: 10px;
         }
     }
 }

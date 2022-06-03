@@ -1,0 +1,47 @@
+.files {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+
+    .file {
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: #FFFFFF22;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &-name {
+            display: flex;
+            align-items: center;
+
+            .icon {
+                margin-right: 5px;
+            }
+        }
+
+        &-message {
+            display: flex;
+
+            &-author {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .add-file {
+        position: relative;
+        
+        &:hover {
+            cursor: pointer;
+        }
+
+        #file-input {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: none;
+        }
+    }
+}
