@@ -22,12 +22,13 @@ export interface DatabaseClient {
     logout(): any
 
     // Repositories
+    uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
     postDeposit(title: string, level: string, description: string) : Promise<void>
+    renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getRepos(id?: number): Promise<Repository[]>
     getFile(id: number): Promise<CustomFile>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
-    uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
 
     // Messages
     fetchMessages(repoId: number): Promise<Message[]>

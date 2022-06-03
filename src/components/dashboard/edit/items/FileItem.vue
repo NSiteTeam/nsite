@@ -17,6 +17,11 @@
 
     function toggleEdit() {
         edit.value = !edit.value
+
+        if (!edit.value && file.value) {
+            databaseClient.renameFile(fileId, file.value.name,
+            file.value.last_commit_author)
+        }
     }
 </script>
 
@@ -35,7 +40,9 @@
             <div class="file-message-author">
                 {{ file.last_commit_author }}
             </div> : 
-            {{ file.last_commit_text }}
+            <input v-if="edit" type="text" v-model="file.last_commit_text" 
+            name="file-name" id="file-name" />
+            <div v-if="!edit">{{ file.last_commit_text }}</div>
         </div>
     </div>
 </template>

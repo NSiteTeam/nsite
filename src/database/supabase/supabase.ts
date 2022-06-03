@@ -581,4 +581,14 @@ export class SupabaseClient implements DatabaseClient {
             (!error && data) ? resolve("Le dépôt a bien été mis à jour") : reject(error.message)
         })
     }
+
+    async renameFile(id: number, newName: string, newMessage: string): Promise<any> {
+        const { data, error } = await supabase.from('repository_file')
+        .update({ name: newName, last_commit_text: newMessage })
+        .match({ id: id })
+
+        return new Promise((resolve, reject) => {
+            (data != null) && (!error) ? resolve(data) : reject(error.message)
+        })
+    }
 }
