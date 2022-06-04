@@ -172,16 +172,20 @@ export class SupabaseClient implements DatabaseClient {
                     this.permissions.value = (result['data'] as unknown as Array<number>)
                     .map(e => Object.values(Permission)[e])
                 } catch (error) {
-                    console.log(`Error while updating permissions, 
+                    result.data == null ? console.log("The user has no roles") : 
+                    console.warn(`Error while updating permissions, 
                     probably caused by changes in the database`, error)
                 }
             })
             .catch(error => {
-                console.log("Error while fetching permissions", error)
+                console.warn("Error while fetching permissions", error.message)
             })
-
-        const { data, error } = await supabase.from('usernames').select().eq('uuid', this.uuid.value).maybeSingle()
-        error || !data ? console.error('Error while updating username :', error) : databaseClient.username.value = data
+        
+        // Fetches user's name
+        const { data, error } = await supabase.from('usernames').select().eq('user', this.uuid.value).maybeSingle()
+        // If there is an error or no data, throws it, else asign the data to the username attribute
+        error || !data ? console.error('Error while updating username :', error?.message) : 
+        databaseClient.username.value = data.username
 
         console.log(
             `Just updated user infos:\n` +
@@ -512,7 +516,7 @@ export class SupabaseClient implements DatabaseClient {
         4: updates the content in the depo */
     async uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string> {
         // Removes the diacritics from the file name
-        const author = this.uuid.value ? await this.getUsername( this.uuid.value) : "anonyme"
+        const author = this.uuid.value ? await this.getUsername(this.uuid.value) : "anonyme"
         // Uploads data to the storage bucket
         const escapedFile = new File([file], file.name
             .normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {type: file.type});
@@ -557,7 +561,7 @@ export class SupabaseClient implements DatabaseClient {
         // OMG that was a long journey to upload a file 😅
         return new Promise((resolve, reject) => {
             if (error) {
-                reject(error)
+                reject(error.message)
             } else {
                 resolve("Le fichier a bien été téléversé")
             }

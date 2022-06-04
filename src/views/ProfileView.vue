@@ -8,7 +8,7 @@
         </span>
         <ul class="table-part">
             <li class="white">Adresse mail: <i>{{ email }}</i></li>
-            <li class="white">Nom d'utilisateur: <i>{{ databaseClient.username }}</i></li>
+            <li class="white">Nom d'utilisateur: <i>{{ databaseClient.username.value }}</i></li>
             <li class="white">Dernière date de connection: <i>{{ LastConnexion }}</i></li>
             <li class="white">Création du compte: <i>{{ CreationDate }}</i></li>
             <li class="white">Uuid : <i>{{ uuid }}</i></li>

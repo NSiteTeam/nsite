@@ -47,6 +47,7 @@ h2 {
 
 .error {
     @include message(hsla(0, 100%, 55%, 0.5));
+    transition: 0.5s;
 }
 
 .indication {
@@ -55,6 +56,7 @@ h2 {
 
 .good {
     @include message(hsla(106, 100%, 55%, 0.5));
+    transition: 0.5s;
 }
 
 .wave2 {

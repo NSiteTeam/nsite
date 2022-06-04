@@ -59,6 +59,11 @@ const router = createRouter({
       name: "dashboard",
       component: () => import("../views/admin/Dashboard.vue")
     },
+    {
+      path: "/dashboard/:popup?/:action?/:depo?",
+      name: "dashboard",
+      component: () => import("../views/admin/Dashboard.vue")
+    },
   ],
 });
 

@@ -2,6 +2,8 @@
 import { databaseClient } from '@/database/implementation'
 // @ts-ignore
 import FileItem from './FileItem.vue'
+// @ts-ignore
+import Upload from './../Upload.vue'
 import { computed } from 'vue'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
@@ -105,13 +107,7 @@ function toggleExpandFiles() {
         </span>
     </div>
     <div class="files" v-if="expandFiles">
-        <label for="file-input" class="add-file">
-            <input ref="fileInput" type="file" name="file-input" id="file-input" />
-            <span class="material-icons">
-                {{ toggleAddButton ? 'done' : 'add' }}
-            </span>
-            Ajouter un fichier
-        </label>
+        <Upload :depoTitle="depo.title" />
         <FileItem v-for="(fileId, index) in depo.content" :key="index" :fileId="fileId" />
     </div>
 </template>
