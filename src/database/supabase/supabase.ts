@@ -9,7 +9,7 @@ import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
-import type date from '@/utils/interface/date'
+import type { Permission } from '@/database/interface/permissions'
 import SupabaseFile from '../supabase/supabase_file'
 import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
@@ -36,6 +36,23 @@ export class SupabaseClient implements DatabaseClient {
 
     // The value of this ref is fetched permissions
     fetchedMessages: Ref<Message[]> = ref([])
+
+    //  The email of the connected user or null if the user is not connected
+    email: Ref<string | null> = ref(null)
+
+    // The uuid of the connected user or null if the user is not connected
+    uuid: Ref<string | null> = ref(null)
+
+    // The username of the connected user or null if the user is not connected
+    username: Ref<string | null> = ref(null)
+    
+    accountCreationDate: Ref<string | null> = ref(null)
+    
+    // The last connection date of the connected user or null if the user is not connected
+    last_date: Ref<string | null>  = ref(null)
+
+    // All the permissions of the user
+    permissions: Ref<Array<Permission>> = ref(Array())
 
     // The value of this ref is the fetched messages
     messages: Ref<Repository[]> = ref([])
