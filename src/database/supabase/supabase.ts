@@ -1,10 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
-import { ref, type Ref } from 'vue'
+import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
 import type { HistoryPoint } from '../interface/history_point'
-import { Permission } from '../interface/permissions'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
@@ -12,12 +11,11 @@ import { SupabaseHistory } from './supabase_history'
 import type { Repository } from '../interface/repositories'
 import type date from '@/utils/interface/date'
 import SupabaseFile from '../supabase/supabase_file'
-import type { Username } from '../interface/username'
 import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
-import { SupabaseRole } from '@/database/interface/Role'
-import { databaseClient } from '../implementation'
+import { SupabaseUser } from './supabase_user'
+import { SupabasePermissionHelper } from './supabase_permission_helper'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -44,23 +42,7 @@ export class SupabaseClient implements DatabaseClient {
 
     // The value of this ref is true if the user is connected to the database
     isConnected: Ref<boolean> = ref(false)
-
-    //  The email of the connected user or null if the user is not connected
-    email: Ref<string | null> = ref(null)
-
-    // The uuid of the connected user or null if the user is not connected
-    uuid: Ref<string | null> = ref(null)
-
-    // The username of the connected user or null if the user is not connected
-    username: Ref<string | null> = ref(null)
-    
-    accountCreationDate: Ref<string | null> = ref(null)
-    
-    // The last connection date of the connected user or null if the user is not connected
-    last_date: Ref<string | null>  = ref(null)
-
-    // All the permissions of the user
-    permissions: Ref<Array<Permission>> = ref(Array())
+    user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
 
     /**
      * A list of news fetched from the database.
@@ -157,39 +139,40 @@ export class SupabaseClient implements DatabaseClient {
     private async updateUserInfos() {
         console.log("Try to update user infos")
 
-        this.isConnected.value = supabase.auth.session() != null
+        const isConnected = supabase.auth.session() != null
+        this.isConnected.value = isConnected
 
-        this.email.value = supabase.auth.user()?.email ?? null
-        this.uuid.value = supabase.auth.user()?.id ?? null
+        if (isConnected) {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('username, roles')
+                    .eq('user', supabase.auth.user()?.id)
+                    .maybeSingle()
 
-        this.last_date.value = supabase.auth.user()?.last_sign_in_at ?? null
-
-        this.accountCreationDate.value = supabase.auth.user()?.created_at ?? null
-
-        await supabase.functions.invoke('fetch-permissions')
-            .then(result => {
-                try {
-                    this.permissions.value = (result['data'] as unknown as Array<number>)
-                    .map(e => Object.values(Permission)[e])
-                } catch (error) {
-                    console.log(`Error while updating permissions, 
-                    probably caused by changes in the database`, error)
+                if (error) {
+                    throw error
                 }
-            })
-            .catch(error => {
-                console.log("Error while fetching permissions", error)
-            })
 
-        const { data, error } = await supabase.from('usernames').select().eq('uuid', this.uuid.value).maybeSingle()
-        error || !data ? console.error('Error while updating username :', error) : databaseClient.username.value = data
+                if (!data) {
+                    throw "Data returned by the request is null"
+                }
 
-        console.log(
-            `Just updated user infos:\n` +
-            ` - User is connected: ${this.isConnected.value}\n` +
-            ` - User's email : ${this.email.value}\n` +
-            ` - User's username : ${databaseClient.username.value}\n` +
-            ` - User's permissions: ${this.permissions.value}`
-        )
+                this.user.value = new SupabaseUser(
+                    supabase.auth.user()?.email!,
+                    data.username,
+                    supabase.auth.user()?.id!,
+                    data.roles.map(SupabasePermissionHelper.permissionFromId)
+                )
+
+            } catch (error) {
+                console.log('Error while updating user infos', error)
+            }
+
+            console.log('Just updated user infos', this.user.value)
+        } else {
+            console.log('User isn\'t connected')
+        }
     }
 
     /**
@@ -296,7 +279,41 @@ export class SupabaseClient implements DatabaseClient {
                 probably caused by changes in the database: ` + error.message)
             }
         })
-        
+    }
+
+    async getOwnedDeposits(): Promise<Repository[]> {
+        const uuid = this.user.value?.uuid
+
+        if (uuid == null) {
+            return []
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('deposits')
+                .select('*')
+                .contains('owners', [uuid])
+
+            if (error) {
+                throw error;
+            }
+
+            if (data == null) {
+                throw "No data returned by request"
+            }
+
+            return data.map(deposit => new SupabaseRepository(
+                deposit['id'],
+                deposit['title'],
+                deposit['level'],
+                deposit['publication_date'],
+                deposit['description'],
+                deposit['content'],
+            ))
+        } catch (error) {
+            console.log("Error while fetching owned deposits", error)
+            return []
+        }
     }
 
     async getUsername(uuid: string): Promise<any> {

@@ -6,7 +6,7 @@ import { ref, computed, onMounted } from 'vue'
 import type { Ref } from "vue"
 import type CustomFile from "@/database/interface/file";
 import SupabaseMessage from "@/database/supabase/supabase_message";
-import CustomDate from '@/utils/classes/CustomDate'
+import { LongDate }from '@/utils/long_date'
 // @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
 import Chat from "../components/Chat.vue";
 // @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
@@ -27,11 +27,11 @@ console.log("Got data :", repoData.value)
             <i>
                 <div v-if=" repoData[0].level==2">
                     Niveau : {{ repoData[0].level }}nde, 
-                    {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+                    {{ LongDate.ISOStringToLongDate(repoData[0].publication_date).beautify(false) }}
                 </div>
                 <div v-else>
                     Niveau : {{ repoData[0].level }}ème, 
-                    {{ CustomDate.ISOStringToCustomDate(repoData[0].publication_date).beautify(false) }}
+                    {{ LongDate.ISOStringToLongDate(repoData[0].publication_date).beautify(false) }}
                 </div>
             </i>
         </h3>

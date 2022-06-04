@@ -1,5 +1,4 @@
 <script setup lang="ts">
-    // @ts-ignore Vue bug
     import DepoItem from "./items/DepoItem.vue"
     import type { Repository } from "@/database/interface/repositories";
     import { databaseClient } from "@/database/implementation";

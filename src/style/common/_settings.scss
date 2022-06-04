@@ -14,6 +14,8 @@ $mandarin: #ef7b45;
 $mobile-width: 800px;
 $little-screen-width: 1250px;
 
+$header-height: 68px;
+
 @font-face {
     font-family: OpenSans;
     src: url("/../src/assets/OpenSans-Regular.ttf");
@@ -24,7 +26,12 @@ body {
     color: $cream-white;
 }
 
-* {
+#app {
+    position: relative;
+    min-height: 100vh;
+}
+
+*:not(.material-icons) {
     font-family: OpenSans;
 }
     
@@ -35,10 +42,6 @@ a, NavLink {
     &:hover {
         cursor: pointer;
     }
-}
-
-main {
-    margin: 65px 0 0 110px;
 }
 
 h2 {
@@ -80,6 +83,8 @@ h2 {
 }
 
 .wave {
+    position: relative;
+    z-index: 20;
     @include wave("/src/assets/wave.svg");
 }
 

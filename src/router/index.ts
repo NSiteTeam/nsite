@@ -35,16 +35,6 @@ const router = createRouter({
       component: () => import("../views/RepositoryView.vue"),
     },
     {
-      path: "/admin/users",
-      name: "users",
-      component: () => import("../views/admin/UsersView.vue")
-    },
-    {
-      path: "/admin/news",
-      name: "users",
-      component: () => import("../views/admin/ManageNewsView.vue")
-    },
-    {
       path: "/timeline",
       name: "timeline",
       component: () => import("../views/TimelineView.vue")
@@ -55,7 +45,7 @@ const router = createRouter({
       component: () => import("../views/ProfileView.vue")
     },
     {
-      path: "/dashboard/:popup?/:action?",
+      path: "/dashboard/:view?",
       name: "dashboard",
       component: () => import("../views/admin/Dashboard.vue")
     },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { databaseClient } from "@/database/implementation"
-import CustomDate from "@/utils/classes/CustomDate"
+import { LongDate }from "@/utils/long_date"
 import { ref } from "vue";
 import type { Ref } from "vue"
 
@@ -17,7 +17,7 @@ if (message.author != null) {
 }
 
 function formatDate(ISOdate: string) {
-    return CustomDate.ISOStringToCustomDate(ISOdate).beautify()
+    return LongDate.ISOStringToLongDate(ISOdate).beautify()
 }
 
 function changeEditMode(cancel: boolean = false) {

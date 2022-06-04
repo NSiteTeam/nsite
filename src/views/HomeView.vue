@@ -1,5 +1,4 @@
 <template>
-
   <div id="home-container">
         <div class="catch-line shadow2">
           <h1>Les professeurs de mathématiques de Saint Jean Hulst ont enfin un site internet pour vous aider !</h1>
@@ -30,9 +29,7 @@
           </div>
         </div>
   </div>
-
-  <div class="wave2"></div>
-
+  <Footer />
 </template>
 
 <script setup lang="ts">
@@ -41,7 +38,8 @@ import { databaseClient } from "@/database/implementation"
 import type { News } from "@/database/interface/news"
 import { computed } from "vue"
 import type { Ref } from "vue"
-import CustomDate from "@/utils/classes/CustomDate"
+import { LongDate } from "@/utils/long_date"
+import Footer from "@/components/Footer.vue";
 
 const NUMBER_OF_FETCHED_NEWS = 20
 
@@ -51,9 +49,9 @@ databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 const sortedNews = computed(
   () => {
     return news.value.sort((a: News, b: News) => {
-      return CustomDate.subDates(
-        CustomDate.ISOStringToCustomDate(a.date),
-        CustomDate.ISOStringToCustomDate(b.date),
+      return LongDate.subDates(
+        LongDate.ISOStringToLongDate(a.date),
+        LongDate.ISOStringToLongDate(b.date),
       )
     })
   }

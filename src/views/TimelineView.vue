@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation"
     import type { HistoryPoint } from "@/database/interface/history_point"
-    import CustomDate from "../utils/classes/CustomDate"
+    import { LongDate } from "../utils/long_date"
     import type date from "../utils/interface/date"
     import { timestampToFrenchDate } from "@/utils/date"
     import type { Ref } from "vue"
@@ -18,8 +18,8 @@
         const timestamp: Array<number> = ISOtimestamp.split("-").map(digit => {
             return Number(digit)
         })
-        const customDate = new CustomDate(0, 0, 0, timestamp[2], timestamp[1], timestamp[0])
-        return customDate.beautify()
+        const date = new LongDate(0, 0, 0, timestamp[2], timestamp[1], timestamp[0])
+        return date.beautify()
     }
 </script>
 

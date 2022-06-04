@@ -1,7 +1,5 @@
-import type date from '../interface/date'
-
 // ###########################################################################
-// ############ The purpose of this class is manage dates easely #############
+// ############ The purpose of this class is manage LongDates easily #############
 // ###########################################################################
 
 const months = [
@@ -18,7 +16,7 @@ const months = [
     "Décembre",
 ]
 
-export default class CustomDate implements date {
+export class LongDate {
     seconds: number
     minutes: number
     hours: number
@@ -48,13 +46,9 @@ export default class CustomDate implements date {
         ]
     }
 
-    // #######################################################################
-    // ########################## Static utilities ###########################
-    // #######################################################################
-
-    static ISOStringToCustomDate(rawDate: string): date {
-        return new CustomDate(
-            Number(rawDate.split('T')[1].split(':')[2].split('+')[0].split('Z')[0]),
+    static ISOStringToLongDate(rawDate: string): LongDate {
+        return new LongDate(
+            Number(rawDate.split('T')[1].split(':')[2].split('.')[0]),
             Number(rawDate.split('T')[1].split(':')[1]),
             Number(rawDate.split('T')[1].split(':')[0]),
             Number(rawDate.split('T')[0].split('-')[2]),
@@ -63,55 +57,42 @@ export default class CustomDate implements date {
         )
     }
 
-    static Now(): date {
-        const classicDate = new Date(Date.now())
-        return this.ISOStringToCustomDate(classicDate.toISOString())
-    }
+    static latestDateInArray(dates: LongDate[]): LongDate {
+        let latest = dates[0]
 
-    static maxDate(dates: date[]): date {
-        let max = dates[0]
         dates.forEach(date => {
-            if (max < date) {
-                max = date
+            if (latest < date) {
+                latest = date
             }
         })
-        return max
+
+        return latest
     }
 
-    static subDates(a: date, b: date, reverse: boolean = false): number {
-        const reverseCoef = reverse ? 1 : -1
+    static compare(a: LongDate, b: LongDate): number {
         if (a.isGreaterThan(b)) {
-            return 1 * reverseCoef
+            return 1
         }
         if (a.isLessThan(b)) {
-            return -1 * reverseCoef
+            return -1
         }
         else {
             return 0
         }
+        
     }
 
-    static oneToTwoDigits(digit: number): string | number {
-        return digit < 10 ? "0" + digit : digit
+    private dayOnTwoDigits(): string {
+        return this.day < 10 ? "0" + this.day.toString() : this.day.toString()
     }
 
-    toNativeDate(): Date {
-        return new Date(this.toISOString())
+    private monthOnTwoDigits(): string {
+        return this.month < 10 ? "0" + this.month.toString() : this.month.toString()
     }
-
-    toMilliseconds(): number {
-        return Date.parse(this.toISOString())
-    }
-
-    toISOString(): string {
-        return `${this.year}-${this.month}-${this.day}T
-        ${this.hours}:${this.minutes}:${this.seconds}Z`
-    }
-
 
     beautify(shortened: boolean = true): string {
         if (shortened) {
-            return `${this.day}/${CustomDate.oneToTwoDigits(this.month)}/${this.year}`
+            return `${this.dayOnTwoDigits()}/${this.monthOnTwoDigits()}/${this.year}`
         } else {
             return `le ${this.day} ${months[this.month - 1]} ${this.year} à ${this.hours}h${this.minutes}`
         }
@@ -121,20 +102,21 @@ export default class CustomDate implements date {
     // ######################### Comparison methods ##########################
     // #######################################################################
 
-    isGreaterThan(otherDate: date): boolean {
-        // Loops through all the digits of the date from right to left
+    isGreaterThan(otherDate: LongDate): boolean {
+        // Loops through all the digits of the LongDate from right to left
         for (let i = this.digits.length ; i >= 0 ; i--) {
             if (this.digits[i] > otherDate.digits[i]) {
                 return true
             } else if (this.digits[i] < otherDate.digits[i]) return false
             // If the two digits are equal then it will continue the loop
         }
+
         // If all of the digits are the same, return false
         return false
     }
 
     // Those methods are working the same as the method on the top
-    isLessThan(otherDate: date): boolean {
+    isLessThan(otherDate: LongDate): boolean {
         for (let i = this.digits.length ; i >= 0 ; i--) {
             if (this.digits[i] < otherDate.digits[i]) {
                 return true
@@ -143,7 +125,7 @@ export default class CustomDate implements date {
         return false
     }
 
-    isEqualTo(otherDate: date): boolean{
+    isEqualTo(otherDate: LongDate): boolean{
         for (let i = this.digits.length ; i >= 0 ; i++) {
             // If one of the digits is not equal to another, return false
             if (this.digits[i] != otherDate.digits[i]) {

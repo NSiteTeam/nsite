@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { databaseClient } from '@/database/implementation';
     import type CustomFile from '@/database/interface/file';
-    import CustomDate from '@/utils/classes/CustomDate';
+    import { LongDate }from '@/utils/long_date';
     import type { Ref } from 'vue';
     import { ref } from 'vue';
 
@@ -33,7 +33,7 @@
                     </span> :
                     {{ file.last_commit_text }}
                 </div>
-                <span class="date">{{ CustomDate.ISOStringToCustomDate(file.date).beautify() }}</span>
+                <span class="date">{{ LongDate.ISOStringToLongDate(file.date).beautify() }}</span>
             </a>
         </div>
     </div>

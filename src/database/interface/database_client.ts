@@ -5,25 +5,22 @@ import type { HistoryPoint } from './history_point';
 import type { Repository } from './repositories';
 import type CustomFile from './file';
 import type Message from './message';
+import type { User } from './user';
 
 export interface DatabaseClient {
     // USER
     isConnected: Ref<boolean>
-    permissions: Ref<Array<Permission>>
-    email: Ref<string | null>
-    uuid: Ref<string | null>
-    username: Ref<string | null>
-    last_date: Ref<string | null>
+    user: Ref<User | null>
     accountCreationDate: Ref<string | null>
-    getUsername(uuid: string): Promise<any>
 
     signIn(email: string, password: string, username: string): any
     login(email: string, password: string): any
     logout(): any
 
-    // Repositories
+    // Deposits
     postDeposit(title: string, level: string, description: string) : Promise<void>
     getRepos(id?: number): Promise<Repository[]>
+    getOwnedDeposits(): Promise<Repository[]>
     getFile(id: number): Promise<CustomFile>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
