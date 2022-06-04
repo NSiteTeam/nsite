@@ -45,11 +45,20 @@
         transition: 0.1s;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -30%);
+        transform: translate(-50%, -200px);
         background-color: $space-cadet-light;
         padding: 50px;
         border-radius: 50px;
         @include shadow1;
+
+        input, textarea {
+            border: 1px solid $cream-white;
+            background-color: $space-cadet;
+            border-radius: 5px;
+            color: $cream-white;
+            outline: none;
+            padding: 5px;
+        }
 
         .close-container {
             display: flex;

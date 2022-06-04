@@ -350,7 +350,7 @@ export class SupabaseClient implements DatabaseClient {
                 data.icon,
                 data.date,
                 data.last_commit_author,
-                data.last_commit_author,
+                data.last_commit_text,
                 data.file_url
             ))
         })
@@ -529,7 +529,7 @@ export class SupabaseClient implements DatabaseClient {
         4: updates the content in the depo */
     async uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string> {
         // Removes the diacritics from the file name
-        const author = this.uuid.value ? await this.getUsername( this.uuid.value) : "anonyme"
+        const author = this.uuid.value ? await this.getUsername(this.uuid.value) : "anonyme"
         // Uploads data to the storage bucket
         const escapedFile = new File([file], file.name
             .normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {type: file.type});
@@ -574,7 +574,7 @@ export class SupabaseClient implements DatabaseClient {
         // OMG that was a long journey to upload a file 😅
         return new Promise((resolve, reject) => {
             if (error) {
-                reject(error)
+                reject(error.message)
             } else {
                 resolve("Le fichier a bien été téléversé")
             }
@@ -596,6 +596,16 @@ export class SupabaseClient implements DatabaseClient {
 
         return new Promise((resolve, reject) => {
             (!error && data) ? resolve("Le dépôt a bien été mis à jour") : reject(error.message)
+        })
+    }
+
+    async renameFile(id: number, newName: string, newMessage: string): Promise<any> {
+        const { data, error } = await supabase.from('repository_file')
+        .update({ name: newName, last_commit_text: newMessage })
+        .match({ id: id })
+
+        return new Promise((resolve, reject) => {
+            (data != null) && (!error) ? resolve(data) : reject(error.message)
         })
     }
 }

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { databaseClient } from "@/database/implementation"
 import type { Repository } from "@/database/interface/repositories"
+import { useRoute } from "vue-router"
 import { computed } from "vue"
 import type { Ref } from "vue"
 import { ref } from "vue"
 
 const data: Ref<Repository[]> = ref([])
 const fileName: Ref<string> = ref("")
-const selectedDepo: Ref<string> = ref("")
+const selectedDepo: Ref<string> = ref(useRoute().params.depo[0])
 const fileInput: Ref<HTMLElement | null> = ref(null)
 const message: Ref<string> = ref("")
 const submitted: Ref<boolean | string> = ref(false)
@@ -21,7 +22,6 @@ function handleFileSelection(event: any) {
 }
 
 async function handleSubmit() {
-    console.log(fileInput.value)
     if (fileInput.value) {
         // @ts-ignore Vue considère qu'un élément HTML n'a pas l'attribut files alors que si
         console.log(fileInput.value.files[0])
@@ -40,14 +40,6 @@ async function handleSubmit() {
         submitted.value = false
     }
 }
-
-const output = computed(
-    () => {
-        return data.value.map(depo => {
-            return depo.title
-        })
-    }
-)
 </script>
 
 
@@ -63,15 +55,15 @@ const output = computed(
             <h3>Choisissez votre dépot pour y téléverser du contenu</h3>
             <div class="custom-select">
                 <select v-model="selectedDepo">
-                    <option disabled value="" class="highlight white">
+                    <option disabled :value="undefined" class="highlight white">
                         -- Sélectionnez un dépot --
                     </option>
-                    <option :value="depo" class="highlight white" v-for="(depo, index) in output" :key="index">
+                    <option :value="depo.id" class="highlight white" v-for="(depo, index) in data.value" :key="index">
                         {{ depo }}
                     </option>
                 </select>
             </div>
-            <div class="chose-file" v-if="selectedDepo">
+            <div v-if="selectedDepo">
                 <h3>Choisissez votre fichier</h3>
                 <input type="file" class="highlight" ref="fileInput">
                 <input type="text" placeholder="Ajoutez un message pour décrire votre fichier" v-model="message" />

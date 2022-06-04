@@ -1,0 +1,34 @@
+.files {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    margin-left: 10px;
+    border-left: 1px dashed $cream-white;
+
+    .file {
+        margin: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: #FFFFFF22;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &-name {
+            display: flex;
+            align-items: center;
+
+            .icon {
+                margin-right: 5px;
+            }
+        }
+
+        &-message {
+            display: flex;
+
+            &-author {
+                text-decoration: underline;
+            }
+        }
+    }
+}
