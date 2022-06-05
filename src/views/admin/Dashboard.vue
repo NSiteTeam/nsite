@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue"
+import { computed } from "vue"
+import { ref } from "vue"
 // @ts-ignore Vue bug
 import UploadFile from "@/components/dashboard/add/UploadFile.vue"
 // @ts-ignore Vue bug
@@ -115,7 +116,7 @@ class View {
 <template>
     <div id='dashboard-container'>
         <nav id='dashboard-navbar'>
-            <RouterLink v-for='view in availableViewsForUser' :key="view.name" :to="'/dashboard/' + view.nameInURL">
+            <RouterLink v-for="view in availableViewsForUser" :key="view.name" :to="'/dashboard/' + view.nameInURL">
                 <div id='menu-box'>
                     <span id='menu-icon' class="material-icons">
                         {{ view.icon }}
@@ -130,68 +131,3 @@ class View {
         <component :is='component'/>
     </div>
 </template>
-
-<style lang="scss" scoped>
-    @import "@/style/index.scss";
-
-    #dashboard-container {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-
-        height: calc(100vh - $header-height);
-
-        #dashboard-navbar {
-            background-color: #12151c;
-
-            height: 100%;
-
-            #menu-box {
-                border-radius: 12px;
-
-                width: 48px;
-                height: 48px;
-
-                margin: 8px;
-
-                display: grid;
-                place-content: center;
-
-                transition: background-color 0.3s linear;
-                &:hover {
-                    background-color: #5a6c99;
-
-                    #menu-icon {
-                        color: white;
-                    }
-
-                    #menu-tooltip {
-                        display: inline;
-                    }
-                }
-
-                #menu-icon {
-                    transition: color 0.3 linear;
-                    color: #9c9ba0;
-                }
-
-                #menu-tooltip {
-                    display: none;
-
-                    position: absolute;
-                    left: 72px;
-                    z-index: 40;
-
-                    margin-top: 4px; // Arbitrary value to try to center the tooltip
-
-                    width: max-content;
-
-                    background-color: #161616;
-                    border-radius: 6px;
-
-                    padding: 10px 12px;
-                }
-            }
-        }
-    }
-</style>

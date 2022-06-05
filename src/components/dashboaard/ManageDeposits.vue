@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation";
-import type { Repository } from "@/database/interface/repositories";
+    import type { Repository } from "@/database/interface/repositories";
     import { ref } from "vue";
 
     const depositTableIsExpanded = ref(true)
@@ -55,101 +55,3 @@ import type { Repository } from "@/database/interface/repositories";
         </div>
     </div>
 </template>
-
-<style lang="scss" scoped>
-    #manage-deposit {
-        display: flex;
-        flex-direction: row;
-
-        #deposit-list {
-            background-color: #38383d;
-
-            padding: 16px;
-
-            position: relative;
-
-            width: 100%;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            min-width: 20px;
-            max-width: 100%;
-
-            transition: max-width 0.4s ease-in-out;
-            &.hidden {
-                max-width: 20px;
-
-                ul, h3 {
-                    opacity: 0%;
-                    transition: opacity 0.4s ease-in-out;
-                }
-            }
-
-            #deposit-list-title {
-                margin: 0;
-                white-space: nowrap;
-                width: max-content;
-            }
-
-            #deposit-list-menu-icon {
-                position: absolute;
-                right: 16px;
-                top: 16px;
-
-                transition: transform 0.4s ease-in-out;
-
-                &.horizontal-symmetry {
-                    transform: scale(-1, 1);
-                }
-            }
-
-            #deposit-names {
-                list-style: none;
-
-                padding: 8px;
-
-                .deposit-list-element {
-                    border-radius: 8px;
-
-                    width: 256px;
-                    margin: 2px 0;
-                    padding: 8px;
-
-                    font-weight: 800;
-                    color: #b1b1b9;
-
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-
-                    span {
-                        color: #b1b1b9;
-                        margin: 0 4px;
-                    }
-
-                    &:hover {
-                        background-color: #59595c;
-                        color: white;
-
-                        span {
-                            color: white;
-                        }
-                    }
-
-                    &.selected {
-                        background-color: #6b6b6f;
-                        color: white;
-                    }
-
-                    @media (max-width: 384px) {
-                        width: calc(100vw - 128px); // To fill remaining screen width
-                    }
-                }
-
-                #add-deposit-button {
-                    display: flex;
-                    justify-content: center;
-                }
-            }
-        }
-    }
-</style>
