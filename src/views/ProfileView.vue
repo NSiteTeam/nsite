@@ -7,11 +7,14 @@
             </span>
             <div class="user-details">
                 <div class="label">Adresse mail: </div>
-                <div class="value">{{ email }}</div>
+                <div class="value">
+                    {{ email }}
+                    <span @click="toggleEmail">
+                        {{ displayEmail ? 'Masquer' : 'Afficher' }}
+                    </span>
+                </div>
                 <div class="label">Nom d'utilisateur: </div>
                 <div class="value">{{ username }}</div>
-                <div class="label">Uuid : </div>
-                <div class="value">{{ uuid }}</div>
                 <div class="label">Rôles : </div>
                 <ul class="value">
                     <li class="permission" v-for="(permission, index) in permissions" :key="index">
@@ -27,10 +30,29 @@
 <script setup lang="ts">
     import { databaseClient } from '@/database/implementation'
     import ProfilePicture from '@/components/ProfilePicture.vue'
-    import { computed } from 'vue'
+    import { computed, ref } from 'vue'
 
-    const email = computed(() => databaseClient.user.value?.email)
     const uuid = computed(() => databaseClient.user.value?.uuid)
     const username = computed(() => databaseClient.user.value?.username)
     const permissions = computed(() => databaseClient.user.value?.permissions)
+
+    const email = computed(
+        () => {
+            const email = databaseClient.user.value?.email
+
+            if (email && !displayEmail.value) {
+                const splitted = email.split('@')
+                return splitted[0].replace(/\w/g,'*') + '@' + splitted[1]
+            } else {
+                return email
+            }
+        }
+    )
+
+    const displayEmail = ref(false)
+
+    function toggleEmail() {
+        console.log("Tabernak")
+        displayEmail.value = !displayEmail.value
+    }
 </script>
