@@ -6,17 +6,17 @@
         </RouterLink>
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
-                <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
-                <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
-                <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
-                <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
+                <RouterLink to="/browse" class="navbar-link browse-link"><span>Parcourir</span></RouterLink>
+                <RouterLink to="/timeline" class="navbar-link"><span>Un peu d'Histoire</span></RouterLink>
+                <RouterLink v-if="!connected" to="/login" class="navbar-link"><span>Se connecter</span></RouterLink>
+                <RouterLink v-if="!connected" to="/register" class="navbar-link"><span>S'inscrire</span></RouterLink>
                 <RouterLink
                     v-if="connected"
                     to="/profile"
                     class="navbar-link"
                     v-bind:class="{ active: isProfilePage }"
                 >
-                    Mon compte
+                    <ProfilePicture size='32px' />
                 </RouterLink>
 
             </div>
@@ -33,6 +33,7 @@
     import { databaseClient } from '@/database/implementation';
     import { useRoute } from 'vue-router';
     import { computed } from '@vue/runtime-core';
+    import ProfilePicture from '@/components/ProfilePicture.vue'
 
     const { width } = useWindowSize()
     const route = useRoute()

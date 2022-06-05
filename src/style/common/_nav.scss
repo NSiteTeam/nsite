@@ -126,9 +126,15 @@ header {
             align-items: center;
             justify-content: center;
 
-            transition: color 0.3s;
             &:hover, &:active {
-                color: $mandarin;
+                > span {
+                    transition: color 0.2s;
+                    color: $mandarin;
+                }
+
+                #profile-picture-container { // Ugly way to select the profile icon
+                    box-shadow: 0 0 6px $mandarin;
+                }
             }
 
             @media (max-width: $mobile-width) {
