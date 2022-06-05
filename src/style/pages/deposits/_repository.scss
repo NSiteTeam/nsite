@@ -6,9 +6,7 @@
     background-color: $space-cadet;
     color: $cream-white;
     padding: 3%;
-    margin-left: calc(5% - 110px);
-    border-radius: 20px;
-    max-width: 95%;
+    min-height: calc(87vh - $header-height + 3px);
     position: relative;
 
     &-body {
