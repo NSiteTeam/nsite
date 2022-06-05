@@ -21,6 +21,7 @@ import type { Repository } from "@/database/interface/repositories"
 import { useRoute } from "vue-router"
 import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
+// @ts-ignore
 import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
 
 const availableViewsForUser= computed(

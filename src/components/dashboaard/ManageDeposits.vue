@@ -1,16 +1,30 @@
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
-    import { ref } from "vue";
+    // @ts-ignore
+    import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
+    import { watch, ref, toRaw, onMounted } from "vue";
+    import type { Ref } from "vue";
 
     const depositTableIsExpanded = ref(true)
     const deposits = ref()
     const selectedDeposit = ref()
+    const files: Ref<any[]> = ref([])
 
-    databaseClient.getOwnedDeposits().then(result => {
+    await databaseClient.getOwnedDeposits().then(result => {
         deposits.value = result
         selectedDeposit.value = result[0]
     })
+
+    function fetchFiles() {
+        files.value = []
+        selectedDeposit.value.content.map(async (fileId: number) => {
+            const file = ref()
+            await databaseClient.getFile(fileId)
+            .then(res => file.value = res)
+            files.value.push(toRaw(file.value))
+        })
+    }
 
     function flipDepositListExpansion() {
         depositTableIsExpanded.value = !depositTableIsExpanded.value
@@ -19,6 +33,8 @@
     function selectDeposit(deposit: Repository) {
         selectedDeposit.value = deposit
     }
+    onMounted(fetchFiles)
+    watch(selectedDeposit, fetchFiles)
 </script>
 
 <template>
@@ -53,5 +69,8 @@
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="files">
+        <FileItem v-for="(file, index) in files" :key="index" :file="file" />
     </div>
 </template>

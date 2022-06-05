@@ -4,7 +4,7 @@
 
     #deposit-list {
         background-color: $space-cadet-light;
-
+        border-right: 1px solid gray;
         padding: 16px;
 
         position: relative;
@@ -77,7 +77,7 @@
                 }
 
                 &.selected {
-                    background-color: #6b6b6f;
+                    background-color: $mandarin;
                     color: $cream-white;
                 }
 

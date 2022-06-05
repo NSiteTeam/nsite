@@ -4,23 +4,17 @@
     import type { Ref } from 'vue'
     import { ref } from 'vue'
 
-    const { fileId } = defineProps(['fileId'])
+    const { file } = defineProps(['file'])
 
-    const file: Ref<CustomFile | null> = ref(null)
     const error: Ref<CustomFile | null> = ref(null)
     const edit = ref(false)
-
-    await databaseClient.getFile(fileId)
-    .then(res => file.value = res)
-    .catch(res => error.value = res)
-    const success: Ref<boolean> = ref(file.value ? true : false)
 
     function toggleEdit() {
         edit.value = !edit.value
 
-        if (!edit.value && file.value) {
-            databaseClient.renameFile(fileId, file.value.name,
-            file.value.last_commit_author)
+        if (!edit.value) {
+            databaseClient.renameFile(file.id, file.name,
+            file.last_commit_author)
         }
     }
 </script>
@@ -28,7 +22,7 @@
 <template>
     <div class="file">
         <div class="file-name">
-            <span @click="toggleEdit()" class="material-symbols-sharp">
+            <span @click="toggleEdit()" class="material-icons">
                 {{ edit ? 'done' : 'edit' }}
             </span>
             <p class="file-name-label" v-if="!edit">
