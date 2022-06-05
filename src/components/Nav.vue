@@ -7,6 +7,9 @@
         <nav>
             <div id="navbar-links" :class="toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'">
                 <RouterLink to="/browse" class="navbar-link browse-link">Parcourir</RouterLink>
+                <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
+                <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
+                <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
                 <RouterLink
                     v-if="connected"
                     to="/profile"
@@ -15,10 +18,6 @@
                 >
                     Mon compte
                 </RouterLink>
-                <RouterLink to="/timeline" class="navbar-link">Un peu d'Histoire</RouterLink>
-                <RouterLink v-if="connected" to="/logout" class="navbar-link">Déconnexion</RouterLink>
-                <RouterLink v-if="!connected" to="/login" class="navbar-link">Se connecter</RouterLink>
-                <RouterLink v-if="!connected" to="/register" class="navbar-link">S'inscrire</RouterLink>
 
             </div>
             <span @click="toggleMenuFunction()" class="material-icons white menu-button">
@@ -41,15 +40,6 @@
     const toggleMenu = ref(false)
     const windowWidth = width
     const connected = databaseClient.isConnected
-    const levels = [
-        'Terminale',
-        'Première',
-        'Seconde',
-        'Troisième',
-        'Quatrième',
-        'Cinquième',
-        'Sixième',
-    ]
 
     function toggleMenuFunction() {
         toggleMenu.value = !toggleMenu.value

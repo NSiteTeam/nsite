@@ -2,10 +2,8 @@
     <div id="profile-container"  class="shadow2">
         <div class="user-infos">
             <span class="profile-title">
-                <span class="material-icons white">
-                    account_circle
-                </span>
-                {{ username }}
+                <ProfilePicture size='48px'/>
+                <span id='username'> {{ username }} </span>
             </span>
             <div class="user-details">
                 <div class="label">Adresse mail: </div>
@@ -25,12 +23,14 @@
     </div>
     <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
 </template>
-<!--TODO: REWORK COMPLETLY THIS HORRIBLE THING (: -->
-<script setup lang="ts">
-    import { databaseClient } from '@/database/implementation';
 
-    const email = databaseClient.user.value?.email
-    const uuid = databaseClient.user.value?.uuid
-    const username = databaseClient.user.value?.username
-    const permissions = databaseClient.user.value?.permissions
+<script setup lang="ts">
+    import { databaseClient } from '@/database/implementation'
+    import ProfilePicture from '@/components/ProfilePicture.vue'
+    import { computed } from 'vue'
+
+    const email = computed(() => databaseClient.user.value?.email)
+    const uuid = computed(() => databaseClient.user.value?.uuid)
+    const username = computed(() => databaseClient.user.value?.username)
+    const permissions = computed(() => databaseClient.user.value?.permissions)
 </script>

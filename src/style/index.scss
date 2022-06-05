@@ -12,6 +12,9 @@
 @import 'pages/_browse.scss';
 @import 'pages/_timeline.scss';
 
+// Profile stylesheets
+@import 'pages/profile/profile_picture';
+
 // Deposits stylesheets
 @import 'pages/deposits/_repository';
 @import 'pages/deposits/_chat.scss';
