@@ -2,44 +2,56 @@
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
     import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
-    import { watch, ref, toRaw, onMounted } from "vue";
+    import { watch, ref, toRaw, onMounted, shallowRef } from "vue";
     import type { Ref } from "vue";
     import { Level } from '@/database/interface/level'
+    import DataColumn from '@/components/dashboaard/DataColumn.vue'
+    import { DataSection } from "@/utils/data_section";
 
-    const newDepoLevel: Ref<number | null> = ref(null)
+    const newDepositLevel: Ref<number | null> = ref(null)
     const displaySidePannel: Ref<boolean> = ref(false)
-    const newDepoDescription: Ref<string> = ref("")
-    const newDepoTitle: Ref<string> = ref("")
-    const depositTableIsExpanded = ref(true)
+    const newDepositDescription: Ref<string> = ref("")
+    const newDepositTitle: Ref<string> = ref("")
     const success: Ref<boolean> = ref(false)
     const error: Ref<string | null> = ref(null)
     const loading: Ref<boolean> = ref(false)
     const files: Ref<any[]> = ref([])
-    const selectedDeposit = ref()
-    const deposits = ref()
+    const selectedDeposit: Ref<Repository | null> = ref(null)
+    const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
 
     const levels = Level.LEVELS
 
-    await databaseClient.getOwnedDeposits().then(result => {
-        deposits.value = result
-        selectedDeposit.value = result[0]
+
+    // Fetch deposits and sort them into sections
+    async function fetchDeposits() {
+        deposits.value = DataSection.makeSections(await databaseClient.getOwnedDeposits(), (e) => e.level.abbreviated)
+    }
+
+    await fetchDeposits().then(() => {
+        if (deposits.value.length > 0) {
+            selectedDeposit.value = deposits.value[0].values[0]
+        }
     })
 
-    async function fetchDepos() {
-        deposits.value = []
-        await databaseClient.getOwnedDeposits().then(result => {
-            deposits.value = result
-            selectedDeposit.value = result[0]
-        })
+    function depositToText(deposit: Repository) {
+        return deposit.title
+    }
+
+    function depositToKey(deposit: Repository) {
+        return deposit.id
     }
 
     function toggleSidePannel() {
         displaySidePannel.value = !displaySidePannel.value
     }
 
+    function selectData(data: Repository) {
+        selectedDeposit.value = data
+    }
+
     function fetchFiles() {
         files.value = []
-        selectedDeposit.value.content?.map(async (fileId: number) => {
+        selectedDeposit.value?.content?.map(async (fileId: number) => {
             const file = ref()
             await databaseClient.getFile(fileId)
             .then(res => file.value = res)
@@ -47,72 +59,48 @@
         })
     }
 
-    function flipDepositListExpansion() {
-        depositTableIsExpanded.value = !depositTableIsExpanded.value
-    }
-
-    function selectDeposit(deposit: Repository) {
-        selectedDeposit.value = deposit
-    }
-
     async function addDeposit() {
-        if (newDepoTitle.value != "" && newDepoLevel.value != null) {
+        if (newDepositTitle.value != "" && newDepositLevel.value != null) {
             loading.value = true
+
             await databaseClient.postDeposit(
-                newDepoTitle.value,
-                newDepoLevel.value,
-                newDepoDescription.value
-            ).then(_ => success.value = true)
-            .catch(message => error.value = message)
+                newDepositTitle.value,
+                Level.levelFromIndex(newDepositLevel.value)!,
+                newDepositDescription.value
+            ).then(() => {
+                success.value = true
+            }).catch(message => {
+                error.value = message
+            })
+
             loading.value = false
         } else {
             error.value = "Veuillez remplir tout les champs requis"
         }
-        setTimeout(_ => [success.value, loading.value, error.value] = [false, false, null], 3000)
+        setTimeout(() => [success.value, loading.value, error.value] = [false, false, null], 3000)
     }
 
     onMounted(fetchFiles)
     watch(selectedDeposit, fetchFiles)
     watch(success, fetchFiles)
-    watch(success, fetchDepos)
+    watch(success, fetchDeposits)
 </script>
 
 <template>
     <div class="good" v-if="success">Le dépôt a bien été créé</div>
     <div class="indication" v-else-if="loading">Création en cours ...</div>
     <div class="error" v-else-if="error">{{ error }}</div>
-    <div id="manage-deposit">
-        <div id="deposit-list" :class="{ 'hidden': !depositTableIsExpanded }">
-            <h3 id="deposit-list-title">Vos depôts de ressources</h3>
-            <span
-                v-on:click='flipDepositListExpansion()'
-                id="deposit-list-menu-icon"
-                class="material-icons white"
-                :class="{ 'horizontal-symmetry': depositTableIsExpanded }"
-            >
-                arrow_forward_ios
-            </span>
-            <ul id='deposit-names'>
-                <li
-                    class='deposit-list-element'
-                    v-for="deposit in deposits"
-                    :key="deposit"
-                    :class="{ 'selected': deposit == selectedDeposit }"
-                    v-on:click='selectDeposit(deposit)'
-                >
-                    {{ deposit.title }}
-                </li>
-                <li @click="toggleSidePannel()" class='deposit-list-element' id="add-deposit-button">
-                    <span class="material-icons white">
-                        add
-                    </span>
-                    <span>
-                        Créer un nouveau dépôt
-                    </span>
-                </li>
-            </ul>
-        </div>
-    </div>
+
+    <DataColumn
+        @createData='toggleSidePannel'
+        @selectData='selectData'
+        title='Vos depôts de ressources'
+        add-button-message='Créer un dépôt de ressources'
+        :list='deposits'
+        :to-text='depositToText'
+        :to-key='depositToKey'
+    />
+
     <div class="files">
         <FileItem v-for="(file, index) in files" :key="index" :file="file" />
     </div>
@@ -120,24 +108,28 @@
     <div class="side-pannel" v-if="displaySidePannel">
         <h4 class="side-pannel-title">
             <div class="material-icons side-pannel-title-cross" @click="toggleSidePannel()">close</div>
-            Créez un nouveau dépot de ressources
+            Créez un nouveau dépôt de ressources
         </h4>
         <div class="side-pannel-fields">
             <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="depo-name">Nom du dépôt</label>
-                <input v-model="newDepoTitle" class="side-pannel-field-input" type="text" name="depo-name" id="depo-name" />
+                <label class="side-pannel-field-label" for="deposit-name">Nom du dépôt</label>
+                <input v-model="newDepositTitle" class="side-pannel-field-input" type="text" name="deposit-name" id="deposit-name" />
             </div>
             <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="depo-name">Description</label>
-                <input v-model="newDepoDescription" class="side-pannel-field-input" placeholder="Optionnel"
-                type="text" name="depo-name" id="depo-name" />
+                <label class="side-pannel-field-label" for="deposit-name">Description</label>
+                <input v-model="newDepositDescription" class="side-pannel-field-input" placeholder="Optionnel"
+                type="text" name="deposit-name" id="deposit-name" />
             </div>
             <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="depo-name">Niveau</label>
-                <select v-model="newDepoLevel" class="side-pannel-field-input">
-                    <option selected value="" disabled>-- Sélectionnez un niveau --</option>
-                    <option :value="index" v-for="(level, index) in levels"
-                    :key="level.index" id="level" placeholder="Niveau">
+                <label class="side-pannel-field-label" for="deposit-name">Niveau</label>
+                <select v-model="newDepositLevel" class="side-pannel-field-input">
+                    <option
+                        :value="index"
+                        v-for="(level, index) in levels"
+                        :key="level.index"
+                        id="level"
+                        placeholder="Niveau"
+                    >
                         {{ level.abbreviated }}
                     </option>
                 </select>

@@ -1,19 +1,12 @@
 <script lang="ts" setup>
 import { computed } from "vue"
 import { ref } from "vue"
-// @ts-ignore Vue bug
 import UploadFile from "@/components/dashboard/add/UploadFile.vue"
-// @ts-ignore Vue bug
 import AddDeposit from "@/components/dashboard/add/AddDeposit.vue"
-// @ts-ignore Vue bug
 import AddNews from "@/components/dashboard/add/AddNews.vue"
-// @ts-ignore Vue bug
 import AccesBlacklist from "@/components/dashboard/add/AccesBlacklist.vue"
-// @ts-ignore Vue bug
 import AddHistoryPoint from "@/components/dashboard/add/AddHistoryPoint.vue"
-// @ts-ignore Vue bug
 import EditNews from "@/components/dashboard/edit/EditNews.vue"
-// @ts-ignore Vue bug
 import EditDeposit from "@/components/dashboard/edit/EditDeposit.vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
@@ -21,8 +14,8 @@ import type { Repository } from "@/database/interface/repositories"
 import { useRoute } from "vue-router"
 import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
-// @ts-ignore
 import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
+import ManageNews from "@/components/dashboaard/ManageNews.vue"
 
 const availableViewsForUser= computed(
     () => {
@@ -67,19 +60,19 @@ const component = computed(
     () => {
         const viewName = getParameterOfRoute(useRoute().params.view)
         const view = View.viewFromName(viewName)
-
         if (view == null) {
             if (availableViewsForUser.value.length > 0) {
+                console.log('Switched vue to "' + availableViewsForUser.value[0].name + '"')
                 return availableViewsForUser.value[0].component
             } else {
-                // "noViewsAvailable" is true
-                return ""
+                return null  // "noViewsAvailable" is true so what we return don't matter
             }
         }
 
         return view.component
     }
 )
+
 class View {
     name: string  // Name of the material design icon
     nameInURL: string
@@ -94,17 +87,19 @@ class View {
     }
 
     static viewFromName(name: string) {
-        for (let view of [this.DEPOSITS, this.NEWS, this.HISTORY, this.TEACHERS, this.USERS, this.BLACKLIST]) {
+        for (let view of [this.DEPOSITS, this.NEWS, this.HISTORY, this.THEMES, this.TEACHERS, this.USERS, this.BLACKLIST]) {
             if (view.nameInURL == name) {
                 return view
             }
         }
 
+        console.log('Unknown view of name', name)
+
         return null
     }
 
     static DEPOSITS = new View('Depôts de ressources', 'deposits', 'folder', ManageDeposits)
-    static NEWS = new View('Actualités', 'news', 'newspaper', ManageDeposits)
+    static NEWS = new View('Actualités', 'news', 'newspaper', ManageNews)
     static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', ManageDeposits)
     static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', ManageDeposits)
     static TEACHERS = new View('Enseignants', 'teachers', 'school', ManageDeposits)

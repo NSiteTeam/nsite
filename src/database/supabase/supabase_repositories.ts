@@ -7,7 +7,7 @@ export class SupabaseRepository implements Repository {
     publication_date: string
     description: string
     id: number
-    content: Array<number | string>
+    content: Array<number>
 
     constructor(
         id: number,
@@ -15,7 +15,7 @@ export class SupabaseRepository implements Repository {
         level: Level,
         publication_date: string,
         description: string,
-        content: Array<number | string>
+        content: Array<number>
     ) {
         this.id = id
         this.title = title

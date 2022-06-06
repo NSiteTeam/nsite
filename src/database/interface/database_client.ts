@@ -6,12 +6,12 @@ import type { Repository } from './repositories';
 import type CustomFile from './file';
 import type Message from './message';
 import type { User } from './user';
+import type { Level } from './level';
 
 export interface DatabaseClient {
     // USER
     isConnected: Ref<boolean>
     user: Ref<User | null>
-    accountCreationDate: Ref<string | null>
 
     signIn(email: string, password: string, username: string): any
     login(email: string, password: string): any
@@ -19,7 +19,7 @@ export interface DatabaseClient {
 
     // Deposits
     uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
-    postDeposit(title: string, level: number, description: string) : Promise<void>
+    postDeposit(title: string, level: Level, description: string) : Promise<void>
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getRepos(id?: number): Promise<Repository[]>
     getOwnedDeposits(): Promise<Repository[]>

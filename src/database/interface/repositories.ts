@@ -6,5 +6,5 @@ export interface Repository {
     level: Level
     publication_date: string
     description: string
-    content: Array<number | string>
+    content: Array<number>
 }

@@ -16,6 +16,17 @@
 
     static LEVELS = [this.SIXIEME, this.CINQUIEME, this.QUATRIEME, this.TROISIEME, this.SECONDE, this.PREMIERE, this.TERMINALE]
 
+    static levelFromIndex(index: number) {
+        for (let level of this.LEVELS) {
+            if (level.index == index) {
+                return level
+            }
+        }
+
+        console.log('No level of index', index)
+        return null
+    }
+
     constructor(fullName: string, abbreviated: string, index: number) {
         this.fullName = fullName
         this.abbreviated = abbreviated

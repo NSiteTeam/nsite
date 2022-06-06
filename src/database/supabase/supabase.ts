@@ -303,7 +303,9 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getOwnedDeposits(): Promise<Repository[]> {
-        const uuid = this.user.value?.uuid
+        const uuid = supabase.auth.user()?.id
+
+        console.log('Trying to fetch repositories owned by user', uuid)
 
         if (uuid == null) {
             return []
@@ -326,7 +328,7 @@ export class SupabaseClient implements DatabaseClient {
             return data.map(deposit => new SupabaseRepository(
                 deposit['id'],
                 deposit['title'],
-                deposit['level'],
+                SupabaseLevelHelper.getLevelById(deposit['level']),
                 deposit['publication_date'],
                 deposit['description'],
                 deposit['content'],
@@ -502,23 +504,26 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     clearMessages() {
-        this.fetchedMessages.value = []  
+        this.fetchedMessages.value = []
     }
 
-    async postDeposit(title: string, level: number, description: string) : Promise<void> {
+    async postDeposit(title: string, level: Level, description: string) : Promise<void> {
+        const levelId = SupabaseLevelHelper.getIdByLevel(level)
+
         const insertedData = {
             "title": title,
-            "level": level,
+            "level": levelId,
             "description": description,
             "owners": [this.user.value?.uuid]
         }
-        const { data, error } = await supabase.from('deposits').insert([insertedData])
 
-        if (error) throw error.message
-        else {
-            console.log(`Added one deposit to the database : ${insertedData.title}`)
-            return new Promise((resolve, reject) => resolve())
+        const { error } = await supabase.from('deposits').insert([insertedData])
+
+        if (error) {
+            throw error
         }
+
+        console.log(`Added one deposit to the database : ${insertedData.title}`)
     }
 
     async postHistotyPoint(title: string, content: string, date: string) : Promise<void> {

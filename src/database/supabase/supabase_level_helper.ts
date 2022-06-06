@@ -24,4 +24,28 @@ export class SupabaseLevelHelper {
                 throw Error(`Unknwon level of id ${id}`)
         }
     }
+
+    /**
+     * Return the id in the database from the level
+     */
+    static getIdByLevel(level: Level): number {
+        switch (level) {
+            case Level.SIXIEME:
+                return 1
+            case Level.CINQUIEME:
+                return 2
+            case Level.QUATRIEME:
+                return 3
+            case Level.TROISIEME:
+                return 4
+            case Level.SECONDE:
+                return 5
+            case Level.PREMIERE:
+                return 6
+            case Level.TERMINALE:
+                return 7
+            default:
+                throw Error(`Unknwon level, ${level}`)
+        }
+    }
 }

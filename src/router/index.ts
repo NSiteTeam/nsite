@@ -50,7 +50,7 @@ const router = createRouter({
       component: () => import("../views/admin/Dashboard.vue")
     },
     {
-      path: "/dashboard/:popup?/:action?/:depo?",
+      path: "/dashboard/:view?/:action?/:depo?",
       name: "dashboard",
       component: () => import("../views/admin/Dashboard.vue")
     },
