@@ -29,7 +29,7 @@
             margin: 0;
 
             font-weight: bold;
-            background-color: $space-cadet-light;
+            background-color: #5a6c99;
             list-style-type: none;
 
             @media (max-width: $mobile-width) {
