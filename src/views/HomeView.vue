@@ -49,7 +49,7 @@ databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 const sortedNews = computed(
   () => {
     return news.value.sort((a: News, b: News) => {
-      return LongDate.subDates(
+      return LongDate.compare(
         LongDate.ISOStringToLongDate(a.date),
         LongDate.ISOStringToLongDate(b.date),
       )
