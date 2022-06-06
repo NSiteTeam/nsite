@@ -501,11 +501,12 @@ export class SupabaseClient implements DatabaseClient {
         this.fetchedMessages.value = []  
     }
 
-    async postDeposit(title: string, level: string, description: string) : Promise<void> {
+    async postDeposit(title: string, level: number, description: string) : Promise<void> {
         const insertedData = {
             "title": title,
             "level": level,
             "description": description,
+            "owners": [this.user.value?.uuid]
         }
         const { data, error } = await supabase.from('deposits').insert([insertedData])
 

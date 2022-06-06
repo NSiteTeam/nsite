@@ -16,16 +16,30 @@
         "6eme",
     ]
 
-    const displaySidePannel: Ref<boolean> = ref(true)
+    const newDepoLevel: Ref<number | null> = ref(null)
+    const displaySidePannel: Ref<boolean> = ref(false)
+    const newDepoDescription: Ref<string> = ref("")
+    const newDepoTitle: Ref<string> = ref("")
     const depositTableIsExpanded = ref(true)
+    const success: Ref<boolean> = ref(false)
+    const error: Ref<string | null> = ref(null)
+    const loading: Ref<boolean> = ref(false)
     const files: Ref<any[]> = ref([])
     const selectedDeposit = ref()
     const deposits = ref()
-
+    
     await databaseClient.getOwnedDeposits().then(result => {
         deposits.value = result
         selectedDeposit.value = result[0]
     })
+    
+    async function fetchDepos() {
+        deposits.value = []
+        await databaseClient.getOwnedDeposits().then(result => {
+            deposits.value = result
+            selectedDeposit.value = result[0]
+        })
+    }
 
     function toggleSidePannel() {
         displaySidePannel.value = !displaySidePannel.value
@@ -33,7 +47,7 @@
 
     function fetchFiles() {
         files.value = []
-        selectedDeposit.value.content.map(async (fileId: number) => {
+        selectedDeposit.value.content?.map(async (fileId: number) => {
             const file = ref()
             await databaseClient.getFile(fileId)
             .then(res => file.value = res)
@@ -49,11 +63,32 @@
         selectedDeposit.value = deposit
     }
 
+    async function addDeposit() {
+        if (newDepoTitle.value != "" && newDepoLevel.value != null) {
+            loading.value = true
+            await databaseClient.postDeposit(
+                newDepoTitle.value, 
+                newDepoLevel.value, 
+                newDepoDescription.value
+            ).then(_ => success.value = true)
+            .catch(message => error.value = message)
+            loading.value = false
+        } else {
+            error.value = "Veuillez remplir tout les champs requis"
+        }
+        setTimeout(_ => [success.value, loading.value, error.value] = [false, false, null], 3000)
+    }
+
     onMounted(fetchFiles)
     watch(selectedDeposit, fetchFiles)
+    watch(success, fetchFiles)
+    watch(success, fetchDepos)
 </script>
 
 <template>
+    <div class="good" v-if="success">Le dépôt a bien été créé</div>
+    <div class="indication" v-else-if="loading">Création en cours ...</div>
+    <div class="error" v-else-if="error">{{ error }}</div>
     <div id="manage-deposit">
         <div id="deposit-list" :class="{ 'hidden': !depositTableIsExpanded }">
             <h3 id="deposit-list-title">Vos depôts de ressources</h3>
@@ -98,16 +133,16 @@
         <div class="side-pannel-fields">
             <div class="side-pannel-field">
                 <label class="side-pannel-field-label" for="depo-name">Nom du dépôt</label>
-                <input class="side-pannel-field-input" type="text" name="depo-name" id="depo-name" />
+                <input v-model="newDepoTitle" class="side-pannel-field-input" type="text" name="depo-name" id="depo-name" />
             </div>
             <div class="side-pannel-field">
                 <label class="side-pannel-field-label" for="depo-name">Description</label>
-                <input class="side-pannel-field-input" placeholder="Optionnel"
+                <input v-model="newDepoDescription" class="side-pannel-field-input" placeholder="Optionnel"
                 type="text" name="depo-name" id="depo-name" />
             </div>
             <div class="side-pannel-field">
                 <label class="side-pannel-field-label" for="depo-name">Niveau</label>
-                <select class="side-pannel-field-input">
+                <select v-model="newDepoLevel" class="side-pannel-field-input">
                     <option selected value="" disabled>-- Sélectionnez un niveau --</option>
                     <option :value="index" v-for="(level, index) in levels" 
                     :key="level" id="level" placeholder="Niveau">
@@ -127,7 +162,7 @@
         </div>
         <div class="side-pannel-bottom-buttons">
             <button class="side-pannel-bottom-buttons-cancel" @click="toggleSidePannel()">Annuler</button>
-            <button class="side-pannel-bottom-buttons-submit">Envoyer</button>
+            <button class="side-pannel-bottom-buttons-submit" @click="addDeposit()">Envoyer</button>
         </div>
     </div>
 </template>
