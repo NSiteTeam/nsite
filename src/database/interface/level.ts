@@ -14,6 +14,8 @@
     static PREMIERE = new Level('Première', '1ère', 5)
     static TERMINALE = new Level('Terminale', 'Tal', 6)
 
+    static LEVELS = [this.SIXIEME, this.CINQUIEME, this.QUATRIEME, this.TROISIEME, this.SECONDE, this.PREMIERE, this.TERMINALE]
+
     constructor(fullName: string, abbreviated: string, index: number) {
         this.fullName = fullName
         this.abbreviated = abbreviated

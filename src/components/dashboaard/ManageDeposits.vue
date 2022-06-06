@@ -1,20 +1,10 @@
 <script setup lang="ts">
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
-    // @ts-ignore
     import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
     import { watch, ref, toRaw, onMounted } from "vue";
     import type { Ref } from "vue";
-
-    const levels = [
-        "Tale",
-        "1ere",
-        "2nd",
-        "3eme",
-        "4eme",
-        "5eme",
-        "6eme",
-    ]
+    import { Level } from '@/database/interface/level'
 
     const newDepoLevel: Ref<number | null> = ref(null)
     const displaySidePannel: Ref<boolean> = ref(false)
@@ -27,12 +17,14 @@
     const files: Ref<any[]> = ref([])
     const selectedDeposit = ref()
     const deposits = ref()
-    
+
+    const levels = Level.LEVELS
+
     await databaseClient.getOwnedDeposits().then(result => {
         deposits.value = result
         selectedDeposit.value = result[0]
     })
-    
+
     async function fetchDepos() {
         deposits.value = []
         await databaseClient.getOwnedDeposits().then(result => {
@@ -67,8 +59,8 @@
         if (newDepoTitle.value != "" && newDepoLevel.value != null) {
             loading.value = true
             await databaseClient.postDeposit(
-                newDepoTitle.value, 
-                newDepoLevel.value, 
+                newDepoTitle.value,
+                newDepoLevel.value,
                 newDepoDescription.value
             ).then(_ => success.value = true)
             .catch(message => error.value = message)
@@ -144,9 +136,9 @@
                 <label class="side-pannel-field-label" for="depo-name">Niveau</label>
                 <select v-model="newDepoLevel" class="side-pannel-field-input">
                     <option selected value="" disabled>-- Sélectionnez un niveau --</option>
-                    <option :value="index" v-for="(level, index) in levels" 
-                    :key="level" id="level" placeholder="Niveau">
-                        {{ level }}
+                    <option :value="index" v-for="(level, index) in levels"
+                    :key="level.index" id="level" placeholder="Niveau">
+                        {{ level.abbreviated }}
                     </option>
                 </select>
             </div>
