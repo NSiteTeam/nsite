@@ -4,18 +4,19 @@
             <span class="profile-title">
                 <ProfilePicture size='48px'/>
                 <span id='username'> {{ username }} </span>
+                <RouterLink id='disconnect-icon' to="/logout"><span class='material-icons'>logout</span></RouterLink>
             </span>
             <div class="user-details">
-                <div class="label">Adresse mail: </div>
+                <div class="label">Adresse mail</div>
                 <div class="value">
                     {{ email }}
                     <span @click="toggleEmail">
                         {{ displayEmail ? 'Masquer' : 'Afficher' }}
                     </span>
                 </div>
-                <div class="label">Nom d'utilisateur: </div>
+                <div class="label">Nom d'utilisateur</div>
                 <div class="value">{{ username }}</div>
-                <div class="label">Rôles : </div>
+                <div class="label">Permissions</div>
                 <ul class="value">
                     <li class="permission" v-for="(permission, index) in permissions" :key="index">
                         {{ permission }}
@@ -24,7 +25,6 @@
             </div>
         </div>
     </div>
-    <RouterLink  to="/dashboard" class="navbar-link">Dashboard</RouterLink>
 </template>
 
 <script setup lang="ts">

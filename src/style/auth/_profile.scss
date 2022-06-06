@@ -1,16 +1,25 @@
 #profile-container {
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+    min-height: calc(100vh - $header-height - 100px);
+    padding-top: 100px;
     color: $cream-white;
-    padding: 3%;
     background-color: $space-cadet-light;
 
+
+    @media (max-width: $mobile-width) {
+        min-height: calc(100vh - $header-height - 60px);
+        padding-top: 60px;
+    }
 
     .user-infos {
         background-color: $space-cadet;
         border-radius: 20px;
         width: 60%;
+        margin: auto;
+
+        @media (max-width: $mobile-width) {
+            width: 90%;
+        }
 
         .profile-title {
             display: flex;
@@ -23,6 +32,14 @@
 
             #username {
                 margin-left: 16px;
+            }
+
+            #disconnect-icon {
+                margin-left: auto;
+
+                span {
+                    font-size: 32px;
+                }
             }
         }
 

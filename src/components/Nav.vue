@@ -10,11 +10,11 @@
                 <RouterLink to="/timeline" class="navbar-link"><span>Un peu d'Histoire</span></RouterLink>
                 <RouterLink v-if="!connected" to="/login" class="navbar-link"><span>Se connecter</span></RouterLink>
                 <RouterLink v-if="!connected" to="/register" class="navbar-link"><span>S'inscrire</span></RouterLink>
+                <RouterLink v-if="hasAccessToDashboard" to="/dashboard" class=navbar-link><span>Gestion des élèves</span></RouterLink>
                 <RouterLink
                     v-if="connected"
                     to="/profile"
                     class="navbar-link"
-                    v-bind:class="{ active: isProfilePage }"
                 >
                     <ProfilePicture size='32px' />
                 </RouterLink>
@@ -46,7 +46,7 @@
         toggleMenu.value = !toggleMenu.value
     }
 
-    const isProfilePage = computed(
-        () => { route.name == 'profile' }
+    const hasAccessToDashboard = computed(
+        () => databaseClient.isConnected && databaseClient.user.value?.permissions
     )
 </script>
