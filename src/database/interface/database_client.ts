@@ -15,7 +15,7 @@ export interface DatabaseClient {
 
     signIn(email: string, password: string, username: string): any
     login(email: string, password: string): any
-    logout(): any
+    logout(): Promise<boolean>
 
     // Deposits
     uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>

@@ -111,17 +111,18 @@ export class SupabaseClient implements DatabaseClient {
      * @param password the password of the user
      * @returns if the account was created or not. The return can be true even if the email is not yet verified
      */
-    async logout(): Promise<any> {
+    async logout(): Promise<boolean> {
         console.log("Trying to sign out")
 
         const { error } = await supabase.auth.signOut()
-        return new Promise((resolve, reject) => {
-            if (!error) {
-                resolve("Vous êtes déconnecté")
-            } else {
-                reject(error)
-            }
-        })
+
+        if (error) {
+            console.log("Error during disconnection", error)
+        }
+
+        this.updateUserInfos()
+
+        return error == null
     }
 
     /**

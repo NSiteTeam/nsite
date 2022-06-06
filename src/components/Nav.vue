@@ -12,7 +12,7 @@
                 <RouterLink v-if="!connected" to="/register" class="navbar-link"><span>S'inscrire</span></RouterLink>
                 <RouterLink v-if="hasAccessToDashboard" to="/dashboard" class=navbar-link><span>Gestion des élèves</span></RouterLink>
                 <RouterLink
-                    v-if="connected"
+                    v-if="hasAccessToDashboard"
                     to="/profile"
                     class="navbar-link"
                 >
@@ -40,6 +40,7 @@
 
     const toggleMenu = ref(false)
     const windowWidth = width
+
     const connected = databaseClient.isConnected
 
     function toggleMenuFunction() {
@@ -47,6 +48,6 @@
     }
 
     const hasAccessToDashboard = computed(
-        () => databaseClient.isConnected && databaseClient.user.value?.permissions
+        () => databaseClient.isConnected.value && databaseClient.user.value?.permissions
     )
 </script>

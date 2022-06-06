@@ -1,15 +1,12 @@
-.disconnected-box {
-    margin: 65px 0 0 110px;
-    width: calc(100% + 110px);
-    height: 20vh;
-    margin-left: -110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    p {
-        background-color: $space-cadet;
-        padding: 50px;
-        border-radius: 50px;
+#homepage-message {
+    color: $cerulean-frost;
+    margin-top: 100px;
+    text-decoration: underline;
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+
+    a {
+        color: $cerulean-frost;
     }
 }
