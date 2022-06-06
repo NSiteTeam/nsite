@@ -16,7 +16,6 @@ import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
 import { SupabaseUser } from './supabase_user'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
-import { SupabaseLevelHelper } from './supabase_level_helper'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -111,18 +110,17 @@ export class SupabaseClient implements DatabaseClient {
      * @param password the password of the user
      * @returns if the account was created or not. The return can be true even if the email is not yet verified
      */
-    async logout(): Promise<boolean> {
+    async logout(): Promise<any> {
         console.log("Trying to sign out")
 
         const { error } = await supabase.auth.signOut()
-
-        if (error) {
-            console.log("Error during disconnection", error)
-        }
-
-        this.updateUserInfos()
-
-        return error == null
+        return new Promise((resolve, reject) => {
+            if (!error) {
+                resolve("Vous êtes déconnecté")
+            } else {
+                reject(error)
+            }
+        })
     }
 
     /**
@@ -272,34 +270,32 @@ export class SupabaseClient implements DatabaseClient {
     async getRepos(id?: number): Promise<Repository[]> {
         console.log("Trying to fetch deposits in the database")
 
-        try {
-            // Here we can directly manipulate the database as deposits are public
-            let { data, error } = !id ? await supabase.from('deposits').select() :
-            await supabase.from('deposits').select().eq("id", id).maybeSingle()
-            
-            if (id) {
-                data = [data]
-            }
-
-            if (error) {
-                throw error
-            }
-
-            if (!data) {
-                throw "Data returned by the request is null"
-            }
-
-            return data.map((repository: any) => new SupabaseRepository(
-                repository['id'],
-                repository['title'],
-                SupabaseLevelHelper.getLevelById(repository['level']),
-                repository['publication_date'],
-                repository['description'],
-                repository['content'],
-            ))
-        } catch (error) {
-            console.log('Error while fetching deposits', error)
+        // Here we can directly manipulate the database as deposits are public
+        let { data, error } = !id ? await supabase.from('deposits').select() :
+        await supabase.from('deposits').select().eq("id", id).maybeSingle()
+        
+        if (id) {
+            data = [data]
         }
+
+        return new Promise((resolve, reject) => {
+            if (error == null && data) {
+                this.repositories.value.push(data[0])
+                resolve(data.map((repositories: Repository) => {
+                    return new SupabaseRepository(
+                        repositories['id'],
+                        repositories['title'],
+                        repositories['level'],
+                        repositories['publication_date'],
+                        repositories['description'],
+                        repositories['content'],
+                    )
+                }))
+            } else if (error) {
+                reject(`Error while fetching deposits, 
+                probably caused by changes in the database: ` + error.message)
+            }
+        })
     }
 
     async getOwnedDeposits(): Promise<Repository[]> {
@@ -549,15 +545,23 @@ export class SupabaseClient implements DatabaseClient {
         2: registers the file object in the dB
         3: selects the already present files in the depo
         4: updates the content in the depo */
-    async uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string> {
-        // Removes the diacritics from the file name
+    async uploadFileToDeposit(file: File, deposit: string, message: string, fileName?: string): Promise<string> {
+        // Removes the bad caracters from the file name
+        const newName = (fileName || file.name)
+        .replace(/[<>{}%`\[\]~#^:'’"/\\|?*]/g, ' ')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        // Removes the bad caracters from the deposit name
+        const cleanDepositName = deposit
+        .replace(/[<>{}%`\[\]~#^:'’"/\\|?*]/g, ' ')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+
         const author = this.uuid.value ? await this.getUsername(this.uuid.value) : "anonyme"
         // Uploads data to the storage bucket
-        const escapedFile = new File([file], file.name
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, ""), {type: file.type});
-        console.log(escapedFile.name)
+        const escapedFile = new File([file], newName, {type: file.type});
+        
+        console.log(deposit + '/' + newName)
         const { data, error } = await supabase.storage.from('depositsfiles').upload(
-            escapedFile.name, escapedFile, {
+            cleanDepositName + '/' + newName, escapedFile, {
                 cacheControl: '3600',
                 upsert: false
             }
@@ -583,10 +587,11 @@ export class SupabaseClient implements DatabaseClient {
                 // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
                 res.data ? console.log(responseForTheSelect.data) : null
 
+                const oldData = responseForTheSelect.data.content || []
                 // Adds the file to the depo
                 const responseForTheUpdate = await supabase.from("deposits")
                 // @ts-ignore res.data is any so he is not happy
-                .update([{ "content": responseForTheSelect.data.content.concat(res.data[0].id) }])
+                .update([{ "content": oldData.concat(res.data[0].id) }])
                 .match({ "title": deposit })
 
                 res.error ? console.warn(responseForTheUpdate.error) : null
