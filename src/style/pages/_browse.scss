@@ -2,7 +2,7 @@
 // This file contains the styles for the browse view
 // ###########################################################################
 
-.change-order-button {
+#change-order-button {
     @include shadow1;
     border: 0;
     padding: 10px;
@@ -14,10 +14,6 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-
-    &:active {
-        @include shadow2
-    }
 }
 
 .filters {

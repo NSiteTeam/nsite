@@ -10,7 +10,7 @@ const repo = props.exercise //<!-- TODO: Rename-->
     <RouterLink :to="'/repository/content/' + repo.id" class="card">
         <h3 class="card-title">{{ repo.title }}</h3>
         <i>
-            Niveau: {{ repo.level }}{{ repo.level == 2 ? 'nde' : 'ème' }} • Ajouté le
+            Niveau: {{ repo.level.fullName }} • Ajouté le
             {{ LongDate.ISOStringToLongDate(repo.publication_date).beautify() }}
         </i>
         <p class="card-descr">{{ repo.description }}</p>

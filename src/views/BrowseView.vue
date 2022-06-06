@@ -1,97 +1,93 @@
- <script setup lang="ts">
-import { databaseClient } from "@/database/implementation"
-import { computed, ref } from "vue"
-import type { Ref } from "vue"
-import type { Repository } from "@/database/interface/repositories"
-import Card from "@/components/Card.vue"
-import LoadingAnimation from "@/components/LoadingAnimation.vue"
-import { useRoute } from "vue-router"
-import { LongDate }from "@/utils/long_date"
+<script setup lang="ts">
+    import { databaseClient } from "@/database/implementation"
+    import { computed, ref } from "vue"
+    import type { Ref } from "vue"
+    import type { Repository } from "@/database/interface/repositories"
+    import Card from "@/components/Card.vue"
+    import LoadingAnimation from "@/components/LoadingAnimation.vue"
+    import { useRoute } from "vue-router"
+    import { LongDate }from "@/utils/long_date"
+import type { Level } from "@/database/interface/level"
 
-enum Sort {
-    PUBLICATION_DATE = "Par date",
-    ALPHABETICAL = "Alphabétique"
-}
-
-const data: Ref<Array<Repository>> = ref([])
-
-databaseClient.getRepos().then(res =>
-    data.value = res
-)
-
-const reversed = ref(false)
-const sort = ref(Sort.PUBLICATION_DATE)
-const selectedLevel: Ref<number | null> = ref(
-    useRoute().params.level[0] ? Number(useRoute().params.level[0]) : null
-)
-const searchbarContent: Ref<string> = ref("")
-
-
-function changeOrder() {
-    reversed.value = !reversed.value
-}
-
-function changeSort(newKey: Sort) {
-    console.log(sort.value, newKey)
-    sort.value = newKey
-}
-
-function selectLevel(newLevel: number) {
-    console.log(selectedLevel.value)
-    selectedLevel.value = newLevel
-}
-
-const output = computed(
-    () => {
-        const reverseCoef = reversed.value ? -1 : 1
-
-        const selectedData: Ref<Repository[]> = ref([])
-        // If a level is selected, sort depos
-        if (selectedLevel.value != null) {
-            selectedData.value = data.value.filter(deposit => {
-                return deposit.level == selectedLevel.value
-            })
-        } else {
-            selectedData.value = data.value
-        }
-
-        selectedData.value =selectedData.value.filter(deposit => {
-            return deposit.title.includes(searchbarContent.value)
-        })
-
-        switch (sort.value) {
-            case Sort.ALPHABETICAL:
-                return selectedData.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
-            case Sort.PUBLICATION_DATE:
-                return selectedData.value.sort((a, b) => reverseCoef * LongDate.compare(
-                    LongDate.ISOStringToLongDate(a.publication_date),
-                    LongDate.ISOStringToLongDate(b.publication_date),))
-            default:
-                throw Error('Unknown sort')
-        }
+    enum Sort {
+        PUBLICATION_DATE = "Par date",
+        ALPHABETICAL = "Alphabétique"
     }
-)
 
-function levels(): Array<number> {
-    const levels: Array<number> = []
-    data.value.forEach(repo => {
-        if(!(levels.includes(repo.level))) {
-            levels.push(repo.level)
+    const deposits: Ref<Array<Repository>> = ref([])
+
+    databaseClient.getRepos().then(res =>
+        deposits.value = res
+    )
+
+    const reversed = ref(false)
+    const sort = ref(Sort.PUBLICATION_DATE)
+    const selectedLevel: Ref<number | null> = ref(
+        useRoute().params.level[0] ? Number(useRoute().params.level[0]) : null
+    )
+    const searchbarContent: Ref<string> = ref("")
+
+
+    function changeOrder() {
+        reversed.value = !reversed.value
+    }
+
+    function changeSort(newKey: Sort) {
+        console.log(sort.value, newKey)
+        sort.value = newKey
+    }
+
+    function selectLevel(newLevel: number) {
+        console.log(selectedLevel.value)
+        selectedLevel.value = newLevel
+    }
+
+    const output = computed(
+        () => {
+            const reverseCoef = reversed.value ? -1 : 1
+
+            const selectedData: Ref<Repository[]> = ref([])
+            // If a level is selected, filter deposits
+            if (selectedLevel.value != null) {
+                selectedData.value = deposits.value.filter(deposit => deposit.level == selectedLevel.value)
+            } else {
+                selectedData.value = deposits.value
+            }
+
+            selectedData.value = selectedData.value.filter(deposit => deposit.title.includes(searchbarContent.value))
+
+            switch (sort.value) {
+                case Sort.ALPHABETICAL:
+                    return selectedData.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
+                case Sort.PUBLICATION_DATE:
+                    return selectedData.value.sort((a, b) => reverseCoef * LongDate.compare(
+                        LongDate.ISOStringToLongDate(a.publication_date),
+                        LongDate.ISOStringToLongDate(b.publication_date)))
+                default:
+                    throw Error('Unknown sort')
+            }
         }
-    })
-    return levels.sort((a, b) => {
-        return b-a
-    })
-}
+    )
+
+    function levels(): Array<Level> {
+        const levels: Set<Level> = new Set()
+        deposits.value.forEach(deposit => levels.add(deposit.level))
+        return Array.from(levels).sort((a, b) => a.index - b.index)
+    }
 
 </script>
 
 <template>
     <div id='browse-view'>
         <div class="search">
-            <input type="text" v-model="searchbarContent" 
-            autocomplete="off" name="search-input" 
-            class="search-input" placeholder="Rechercher">
+            <input
+                type="text"
+                v-model="searchbarContent"
+                autocomplete="off"
+                name="search-input"
+                class="search-input"
+                placeholder="Rechercher"
+            >
             <button class="material-icons white">
                 search
             </button>
@@ -115,14 +111,14 @@ function levels(): Array<number> {
                     :key="level"
                 >
                 <RouterLink :to="'/browse/' + level">
-                    {{ level }}{{ level == 2 ? "nd" : "eme" }}
+                    {{ level.abbreviated }}
                 </RouterLink>
                 </li>
             </ul>
-            
+
             <ul class="sort-keys">
                 <h2>Type de tri :</h2>
-                <button class="change-order-button" @click="changeOrder()">
+                <button id="change-order-button" @click="changeOrder()">
                     <span v-if="reversed" class="material-icons">
                         arrow_drop_up
                     </span>
