@@ -3,8 +3,8 @@ import { databaseClient } from "@/database/implementation"
 import { computed, ref } from "vue"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
-// @ts-ignore C'est un bug
 import Card from "@/components/Card.vue"
+import LoadingAnimation from "@/components/LoadingAnimation.vue"
 import { useRoute } from "vue-router"
 import { LongDate }from "@/utils/long_date"
 
@@ -143,7 +143,10 @@ function levels(): Array<number> {
             </ul>
         </div>
         <h2>Résultats :</h2>
-        <Transition name="fade">
+        <div v-if='!output.length' class='loading-container'>
+            <LoadingAnimation size="25%"/>
+        </div>
+        <Transition v-else name="fade">
             <div id="browse-container">
                 <Card :exercise=repo v-for="repo in output" :key="repo.id" />
             </div>

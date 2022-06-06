@@ -30,6 +30,7 @@
 <script setup lang="ts">
     import { databaseClient } from '@/database/implementation'
     import ProfilePicture from '@/components/ProfilePicture.vue'
+    import LoadingAnimation from '@/components/LoadingAnimation.vue'
     import { computed, ref } from 'vue'
 
     const uuid = computed(() => databaseClient.user.value?.uuid)

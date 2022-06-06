@@ -1,0 +1,145 @@
+.triangle {
+    transform-origin: 50% 50%;
+}
+
+@mixin initialState($orientation) {
+    transform: rotate($orientation);
+    opacity: 0%;
+}
+
+@mixin animationBegin($rotation) {
+    transform: rotate($rotation);
+    opacity: 0%;
+}
+
+@mixin atFirstWing() {
+    opacity: 100%;
+}
+
+@mixin atNormalPosition1() {
+    transform: rotate(360deg);
+}
+
+@mixin atNormalPosition2() {
+    transform: rotate(360deg);
+}
+
+@mixin willDisappear() {
+    opacity: 100%;
+}
+
+@mixin disappeared() {
+    opacity: 0%;
+}
+
+@mixin finished($rotation) {
+    transform: rotate(calc($rotation + 360deg));
+    opacity: 0%;
+}
+
+@mixin finishedAndWaiting($rotation) {
+    transform: rotate(calc($rotation + 360deg));
+    opacity: 0%;
+}
+
+
+@keyframes loading1 {
+    0% { @include initialState(338deg) }   // delay = 25/s
+    18.2% { @include animationBegin(338deg) } // $*delay
+    20.3% { @include atFirstWing() }            // $*delay + 25/s
+    20.0% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    57.6% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    76.9% { @include willDisappear() }
+    78.5% { @include disappeared() }
+    85.0% { @include finishedAndWaiting(338deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(338deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@keyframes loading2 {
+    0% { @include initialState(306deg) }   // delay = 25/s
+    14.6% { @include animationBegin(306deg) } // $*delay
+    16.6% { @include atFirstWing() }            // $*delay + 25/s
+    19.0% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    53.9% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    70.6% { @include willDisappear() }
+    72.3% { @include disappeared() }
+    78.8% { @include finishedAndWaiting(306deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(306deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@keyframes loading3 {
+    0% { @include initialState(222deg) }   // delay = 25/s
+    10.9% { @include animationBegin(222deg) } // $*delay
+    13.0% { @include atFirstWing() }            // $*delay + 25/s
+    22.1% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    50.3% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    60.2% { @include willDisappear() }
+    61.8% { @include disappeared() }
+    68.3% { @include finishedAndWaiting(222deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(222deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@keyframes loading4 {
+    0% { @include initialState(173deg) }   // delay = 25/s
+    7.3% { @include animationBegin(173deg) } // $*delay
+    9.3% { @include atFirstWing() }            // $*delay + 25/s
+    22.5% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    46.6% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    52.6% { @include willDisappear() }
+    54.2% { @include disappeared() }
+    60.7% { @include finishedAndWaiting(173deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(173deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@keyframes loading5 {
+    0% { @include initialState(145deg) }   // delay = 25/s
+    3.6% { @include animationBegin(145deg) } // $*delay
+    5.7% { @include atFirstWing() }            // $*delay + 25/s
+    21.1% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    43.0% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    46.6% { @include willDisappear() }
+    48.3% { @include disappeared() }
+    54.7% { @include finishedAndWaiting(145deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(145deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@keyframes loading6 {
+    0% { @include initialState(100deg) }   // delay = 25/s
+    0.0% { @include animationBegin(100deg) } // $*delay
+    2.0% { @include atFirstWing() }            // $*delay + 25/s
+    21.1% { @include atNormalPosition1() }      // $*delay + (360-d)/s
+    39.3% { @include atNormalPosition2() }     // 5*delay + (360-lastd)/s + $*delay
+    39.3% { @include willDisappear() }
+    41.0% { @include disappeared() }
+    47.4% { @include finishedAndWaiting(100deg) }    // 5*delay + 360/s + $delay
+    100% { @include finished(100deg) }      // 5*delay + 360/s + 5*delay
+}
+
+@mixin animate($name) {
+    animation: $name 3s infinite linear;
+}
+
+#triangle1 {
+    @include animate(loading1)
+}
+
+#triangle2 {
+    @include animate(loading2)
+}
+
+#triangle3 {
+    @include animate(loading3)
+}
+
+#triangle4 {
+    @include animate(loading4)
+}
+
+#triangle5 {
+    @include animate(loading5)
+}
+
+#triangle6 {
+    @include animate(loading6)
+}
+

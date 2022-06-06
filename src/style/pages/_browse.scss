@@ -136,12 +136,13 @@ ul.level-buttons {
     }
 }
 #browse-view {
-    margin: 65px 0 0 110px;
+    margin: 65px 110px;
 }
 
 #browse-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
 
     .card {
         @include shadow1;

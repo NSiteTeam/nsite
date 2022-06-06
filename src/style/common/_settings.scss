@@ -159,6 +159,14 @@ h2 {
     cursor: pointer;
 }
 
+.loading-container {
+    display: flex;
+    place-content: center;
+
+    padding: 50px 0;
+}
+
+
 input, textarea {
     border: 1px solid $cream-white;
     background-color: $space-cadet;

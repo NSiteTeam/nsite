@@ -4,8 +4,9 @@
     import { LongDate } from "../utils/long_date"
     import type date from "../utils/interface/date"
     import { timestampToFrenchDate } from "@/utils/date"
-    import type { Ref } from "vue"
     import { ref } from "vue"
+    import type { Ref } from "vue"
+    import LoadingAnimation from "@/components/LoadingAnimation.vue"
 
     const historyPoints: Ref<Array<HistoryPoint>> = ref([])
     databaseClient.getHistoryPoints().then(res =>
@@ -26,6 +27,9 @@
 <template>
     <div class="container">
         <h2>Petite histoire des mathématiques :</h2>
+        <div v-if='!historyPoints.length' class='loading-container'>
+            <LoadingAnimation size="25%"/>
+        </div>
         <ul>
             <li v-for="(history, index) in historyPoints" :key="index">
                 <span class="number">
