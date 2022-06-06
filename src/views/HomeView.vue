@@ -13,6 +13,9 @@
         <div class="news shadow2">
           <h1>Actualités</h1>
           <div class="liste-actualites">
+            <div v-if='!sortedNews.length' class='loading-container'>
+              <LoadingAnimation size='75%'/>
+            </div>
             <ul>
               <li v-for="(news, index) in sortedNews" :key="index">
                 <div class="news-item">
@@ -33,31 +36,29 @@
 </template>
 
 <script setup lang="ts">
-import { timestampToFrenchDate } from "../utils/date"
-import { databaseClient } from "@/database/implementation"
-import type { News } from "@/database/interface/news"
-import { computed } from "vue"
-import type { Ref } from "vue"
-import { LongDate } from "@/utils/long_date"
-import Footer from "@/components/Footer.vue";
+  import { timestampToFrenchDate } from "../utils/date"
+  import { databaseClient } from "@/database/implementation"
+  import type { News } from "@/database/interface/news"
+  import { computed } from "vue"
+  import type { Ref } from "vue"
+  import { LongDate } from "@/utils/long_date"
+  import Footer from "@/components/Footer.vue";
+  import LoadingAnimation from "@/components/LoadingAnimation.vue";
 
-const NUMBER_OF_FETCHED_NEWS = 20
+  const NUMBER_OF_FETCHED_NEWS = 20
 
-const news: Ref<Array<News>> = databaseClient.fetchedNews
-databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
+  const news: Ref<Array<News>> = databaseClient.fetchedNews
+  databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 
-const sortedNews = computed(
-  () => {
-    return news.value.sort((a: News, b: News) => {
-      return LongDate.compare(
+  const sortedNews = computed(
+    () => news.value.sort((a: News, b: News) => LongDate.compare(
         LongDate.ISOStringToLongDate(a.date),
-        LongDate.ISOStringToLongDate(b.date),
+        LongDate.ISOStringToLongDate(b.date)
       )
-    })
-  }
-)
+    )
+  )
 
-function formatDate(date: string): string {
+  function formatDate(date: string): string {
     return timestampToFrenchDate(date)
-}
+  }
 </script>
