@@ -579,7 +579,7 @@ export class SupabaseClient implements DatabaseClient {
                 file_url: url,
                 last_commit_text: message,
                 last_commit_author: author.username,
-                name: file.name
+                name: newName
             }])
             res.error ? console.warn(res.error.message) : null
             res.data ? console.log(res.data) : null

@@ -3,6 +3,11 @@
     flex-direction: row;
 }
 
+.files-details {
+    max-height: 100%;
+    overflow: scroll;
+}
+
 .files-actions {
     flex-direction: row;
     display: flex;

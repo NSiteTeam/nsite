@@ -11,6 +11,7 @@
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
     const displaySidePannelNewFile: Ref<boolean> = ref(false)
+    const displaySidePannelEditDepo: Ref<boolean> = ref(false)
     const newDepositLevel: Ref<number | null> = ref(null)
     const newDepositDescription: Ref<string> = ref("")
     const error: Ref<string | null> = ref(null)
@@ -32,7 +33,7 @@
 
     enum SidePannelTarget {
         DEPOSIT,
-        FILE
+        FILE,
     }
 
     // Fetch deposits and sort them into sections
@@ -55,6 +56,7 @@
     }
 
     function toggleSidePannel(target: SidePannelTarget) {
+        console.log(target, target == SidePannelTarget.DEPOSIT)
         if (target == SidePannelTarget.DEPOSIT) {
             displaySidePannelnewDeposit.value = true
         } else if (target == SidePannelTarget.FILE) {
@@ -101,17 +103,17 @@
     }
 
     const uploadInfo: ComputedRef<string> = computed(() => {
-      return files.value.length == 1
+      return rawFile.value.length == 1
         ? files.value[0].name : ''
     })
 
     function watchFiles(e: any) {
-        files.value = Array.from(e.target.files) || []
         rawFile.value = e.target.files[0] || []
         newFile.value = e.target.files[0].name
     }
 
     async function uploadFile() {
+        console.log("tabarnak")
         loadingFiles.value = true
         await databaseClient.uploadFileToDeposit(
             rawFile.value, selectedDeposit.value.title, 
@@ -145,10 +147,9 @@
 
     <div class="files">
         <div class="files-actions">
-            <button class="add files-action" @click="toggleSidePannel('file')">
+            <button class="add files-action" @click="toggleSidePannel(SidePannelTarget.FILE)">
                 <span class="material-icons plus">add</span>
                 <span class="label">Ajouter un fichier</span>
-                
             </button>
             <button class="edit files-action">
                 <span class="material-icons pen">edit</span>
@@ -159,7 +160,9 @@
                 <span class="label">Supprimer le dépôt</span>
             </button>
         </div>
-        <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+        <div class="files-details">
+            <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+        </div>
     </div>
     <div class="mask" v-if="displaySidePannelnewDeposit || displaySidePannelNewFile" 
     @click="toggleSidePannel()"></div>
@@ -223,6 +226,40 @@
             </div>
             Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
             
+        </h4>
+        <div class="side-pannel-new-file-fields">
+            <div>
+                <div class="side-pannel-new-file-field-label">Votre fichier</div>
+                <label class="side-pannel-new-file-field upload-file" for="file-input">
+                    Ajouter un fichier
+                    <input class="side-pannel-new-file-field-input-text" type="text" 
+                    ref="newFileMessageElement" v-model="newFile" />
+                    <input class="side-pannel-new-file-field-file-input" @change="watchFiles"
+                    placeholder="Optionnel" type="file" name="depo-name" id="file-input" />
+                </label>
+            </div>
+            <div class="side-pannel-new-file-field">
+                <label class="side-pannel-new-file-field-label" for="depo-name">Description</label>
+                <input v-model="newFileMessage" class="side-pannel-new-file-field-input" placeholder="Optionnel"
+                type="text" name="depo-name" id="file-name" />
+            </div>
+        </div>
+        <div class="side-pannel-new-file-bottom-buttons">
+            <button class="side-pannel-new-file-bottom-buttons-cancel" @click="toggleSidePannel()">
+                Annuler
+            </button>
+            <button class="side-pannel-new-file-bottom-buttons-submit" @click="uploadFile()">
+                Envoyer
+            </button>
+        </div>
+    </div>
+    <div class="side-pannel-new-file" v-if="displaySidePannelEditDepo">
+        <h4 class="side-pannel-new-file-title">
+            <div class="material-icons side-pannel-new-file-title-cross" 
+            @click="toggleSidePannel()">
+                close
+            </div>
+            Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
         </h4>
         <div class="side-pannel-new-file-fields">
             <div>
