@@ -7,7 +7,7 @@
     import type { Ref } from 'vue'
 
     const deposits: Ref<Repository[]> = ref([])
-    await databaseClient.getRepos().then(res => deposits.value = res)
+    await databaseClient.getDeposits().then(res => deposits.value = res)
 </script>
 
 <template>

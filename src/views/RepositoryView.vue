@@ -15,7 +15,7 @@ import Files from '../components/Files.vue';
 const id = Number(useRoute().params.id[0])
 const files: Ref<CustomFile[]> = databaseClient.files
 const repoData: Ref<Repository[]> = ref([])
-await databaseClient.getRepos(id).then(res => repoData.value = res)
+await databaseClient.getDeposits(id).then(res => repoData.value = res)
 console.log("Got data :", repoData.value)
 </script>
 

@@ -7,7 +7,8 @@
     import LoadingAnimation from "@/components/LoadingAnimation.vue"
     import { useRoute } from "vue-router"
     import { LongDate }from "@/utils/long_date"
-import type { Level } from "@/database/interface/level"
+    import { Level } from "@/database/interface/level"
+    import { getParameterOfRoute } from "@/utils/route_utils"
 
     enum Sort {
         PUBLICATION_DATE = "Par date",
@@ -16,14 +17,14 @@ import type { Level } from "@/database/interface/level"
 
     const deposits: Ref<Array<Repository>> = ref([])
 
-    databaseClient.getRepos().then(res =>
-        deposits.value = res
+    databaseClient.getDeposits().then(result =>
+        deposits.value = result
     )
 
     const reversed = ref(false)
     const sort = ref(Sort.PUBLICATION_DATE)
-    const selectedLevel: Ref<number | null> = ref(
-        useRoute().params.level[0] ? Number(useRoute().params.level[0]) : null
+    const selectedLevel: Ref<Level | null> = ref(
+        Level.levelFromNameInURL(getParameterOfRoute(useRoute().params.level))
     )
     const searchbarContent: Ref<string> = ref("")
 
@@ -37,8 +38,8 @@ import type { Level } from "@/database/interface/level"
         sort.value = newKey
     }
 
-    function selectLevel(newLevel: number) {
-        console.log(selectedLevel.value)
+    function selectLevel(newLevel: Level) {
+        console.log('Selected level', newLevel)
         selectedLevel.value = newLevel
     }
 
@@ -46,21 +47,21 @@ import type { Level } from "@/database/interface/level"
         () => {
             const reverseCoef = reversed.value ? -1 : 1
 
-            const selectedData: Ref<Repository[]> = ref([])
+            let selectedData = []
             // If a level is selected, filter deposits
             if (selectedLevel.value != null) {
-                selectedData.value = deposits.value.filter(deposit => deposit.level == selectedLevel.value)
+                selectedData = deposits.value.filter(deposit => deposit.level == selectedLevel.value)
             } else {
-                selectedData.value = deposits.value
+                selectedData = deposits.value
             }
 
-            selectedData.value = selectedData.value.filter(deposit => deposit.title.includes(searchbarContent.value))
+            selectedData = selectedData.filter(deposit => deposit.title.includes(searchbarContent.value))
 
             switch (sort.value) {
                 case Sort.ALPHABETICAL:
-                    return selectedData.value.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
+                    return selectedData.sort((a, b) => reverseCoef * a.title.localeCompare(b.title))
                 case Sort.PUBLICATION_DATE:
-                    return selectedData.value.sort((a, b) => reverseCoef * LongDate.compare(
+                    return selectedData.sort((a, b) => reverseCoef * LongDate.compare(
                         LongDate.ISOStringToLongDate(a.publication_date),
                         LongDate.ISOStringToLongDate(b.publication_date)))
                 default:
@@ -69,11 +70,11 @@ import type { Level } from "@/database/interface/level"
         }
     )
 
-    function levels(): Array<Level> {
+    const levels = computed(() => {
         const levels: Set<Level> = new Set()
         deposits.value.forEach(deposit => levels.add(deposit.level))
         return Array.from(levels).sort((a, b) => a.index - b.index)
-    }
+    })
 
 </script>
 
@@ -107,10 +108,10 @@ import type { Level } from "@/database/interface/level"
                     v-bind:class="{ 'active': level == selectedLevel }"
                     class="level-button"
                     @click="selectLevel(level)"
-                    v-for="level in levels()"
+                    v-for="level in levels"
                     :key="level"
                 >
-                <RouterLink :to="'/browse/' + level">
+                <RouterLink :to="'/browse/' + level.nameInURL">
                     {{ level.abbreviated }}
                 </RouterLink>
                 </li>

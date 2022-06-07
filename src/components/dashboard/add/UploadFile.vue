@@ -13,7 +13,7 @@ const fileInput: Ref<HTMLElement | null> = ref(null)
 const message: Ref<string> = ref("")
 const submitted: Ref<boolean | string> = ref(false)
 const error: Ref<boolean | string> = ref(false)
-databaseClient.getRepos().then(res => {
+databaseClient.getDeposits().then(res => {
     data.value = res
 })
 

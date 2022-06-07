@@ -27,8 +27,8 @@
     const rawFile: Ref<any> = ref()
     const newFile: Ref<string> = ref("")
     const newFileMessage = ref("")
-    const selectedDeposit: Ref<Repository | null> = ref(null)
-    const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
+    let selectedDeposit: Repository | null = null
+    const deposits: Ref<DataSection<Repository>[]> = ref([])
 
     const levels = Level.LEVELS
 
@@ -47,14 +47,14 @@
 
     // Fetch deposits and sort them into sections
     async function fetchDeposit(id: number) {
-        if (deposits.value != null && selectedDeposit.value != null) {
-            selectedDeposit.value = await databaseClient.getOwnedDeposit(selectedDeposit.value.id)
+        if (deposits.value != null && selectedDeposit != null) {
+            selectedDeposit = await databaseClient.getDeposit(selectedDeposit.id)
         }
     }
 
     await fetchDeposits().then(() => {
         if (deposits.value.length > 0) {
-            selectedDeposit.value = deposits.value[0].values[0]
+            selectedDeposit = deposits.value[0].values[0]
         }
     })
 
@@ -79,15 +79,16 @@
     }
 
     function selectData(data: Repository) {
-        selectedDeposit.value = data
+        selectedDeposit = data
+        fetchFiles()
     }
 
     function fetchFiles() {
         files.value = []
-        selectedDeposit.value?.content?.map(async (fileId: number) => {
+        selectedDeposit?.content?.map(async (fileId: number) => {
             const file = ref()
             await databaseClient.getFile(fileId)
-            .then(res => file.value = res)
+                .then(res => file.value = res)
             files.value.push(toRaw(file.value))
         })
     }
@@ -127,7 +128,7 @@
         console.log("tabarnak")
         loadingFiles.value = true
         await databaseClient.uploadFileToDeposit(
-            rawFile.value, selectedDeposit.value.title, 
+            rawFile.value, selectedDeposit!.title,
             newFileMessage.value, newFile.value
         ).then(_ => successFiles.value = true)
         .catch(res => errorFiles.value = res)
@@ -136,14 +137,14 @@
     }
 
     onMounted(fetchFiles)
-    watch(selectedDeposit, fetchFiles)
     watch(success, fetchFiles)
     watch(success, fetchDeposits)
     watch(successFiles, async () => {
-        if (selectedDeposit.value != null)
-        await fetchDeposit(selectedDeposit.value.id)
-        .then(message => console.log(message))
-        .catch(message => console.log(message))
+        if (selectedDeposit != null) {
+            await fetchDeposit(selectedDeposit.id)
+                .then(message => console.log(message))
+                .catch(message => console.log(message))
+        }
         fetchFiles()
     })
 </script>
