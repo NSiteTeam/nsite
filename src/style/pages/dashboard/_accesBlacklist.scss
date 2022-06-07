@@ -1,25 +1,83 @@
-.blacklist-users {
-    display: flex;
-    flex-direction: column;
-    background-color: $space-cadet;
-    border-radius: 5%;
-    padding: 5%;
+.ensemble {
+    // background-color: #ffffff17;
+    margin: 2.5%;
+    width: 90%;
+    height: 80%;
+    display: inline-flex;
 
-    
-    .user {
-        padding: 5%;
-        margin: 5%;
-        border-radius: 5%;
-        height: 1000%;
-        background-color: $space-cadet-light;
+    .list {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        background-color: #4b5b81;
+        border-radius: 2%;
+        padding: 3%;
+        padding-top: 2%;
 
-        .button {
-            background-color: #a83232;
-            border: none;
-            margin-left: 50%;
-            // color: aliceblue;
-            // padding: 50px;
+        .list-2{
+            overflow-y: scroll;
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+
+            .user {
+                background-color: #4b5b81;
+                height: 2%;
+                min-width: 94%;
+                padding: 2%;
+                border-top:2px solid #435174;
+                border-left:2px solid #435174;
+                display: block;
+
+                p {
+                    margin-top: -1%;
+                }
+
+                .quit {
+                    
+                }
+            }
+
+            .user:hover {
+                background-color: $space-cadet;
+            }
+
+            .user:active {
+                background-color: hsl(225, 23%, 26%) ;
+            }
         }
     }
 
+    .infos {
+        
+        margin-left: 10%;
+        width: 30%;
+        height: min-content;
+        background-color: $space-cadet;
+        border-radius: 2%;
+        padding: 3%;
+        padding-top: 2%;
+
+        
+        p {
+            margin-top: -3%;
+            margin-left: 3%;
+        }
+        
+    }
+}
+
+
+.list-2::-webkit-scrollbar {
+    width: 15px;
+}
+
+.list-2::-webkit-scrollbar-track {
+    background-color: #c4c4c4;
+}
+
+.list-2::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #6f839e;
 }
