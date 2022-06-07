@@ -18,7 +18,7 @@ export interface DatabaseClient {
     logout(): Promise<boolean>
 
     // Deposits
-    uploadFileToDeposit(file: File, deposit: string, message: string): Promise<string>
+    uploadFileToDeposit(file: File, deposit: string, message: string, fileName?: string): Promise<string>
     postDeposit(title: string, level: Level, description: string) : Promise<void>
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getRepos(id?: number): Promise<Repository[]>

@@ -1,4 +1,4 @@
-.side-pannel {
+.side-pannel-new-depo {
     @include shadow1;
     position: fixed;
     z-index: 40;
@@ -28,7 +28,7 @@
         border-bottom: 1px solid #6d9dc56b;
         padding: 15px 20px 0 20px;
 
-        .side-pannel-field {
+        .side-pannel-new-depo-field {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -40,7 +40,7 @@
             }
     
             &-input {
-                width: 50%;
+                width: 60%;
                 padding: 10px;
             }
         }

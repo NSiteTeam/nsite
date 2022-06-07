@@ -1,26 +1,39 @@
 <script setup lang="ts">
+    // @ts-ignore
+    import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
-    import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
-    import { watch, ref, toRaw, onMounted, shallowRef } from "vue";
-    import type { Ref } from "vue";
     import { Level } from '@/database/interface/level'
+    import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
+    import type { Ref, ComputedRef  } from "vue";
     import DataColumn from '@/components/dashboaard/DataColumn.vue'
     import { DataSection } from "@/utils/data_section";
 
+    const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
+    const displaySidePannelNewFile: Ref<boolean> = ref(false)
     const newDepositLevel: Ref<number | null> = ref(null)
-    const displaySidePannel: Ref<boolean> = ref(false)
     const newDepositDescription: Ref<string> = ref("")
-    const newDepositTitle: Ref<string> = ref("")
-    const success: Ref<boolean> = ref(false)
     const error: Ref<string | null> = ref(null)
+    const success: Ref<boolean> = ref(false)
     const loading: Ref<boolean> = ref(false)
+    const errorFiles: Ref<string | null> = ref(null)
+    const successFiles: Ref<boolean> = ref(false)
+    const loadingFiles: Ref<boolean> = ref(false)
+    const newDepositTitle: Ref<string> = ref("")
+    const depositTableIsExpanded = ref(true)
     const files: Ref<any[]> = ref([])
+    const rawFile: Ref<any> = ref()
+    const newFile: Ref<string> = ref("")
+    const newFileMessage = ref("")
     const selectedDeposit: Ref<Repository | null> = ref(null)
     const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
 
     const levels = Level.LEVELS
 
+    enum SidePannelTarget {
+        DEPOSIT,
+        FILE
+    }
 
     // Fetch deposits and sort them into sections
     async function fetchDeposits() {
@@ -41,8 +54,15 @@
         return deposit.id
     }
 
-    function toggleSidePannel() {
-        displaySidePannel.value = !displaySidePannel.value
+    function toggleSidePannel(target: SidePannelTarget) {
+        if (target == SidePannelTarget.DEPOSIT) {
+            displaySidePannelnewDeposit.value = true
+        } else if (target == SidePannelTarget.FILE) {
+            displaySidePannelNewFile.value = true
+        } else {
+            displaySidePannelnewDeposit.value = false
+            displaySidePannelNewFile.value = false
+        }
     }
 
     function selectData(data: Repository) {
@@ -80,6 +100,28 @@
         setTimeout(() => [success.value, loading.value, error.value] = [false, false, null], 3000)
     }
 
+    const uploadInfo: ComputedRef<string> = computed(() => {
+      return files.value.length == 1
+        ? files.value[0].name : ''
+    })
+
+    function watchFiles(e: any) {
+        files.value = Array.from(e.target.files) || []
+        rawFile.value = e.target.files[0] || []
+        newFile.value = e.target.files[0].name
+    }
+
+    async function uploadFile() {
+        loadingFiles.value = true
+        await databaseClient.uploadFileToDeposit(
+            rawFile.value, selectedDeposit.value.title, 
+            newFileMessage.value, newFile.value
+        ).then(_ => successFiles.value = true)
+        .catch(res => errorFiles.value = res)
+        loadingFiles.value = false
+        setTimeout(_ => [successFiles.value, errorFiles.value] = [false, null], 3000)
+    }
+
     onMounted(fetchFiles)
     watch(selectedDeposit, fetchFiles)
     watch(success, fetchFiles)
@@ -92,7 +134,7 @@
     <div class="error" v-else-if="error">{{ error }}</div>
 
     <DataColumn
-        @createData='toggleSidePannel'
+        @createData='toggleSidePannel(SidePannelTarget.DEPOSIT)'
         @selectData='selectData'
         title='Vos depôts de ressources'
         add-button-message='Créer un dépôt de ressources'
@@ -102,51 +144,110 @@
     />
 
     <div class="files">
+        <div class="files-actions">
+            <button class="add files-action" @click="toggleSidePannel('file')">
+                <span class="material-icons plus">add</span>
+                <span class="label">Ajouter un fichier</span>
+                
+            </button>
+            <button class="edit files-action">
+                <span class="material-icons pen">edit</span>
+                <span class="label">Modifier le dépôt</span>
+            </button>
+            <button class="delete files-action">
+                <span class="material-icons bin">delete_forever</span>
+                <span class="label">Supprimer le dépôt</span>
+            </button>
+        </div>
         <FileItem v-for="(file, index) in files" :key="index" :file="file" />
     </div>
-    <div class="mask" v-if="displaySidePannel" @click="toggleSidePannel()"></div>
-    <div class="side-pannel" v-if="displaySidePannel">
-        <h4 class="side-pannel-title">
-            <div class="material-icons side-pannel-title-cross" @click="toggleSidePannel()">close</div>
-            Créez un nouveau dépôt de ressources
+    <div class="mask" v-if="displaySidePannelnewDeposit || displaySidePannelNewFile" 
+    @click="toggleSidePannel()"></div>
+    <div class="side-pannel-new-depo" v-if="displaySidePannelnewDeposit">
+        <h4 class="side-pannel-new-depo-title">
+            <div class="material-icons side-pannel-new-depo-title-cross" @click="toggleSidePannel()">
+                close
+            </div>
+            Créez un nouveau dépot de ressources
         </h4>
-        <div class="side-pannel-fields">
-            <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="deposit-name">Nom du dépôt</label>
-                <input v-model="newDepositTitle" class="side-pannel-field-input" type="text" name="deposit-name" id="deposit-name" />
+        <div class="side-pannel-new-depo-fields">
+            <div class="side-pannel-new-depo-field">
+                <label class="side-pannel-new-depo-field-label" for="depo-name">Nom du dépôt</label>
+                <input v-model="newDepositTitle" class="side-pannel-new-depo-field-input" 
+                type="text" name="depo-name" id="depo-name" />
             </div>
-            <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="deposit-name">Description</label>
-                <input v-model="newDepositDescription" class="side-pannel-field-input" placeholder="Optionnel"
-                type="text" name="deposit-name" id="deposit-name" />
+            <div class="side-pannel-new-depo-field">
+                <label class="side-pannel-new-depo-field-label" for="depo-name">Description</label>
+                <input v-model="newDepositDescription" class="side-pannel-new-depo-field-input"
+                type="text" name="depo-name" id="depo-name" ref="newFilemessage" placeholder="Optionnel" />
             </div>
-            <div class="side-pannel-field">
-                <label class="side-pannel-field-label" for="deposit-name">Niveau</label>
-                <select v-model="newDepositLevel" class="side-pannel-field-input">
-                    <option
-                        :value="index"
-                        v-for="(level, index) in levels"
-                        :key="level.index"
-                        id="level"
-                        placeholder="Niveau"
-                    >
+            <div class="side-pannel-new-depo-field">
+                <label class="side-pannel-new-depo-field-label" for="depo-name">Niveau</label>
+                <select v-model="newDepositLevel" class="side-pannel-new-depo-field-input">
+                    <option selected value="" disabled>-- Sélectionnez un niveau --</option>
+                    <option :value="index" v-for="(level, index) in levels"
+                    :key="level.index" id="level" placeholder="Niveau">
                         {{ level.abbreviated }}
                     </option>
                 </select>
             </div>
         </div>
-        <div class="side-pannel-files">
-            <div class="side-pannel-files-header">
-                <h4 class="side-pannel-files-header-title">Ajoutez des Fichiers</h4>
-                <h5 class="side-pannel-files-header-subtitle">Inaugurez votre dépôt en y ajoutant du contenu</h5>
+        <div class="side-pannel-new-depo-files">
+            <div class="side-pannel-new-depo-files-header">
+                <h4 class="side-pannel-new-depo-files-header-title">Ajoutez des Fichiers</h4>
+                <h5 class="side-pannel-new-depo-files-header-subtitle">
+                    Inaugurez votre dépôt en y ajoutant du contenu
+                    </h5>
             </div>
-            <div class="side-pannel-files-menu">
-                <i>Ceci est un texte générique à remplacer par le menu pour ajouter un fichier (en construction)</i>
+            <div class="side-pannel-new-depo-files-menu">
+                <i>
+                    Ceci est un texte générique à remplacer 
+                    par le menu pour ajouter un fichier (en construction)
+                </i>
             </div>
         </div>
-        <div class="side-pannel-bottom-buttons">
-            <button class="side-pannel-bottom-buttons-cancel" @click="toggleSidePannel()">Annuler</button>
-            <button class="side-pannel-bottom-buttons-submit" @click="addDeposit()">Envoyer</button>
+        <div class="side-pannel-new-depo-bottom-buttons">
+            <button class="side-pannel-new-depo-bottom-buttons-cancel" @click="toggleSidePannel()">
+                Annuler
+            </button>
+            <button class="side-pannel-new-depo-bottom-buttons-submit" @click="addDeposit()">
+                Envoyer
+            </button>
+        </div>
+    </div>
+    <div class="side-pannel-new-file" v-if="displaySidePannelNewFile">
+        <h4 class="side-pannel-new-file-title">
+            <div class="material-icons side-pannel-new-file-title-cross" 
+            @click="toggleSidePannel()">
+                close
+            </div>
+            Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
+            
+        </h4>
+        <div class="side-pannel-new-file-fields">
+            <div>
+                <div class="side-pannel-new-file-field-label">Votre fichier</div>
+                <label class="side-pannel-new-file-field upload-file" for="file-input">
+                    Ajouter un fichier
+                    <input class="side-pannel-new-file-field-input-text" type="text" 
+                    ref="newFileMessageElement" v-model="newFile" />
+                    <input class="side-pannel-new-file-field-file-input" @change="watchFiles"
+                    placeholder="Optionnel" type="file" name="depo-name" id="file-input" />
+                </label>
+            </div>
+            <div class="side-pannel-new-file-field">
+                <label class="side-pannel-new-file-field-label" for="depo-name">Description</label>
+                <input v-model="newFileMessage" class="side-pannel-new-file-field-input" placeholder="Optionnel"
+                type="text" name="depo-name" id="file-name" />
+            </div>
+        </div>
+        <div class="side-pannel-new-file-bottom-buttons">
+            <button class="side-pannel-new-file-bottom-buttons-cancel" @click="toggleSidePannel()">
+                Annuler
+            </button>
+            <button class="side-pannel-new-file-bottom-buttons-submit" @click="uploadFile()">
+                Envoyer
+            </button>
         </div>
     </div>
 </template>
