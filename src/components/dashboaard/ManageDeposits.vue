@@ -6,6 +6,7 @@
     import { Level } from '@/database/interface/level'
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
     import type { Ref, ComputedRef  } from "vue";
+    // @ts-ignore
     import DataColumn from '@/components/dashboaard/DataColumn.vue'
     import { DataSection } from "@/utils/data_section";
 
@@ -38,7 +39,17 @@
 
     // Fetch deposits and sort them into sections
     async function fetchDeposits() {
-        deposits.value = DataSection.makeSections(await databaseClient.getOwnedDeposits(), (e) => e.level.abbreviated)
+        deposits.value = DataSection.makeSections(
+            await databaseClient.getOwnedDeposits(),
+            (e) => e.level.abbreviated
+        )
+    }
+
+    // Fetch deposits and sort them into sections
+    async function fetchDeposit(id: number) {
+        if (deposits.value != null && selectedDeposit.value != null) {
+            selectedDeposit.value = await databaseClient.getOwnedDeposit(selectedDeposit.value.id)
+        }
     }
 
     await fetchDeposits().then(() => {
@@ -128,12 +139,22 @@
     watch(selectedDeposit, fetchFiles)
     watch(success, fetchFiles)
     watch(success, fetchDeposits)
+    watch(successFiles, async () => {
+        if (selectedDeposit.value != null)
+        await fetchDeposit(selectedDeposit.value.id)
+        .then(message => console.log(message))
+        .catch(message => console.log(message))
+        fetchFiles()
+    })
 </script>
 
 <template>
     <div class="good" v-if="success">Le dépôt a bien été créé</div>
     <div class="indication" v-else-if="loading">Création en cours ...</div>
     <div class="error" v-else-if="error">{{ error }}</div>
+    <div class="good" v-if="successFiles">Le fichier a bien été envoyé</div>
+    <div class="indication" v-else-if="loadingFiles">Création en cours ...</div>
+    <div class="error" v-else-if="errorFiles">{{ errorFiles }}</div>
 
     <DataColumn
         @createData='toggleSidePannel(SidePannelTarget.DEPOSIT)'

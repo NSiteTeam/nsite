@@ -23,6 +23,7 @@ export interface DatabaseClient {
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getRepos(id?: number): Promise<Repository[]>
     getOwnedDeposits(): Promise<Repository[]>
+    getOwnedDeposit(id: number): Promise<Repository | null>
     getFile(id: number): Promise<CustomFile>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
