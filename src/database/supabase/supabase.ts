@@ -336,6 +336,44 @@ export class SupabaseClient implements DatabaseClient {
         }
     }
 
+    async getOwnedDeposit(id: number): Promise<Repository | null> {
+        const uuid = supabase.auth.user()?.id
+
+        console.log('Trying to fetch repositories owned by user', uuid)
+
+        if (uuid == null) {
+            return null
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('deposits')
+                .select('*')
+                .contains('owners', [uuid])
+                .eq("id", id).maybeSingle()
+
+            if (error) {
+                throw error;
+            }
+
+            if (data == null) {
+                throw "No data returned by request"
+            }
+
+            return new SupabaseRepository(
+                data['id'],
+                data['title'],
+                SupabaseLevelHelper.getLevelById(data['level']),
+                data['publication_date'],
+                data['description'],
+                data['content'],
+            )
+        } catch (error) {
+            console.log("Error while fetching owned deposit", id, error)
+            return null
+        }
+    }
+
     async getUsername(uuid: string): Promise<any> {
         // Laurian: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
         // Éric: No, with this we link uuids with usernames, without we cannot display usernames in the chat.
@@ -579,7 +617,7 @@ export class SupabaseClient implements DatabaseClient {
                 file_url: url,
                 last_commit_text: message,
                 last_commit_author: author.username,
-                name: file.name
+                name: newName
             }])
             res.error ? console.warn(res.error.message) : null
             res.data ? console.log(res.data) : null
