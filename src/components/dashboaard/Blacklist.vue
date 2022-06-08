@@ -30,12 +30,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-    <DataColumn
-        title='Options de la liste noire'
-        add-button-message='Ajouter des membres à la liste'
-        :list='deposits'
-    />
-
     <div class="files">
 
         <div class="users">

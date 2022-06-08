@@ -17,7 +17,9 @@ import { Permission } from "@/database/interface/permissions"
 import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
 import Blacklist from "@/components/dashboaard/Blacklist.vue"
 import ManageNews from "@/components/dashboaard/ManageNews.vue"
+import ManageHistoryPoints from "@/components/dashboaard/ManageHistoryPoints.vue"
 import router from "@/router"
+import WorkInProgress from '@/components/dashboaard/WorkInProgress.vue'
 
 const availableViewsForUser= computed(
     () => {
@@ -103,10 +105,10 @@ class View {
 
     static DEPOSITS = new View('Depôts de ressources', 'deposits', 'folder', ManageDeposits)
     static NEWS = new View('Actualités', 'news', 'newspaper', ManageNews)
-    static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', AddHistoryPoint)
-    static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', ManageDeposits)
-    static TEACHERS = new View('Enseignants', 'teachers', 'school', ManageDeposits)
-    static USERS = new View('Utilisateurs', 'users', 'manage_accounts', ManageDeposits)
+    static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', ManageHistoryPoints)
+    static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', WorkInProgress)
+    static TEACHERS = new View('Enseignants', 'teachers', 'school', WorkInProgress)
+    static USERS = new View('Utilisateurs', 'users', 'manage_accounts', WorkInProgress)
     static BLACKLIST = new View('Liste noire', 'blacklist', 'receipt_long', Blacklist)
 }
 

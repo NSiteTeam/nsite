@@ -8,20 +8,8 @@
     import type { Ref } from "vue"
     import LoadingAnimation from "@/components/LoadingAnimation.vue"
 
-    const historyPoints: Ref<Array<HistoryPoint>> = ref([])
-    databaseClient.getHistoryPoints().then(res =>
-        historyPoints.value = res
-    ).catch(error => {
-        throw error
-    })
-
-    function formatDate(ISOtimestamp: string): string {
-        const timestamp: Array<number> = ISOtimestamp.split("-").map(digit => {
-            return Number(digit)
-        })
-        const date = new LongDate(0, 0, 0, timestamp[2], timestamp[1], timestamp[0])
-        return date.beautify()
-    }
+    const historyPoints: Ref<Array<HistoryPoint>> = databaseClient.fetchedHistoryPoints
+    databaseClient.fetchHistoryPoints()
 </script>
 
 <template>
@@ -33,7 +21,7 @@
         <ul>
             <li v-for="(history, index) in historyPoints" :key="index">
                 <span class="number">
-                    <span>{{ formatDate(history.date) }}</span>
+                    <span>{{ history.date.beautify() }}</span>
                 </span>
                 <div class="bd">
                     <div class="title">{{ history.title }}</div>

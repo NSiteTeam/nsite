@@ -46,7 +46,8 @@ function handleSubmit() {
     <DataColumn
         title="Points d'histoire existants: "
         add-button-message="Ajouter un point d'Histoire"
-        :list='deposits'>
+        :list='deposits'
+    >
 
         <div class="container">
         <div v-if='!historyPoints.length' class='loading-container'>

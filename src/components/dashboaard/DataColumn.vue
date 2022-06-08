@@ -69,7 +69,6 @@
 
     function selectData(data: any) {
         selectedData.value = data
-        console.log('Hi from child')
         emit('selectData', data)
     }
 

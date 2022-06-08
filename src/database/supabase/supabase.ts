@@ -7,7 +7,7 @@ import type { HistoryPoint } from '../interface/history_point'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
-import { SupabaseHistory } from './supabase_history'
+import { SupabaseHistoryPoint } from './supabase_history'
 import type { Repository } from '../interface/repositories'
 import type { Permission } from '@/database/interface/permissions'
 import SupabaseFile from '../supabase/supabase_file'
@@ -75,7 +75,7 @@ export class SupabaseClient implements DatabaseClient {
     maxNewsReached: Ref<boolean> = ref(false)
 
     // A list of history points fetched from the database
-    fetchedHistory: Array<HistoryPoint> = []
+    fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
     /**
      * Sign in the user with the given email and password
@@ -92,7 +92,7 @@ export class SupabaseClient implements DatabaseClient {
         })
         console.log(user)
 
-        const res = await supabase.from('usernames').insert({
+        const res = await supabase.from('profiles').insert({
             user: user?.id,
             username: username
         })
@@ -247,37 +247,46 @@ export class SupabaseClient implements DatabaseClient {
         }
     }
 
-    async getHistoryPoints(): Promise<any> {
-        console.log("Trying to fetch history points in the database")
+    historyPointsFetched = false
+    async fetchHistoryPoints(): Promise<any> {
+        console.log(`Try to fetch history points`)
 
-        // Here we can directly manipulate the database as history points are public
-        const { data, error } = await supabase
-                                    .from('history_points')
-                                    .select()
-
-        if (data == null) {
-            console.log('No data fetched')
-            return
+        if (this.historyPointsFetched) {
+            console.log('History points already fetched')
+            return true
         }
 
-        return new Promise((resolve, reject) => {
-            if (!error && data != null) {
-                resolve(
-                    data.map(history => {
-                        return new SupabaseHistory(
-                            history['title'],
-                            history['content'],
-                            history['date'],
-                        )})
-                )
-            } else {
-                if (error) {
-                    reject("Error while fetching history points" + error)
-                } else if (data == null) {
-                    reject("No data fetched")
-                }
+        this.historyPointsFetched = true
+
+        try {
+            const { data, error } = await supabase
+                .from('history_points')
+                .select("*")
+                .order('date')
+
+            if (error) {
+                throw "Error while fetching history points" + error
             }
-        })
+
+            if (!data) {
+                throw "No data was returned"
+            }
+
+
+            data?.forEach((historyPoint: any) => {
+                this.fetchedHistoryPoints.value.push(new SupabaseHistoryPoint(
+                    historyPoint['id'],
+                    historyPoint['title'],
+                    historyPoint['content'],
+                    LongDate.fromForm(historyPoint['date']),
+                    historyPoint['visible']
+                ))
+            })
+
+            this.fetchedHistoryPoints.value.sort((a, b) => -1 * LongDate.compare(a.date, b.date))
+        } catch (error) {
+            console.log(`Error while fetching history points`, error)
+        }
     }
 
     async getDeposits(id?: number): Promise<Repository[]> {
@@ -674,7 +683,35 @@ export class SupabaseClient implements DatabaseClient {
         return addedNews
     }
 
-    async switchVisibility(news: News): Promise<errorMessage | null> {
+    async createEmptyHistoryPoint(title: string): Promise<HistoryPoint> {
+        console.log('Trying to create an empty history point in the database')
+
+        const { data, error } = await supabase.from('history_points').insert([{
+            title: title
+        }])
+
+        if (error) {
+            console.log('Error while creating history point', error)
+            throw error.message
+        }
+
+        const addedHistoryPoint = new SupabaseHistoryPoint(
+            data[0]['id'],
+            data[0]['title'],
+            data[0]['content'],
+            LongDate.fromForm(data[0]['date']),
+            data[0]['visible']
+        )
+
+        console.log('Added one news in the database', addedHistoryPoint)
+
+        this.fetchedHistoryPoints.value.push(addedHistoryPoint)
+        this.fetchedHistoryPoints.value.sort((a, b) => -1 * LongDate.compare(a.date, b.date))
+
+        return addedHistoryPoint
+    }
+
+    async switchVisibilityOfNews(news: News): Promise<errorMessage | null> {
         console.log("Trying to switch visibility of", news)
 
         const { data, error } = await supabase
@@ -697,6 +734,29 @@ export class SupabaseClient implements DatabaseClient {
         return null
     }
 
+    async switchVisibilityOfHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null> {
+        console.log("Trying to switch visibility of", historyPoint)
+
+        const { data, error } = await supabase
+            .from('history_points')
+            .update({
+                visible: !historyPoint.visible
+            })
+            .match({ id: historyPoint.id })
+
+        if (error) {
+            console.log("Error while switching visibility of an history point", error)
+            return error.toString()
+        }
+
+        const index = this.fetchedHistoryPoints.value.indexOf(historyPoint)
+        this.fetchedHistoryPoints.value[index].visible = !historyPoint.visible
+
+        console.log("History point visibility updated with success", data)
+
+        return null
+    }
+
     async deleteNews(news: News): Promise<errorMessage | null> {
         console.log("Trying to delete", news)
 
@@ -715,6 +775,27 @@ export class SupabaseClient implements DatabaseClient {
         this.newsOffset -= 1
 
         console.log("News deleted with success", data)
+
+        return null
+    }
+
+    async deleteHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null> {
+        console.log("Trying to delete", historyPoint)
+
+        const { data, error } = await supabase
+            .from('history_points')
+            .delete()
+            .match({ id: historyPoint.id })
+
+        if (error) {
+            console.log("Error while deleting news", error)
+            return error.toString()
+        }
+
+        const index = this.fetchedHistoryPoints.value.indexOf(historyPoint)
+        this.fetchedHistoryPoints.value.splice(index, 1)
+
+        console.log("History point deleted with success", data)
 
         return null
     }
@@ -806,6 +887,29 @@ export class SupabaseClient implements DatabaseClient {
         }
 
         console.log("News updated with success", data)
+
+        return null
+    }
+
+    async updateHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null> {
+        console.log("Trying to update history point", historyPoint)
+
+        const { data, error } = await supabase
+            .from('history_points')
+            .update({
+                date: historyPoint.date.toForm(),
+                title: historyPoint.title,
+                visible: historyPoint.visible,
+                content: historyPoint.content
+            })
+            .match({ id: historyPoint.id })
+
+        if (error) {
+            console.log("Error while updating history point", error)
+            return error.toString()
+        }
+
+        console.log("History point updated with success", data)
 
         return null
     }

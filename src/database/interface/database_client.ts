@@ -51,11 +51,14 @@ export interface DatabaseClient {
     fetchNews(quantity: number): Promise<void>
     createEmptyNews(title: string): Promise<News>
     updateNews(news: News): Promise<errorMessage | null>
-    switchVisibility(news: News): Promise<errorMessage | null>
+    switchVisibilityOfHistoryPoint(news: News): Promise<errorMessage | null>
     deleteNews(news: News): Promise<errorMessage | null>
 
     // TIMELINE
-    postHistotyPoint(title: string, content: string, date: string) : Promise<void>
-    getHistoryPoints(): Promise<Array<HistoryPoint>>
-    fetchedHistory: Array<HistoryPoint>
+    createEmptyHistoryPoint(title: string): Promise<HistoryPoint>
+    updateHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null>
+    switchVisibilityOfHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null>
+    deleteHistoryPoint(news: HistoryPoint): Promise<errorMessage | null>
+    fetchHistoryPoints(): Promise<void>
+    fetchedHistoryPoints: Ref<HistoryPoint[]>
 }

@@ -1,16 +1,13 @@
 <script setup lang="ts">
-    // @ts-ignore
     import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
     import { Level } from '@/database/interface/level'
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
     import type { Ref, ComputedRef  } from "vue";
-    // @ts-ignore
     import DataColumn from '@/components/dashboaard/DataColumn.vue'
-    // @ts-ignore
     import DangerPopup from '@/components/dashboaard/popups/DangerPopup.vue'
-    import { DataSection } from "@/utils/data_section";
+    import { DataSection } from "@/utils/data_section"
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
     const displaySidePannelNewFile: Ref<boolean> = ref(false)
@@ -243,11 +240,12 @@
         </div>
     </div>
     <div class="mask" v-if="
-    displaySidePannelnewDeposit || 
-    displaySidePannelNewFile ||
-    displaySidePannelEditDepo ||
-    displayDeleteDepoPopup" 
-    @click="toggleSidePannel()"></div>
+        displaySidePannelnewDeposit ||
+        displaySidePannelNewFile ||
+        displaySidePannelEditDepo ||
+        displayDeleteDepoPopup"
+        @click="toggleSidePannel()"
+    ></div>
     <div class="side-pannel-new-depo" v-if="displaySidePannelnewDeposit">
         <h4 class="side-pannel-new-depo-title">
             <div class="material-icons side-pannel-new-depo-title-cross" @click="toggleSidePannel()">
@@ -258,7 +256,7 @@
         <div class="side-pannel-new-depo-fields">
             <div class="side-pannel-new-depo-field">
                 <label class="side-pannel-new-depo-field-label" for="depo-name">Nom du dépôt</label>
-                <input v-model="newDepositTitle" class="side-pannel-new-depo-field-input" 
+                <input v-model="newDepositTitle" class="side-pannel-new-depo-field-input"
                 type="text" name="depo-name" id="depo-name" />
             </div>
             <div class="side-pannel-new-depo-field">
@@ -286,7 +284,7 @@
             </div>
             <div class="side-pannel-new-depo-files-menu">
                 <i>
-                    Ceci est un texte générique à remplacer 
+                    Ceci est un texte générique à remplacer
                     par le menu pour ajouter un fichier (en construction)
                 </i>
             </div>
@@ -302,19 +300,19 @@
     </div>
     <div class="side-pannel-new-file" v-if="displaySidePannelNewFile">
         <h4 class="side-pannel-new-file-title">
-            <div class="material-icons side-pannel-new-file-title-cross" 
+            <div class="material-icons side-pannel-new-file-title-cross"
             @click="toggleSidePannel()">
                 close
             </div>
             Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
-            
+
         </h4>
         <div class="side-pannel-new-file-fields">
             <div>
                 <div class="side-pannel-new-file-field-label">Votre fichier</div>
                 <label class="side-pannel-new-file-field upload-file" for="file-input">
                     Ajouter un fichier
-                    <input class="side-pannel-new-file-field-input-text" type="text" 
+                    <input class="side-pannel-new-file-field-input-text" type="text"
                     ref="newFileMessageElement" v-model="newFile" />
                     <input class="side-pannel-new-file-field-file-input" @change="watchFiles"
                     placeholder="Optionnel" type="file" name="depo-name" id="file-input" />
@@ -337,7 +335,7 @@
     </div>
     <div class="side-pannel-edit-depo" v-if="displaySidePannelEditDepo">
         <h4 class="side-pannel-edit-depo-title">
-            <div class="material-icons side-pannel-edit-depo-title-cross" 
+            <div class="material-icons side-pannel-edit-depo-title-cross"
             @click="toggleSidePannel()">
                 close
             </div>
@@ -372,9 +370,9 @@
     </div>
     <DangerPopup
         :title="'Supprimer le dépôt ' + selectedDeposit.title"
-        content="Attention, vous êtes sur le point de supprimer un dépôt de ressources définitivement. 
-        Assurez-vous d'avoir sauvegardé préalablement son contenu. 
-        Si vous voulez toutefois den récupérer le contenu d'un dépôt supprimé, 
+        content="Attention, vous êtes sur le point de supprimer un dépôt de ressources définitivement.
+        Assurez-vous d'avoir sauvegardé préalablement son contenu.
+        Si vous voulez toutefois den récupérer le contenu d'un dépôt supprimé,
         il est possible que nous l'avons encore conservé."
         :messageToType="selectedDeposit.title"
         actionName="Supprimer définitivement le dépôt"

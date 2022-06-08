@@ -16,7 +16,7 @@
                 <ContextMenuElement
                     :icon='slotProps.data.visible ? "visibility_off" : "visibility"'
                     :message='slotProps.data.visible ? "Cacher" : "Montrer"'
-                    @click.prevent='switchVisibility(slotProps.data)'
+                    @click.prevent='switchVisibilityOfNews(slotProps.data)'
                 />
                 <ContextMenuElement
                     icon='delete'
@@ -85,7 +85,6 @@
     const message = ref("")
     const messageClass = ref(MessageType.INDICATION)
 
-    // TODO: Add categories to news (sort by year ?)
     const news = computed(
         () => DataSection.makeSections(
             databaseClient.fetchedNews.value,
@@ -112,8 +111,11 @@
     }
 
     async function addNews() {
-        const news = await databaseClient.createEmptyNews(prompt('Titre')!)
-        selectedNews.value = news
+        const title = prompt('Titre')
+        if (title) {
+            const news = await databaseClient.createEmptyNews(title)
+            selectedNews.value = news
+        }
     }
 
     function selectNews(news: News) {
@@ -149,13 +151,14 @@
         setTimeout(() => message.value = '', 2000)
     }
 
-    function switchVisibility(news: News) {
-        databaseClient.switchVisibility(news)
+    function switchVisibilityOfHistoryPoint(news: News) {
+        databaseClient.switchVisibilityOfHistoryPoint(news)
     }
 
     function deleteNews(news: News) {
         if (confirm("Etes-vous sûr de vouloir supprimer cette actualité ?")) {
             databaseClient.deleteNews(news)
+            selectedNews.value = null
         }
     }
 
