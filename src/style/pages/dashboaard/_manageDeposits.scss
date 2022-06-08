@@ -11,11 +11,17 @@
 .files-actions {
     flex-direction: row;
     display: flex;
+    padding: 10px 10px 10px 10px;
+    border-bottom: 1px solid gray;
 
     .files-action {
         background: transparent;
         border: none;
         color: white;
+        background-color: $space-cadet-dark;
+        margin: 5px 0 0 5px;
+        padding: 5px;
+        border-radius: 5px;
         display: flex;
         align-items: center;
         cursor: pointer;
