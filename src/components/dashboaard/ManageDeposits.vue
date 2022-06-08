@@ -45,10 +45,19 @@
         )
     }
 
-    // Fetch deposits and sort them into sections
     async function fetchDeposit(id: number) {
-        if (deposits.value != null && selectedDeposit != null) {
+        if ((deposits.value != null) && (selectedDeposit != null)) {
             selectedDeposit = await databaseClient.getDeposit(selectedDeposit.id)
+            if (selectedDeposit != null) {
+                const newData = await databaseClient.getDeposit(selectedDeposit.id)
+                for (let i = 0 ; i < toRaw(deposits.value).length ; i++) {
+                    for (let j = 0 ; j < deposits.value[i].values.length ; j++) {
+                        if (deposits.value[i].values[j].id == selectedDeposit.id) {
+                            deposits.value[i].values[j] = selectedDeposit
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -67,7 +76,6 @@
     }
 
     function toggleSidePannel(target: SidePannelTarget) {
-        console.log(target, target == SidePannelTarget.DEPOSIT)
         if (target == SidePannelTarget.DEPOSIT) {
             displaySidePannelnewDeposit.value = true
         } else if (target == SidePannelTarget.FILE) {
@@ -125,7 +133,6 @@
     }
 
     async function uploadFile() {
-        console.log("tabarnak")
         loadingFiles.value = true
         if (selectedDeposit != null)
         await databaseClient.uploadFileToDeposit(
@@ -141,10 +148,11 @@
     watch(success, fetchFiles)
     watch(success, fetchDeposits)
     watch(successFiles, async () => {
-    if (selectedDeposit != null)
-    await fetchDeposit(selectedDeposit.id)
-    .then(message => console.log(message))
-    .catch(message => console.log(message))
+    // Prevents firering two times the API call
+    if (selectedDeposit != null && successFiles.value)
+        await fetchDeposit(selectedDeposit.id)
+        .then(_ => fetchFiles())
+        .catch(message => console.error(message))
     })
 </script>
 
