@@ -17,9 +17,11 @@
 
     const deposits: Ref<Array<Repository>> = ref([])
 
-    databaseClient.getDeposits().then(result =>
+    const loading = ref(true)
+    databaseClient.getDeposits().then(result => {
         deposits.value = result
-    )
+        loading.value = false
+    })
 
     const reversed = ref(false)
     const sort = ref(Sort.PUBLICATION_DATE)
@@ -140,8 +142,11 @@
             </ul>
         </div>
         <h2>Résultats :</h2>
-        <div v-if='!output.length' class='loading-container'>
+        <div v-if='loading' class='loading-container'>
             <LoadingAnimation size="25%"/>
+        </div>
+        <div v-else-if="!output.length" class='center-text'>
+            <p>Aucun depôt trouvé</p>
         </div>
         <Transition v-else name="fade">
             <div id="browse-container">
