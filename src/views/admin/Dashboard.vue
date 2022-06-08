@@ -103,7 +103,7 @@ class View {
 
     static DEPOSITS = new View('Depôts de ressources', 'deposits', 'folder', ManageDeposits)
     static NEWS = new View('Actualités', 'news', 'newspaper', ManageNews)
-    static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', ManageDeposits)
+    static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', AddHistoryPoint)
     static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', ManageDeposits)
     static TEACHERS = new View('Enseignants', 'teachers', 'school', ManageDeposits)
     static USERS = new View('Utilisateurs', 'users', 'manage_accounts', ManageDeposits)

@@ -8,16 +8,22 @@
     import type { Ref, ComputedRef  } from "vue";
     // @ts-ignore
     import DataColumn from '@/components/dashboaard/DataColumn.vue'
+    // @ts-ignore
+    import DangerPopup from '@/components/dashboaard/popups/DangerPopup.vue'
     import { DataSection } from "@/utils/data_section";
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
     const displaySidePannelNewFile: Ref<boolean> = ref(false)
     const displaySidePannelEditDepo: Ref<boolean> = ref(false)
+    const displayDeleteDepoPopup: Ref<boolean> = ref(false)
     const newDepositLevel: Ref<number | null> = ref(null)
     const newDepositDescription: Ref<string> = ref("")
     const error: Ref<string | null> = ref(null)
     const success: Ref<boolean> = ref(false)
     const loading: Ref<boolean> = ref(false)
+    const errorDelete: Ref<string | null> = ref(null)
+    const successDelete: Ref<boolean> = ref(false)
+    const loadingDelete: Ref<boolean> = ref(false)
     const errorFiles: Ref<string | null> = ref(null)
     const successFiles: Ref<boolean> = ref(false)
     const loadingFiles: Ref<boolean> = ref(false)
@@ -45,7 +51,21 @@
     enum SidePannelTarget {
         DEPOSIT,
         FILE,
-        EDIT
+        EDIT,
+        DELETE
+    }
+
+    async function deleteCurrentDeposit() {
+        loadingDelete.value = true
+        if (selectedDeposit != null)
+        await databaseClient.deleteDeposit(selectedDeposit.id)
+        .then(_ => successDelete.value = true)
+        .catch(res => errorDelete.value = res)
+        loadingDelete.value = false
+        fetchDeposits()
+        selectedDeposit = deposits.value[0].values[0]
+
+        setTimeout(() => [successDelete.value, errorDelete.value] = [false, null], 3000)
     }
 
     // Fetch deposits and sort them into sections
@@ -93,10 +113,13 @@
             displaySidePannelNewFile.value = true
         } else if (target == SidePannelTarget.EDIT) {
             displaySidePannelEditDepo.value = true
+        } else if (target == SidePannelTarget.DELETE) {
+            displayDeleteDepoPopup.value = true
         } else {
             displaySidePannelnewDeposit.value = false
             displaySidePannelNewFile.value = false
             displaySidePannelEditDepo.value = false
+            displayDeleteDepoPopup.value = false
         }
     }
 
@@ -177,6 +200,9 @@
     <div class="good" v-if="successFiles">Le fichier a bien été envoyé</div>
     <div class="indication" v-else-if="loadingFiles">Création en cours ...</div>
     <div class="error" v-else-if="errorFiles">{{ errorFiles }}</div>
+    <div class="good" v-if="successDelete">Le dépôt a bien été supprimé</div>
+    <div class="indication" v-else-if="loadingDelete">Suppression en cours ...</div>
+    <div class="error" v-else-if="errorDelete">{{ errorDelete }}</div>
 
     <DataColumn
         @createData='toggleSidePannel(SidePannelTarget.DEPOSIT)'
@@ -198,7 +224,7 @@
                 <span class="material-icons pen">edit</span>
                 <span class="label">Modifier le dépôt</span>
             </button>
-            <button class="delete files-action">
+            <button class="delete files-action" @click="toggleSidePannel(SidePannelTarget.DELETE)">
                 <span class="material-icons bin">delete_forever</span>
                 <span class="label">Supprimer le dépôt</span>
             </button>
@@ -207,7 +233,11 @@
             <FileItem v-for="(file, index) in files" :key="index" :file="file" />
         </div>
     </div>
-    <div class="mask" v-if="displaySidePannelnewDeposit || displaySidePannelNewFile || displaySidePannelEditDepo" 
+    <div class="mask" v-if="
+    displaySidePannelnewDeposit || 
+    displaySidePannelNewFile ||
+    displaySidePannelEditDepo ||
+    displayDeleteDepoPopup" 
     @click="toggleSidePannel()"></div>
     <div class="side-pannel-new-depo" v-if="displaySidePannelnewDeposit">
         <h4 class="side-pannel-new-depo-title">
@@ -238,7 +268,7 @@
                 </select>
             </div>
         </div>
-        <div class="side-pannel-new-depo-files">
+        <!-- <div class="side-pannel-new-depo-files">
             <div class="side-pannel-new-depo-files-header">
                 <h4 class="side-pannel-new-depo-files-header-title">Ajoutez des Fichiers</h4>
                 <h5 class="side-pannel-new-depo-files-header-subtitle">
@@ -251,7 +281,7 @@
                     par le menu pour ajouter un fichier (en construction)
                 </i>
             </div>
-        </div>
+        </div> -->
         <div class="side-pannel-new-depo-bottom-buttons">
             <button class="side-pannel-new-depo-bottom-buttons-cancel" @click="toggleSidePannel()">
                 Annuler
@@ -331,4 +361,16 @@
             </button>
         </div>
     </div>
+    <DangerPopup
+        :title="'Supprimer le dépôt ' + selectedDeposit.title"
+        content="Attention, vous êtes sur le point de supprimer un dépôt de ressources définitivement. 
+        Assurez-vous d'avoir sauvegardé préalablement son contenu. 
+        Si vous voulez toutefois den récupérer le contenu d'un dépôt supprimé, 
+        il est possible que nous l'avons encore conservé."
+        :messageToType="selectedDeposit.title"
+        actionName="Supprimer définitivement le dépôt"
+        @deletion="deleteCurrentDeposit()"
+        @close="toggleSidePannel()"
+        v-if="displayDeleteDepoPopup"
+    />
 </template>
