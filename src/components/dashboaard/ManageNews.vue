@@ -6,14 +6,17 @@
         :list='news'
         :to-text='newsToText'
         :to-key='newsToKey'
-    />
-    <ContextMenu>
-        <ContextMenuElement icon='visibility' message='Option 1'/>
-        <ContextMenuElement icon='visibility' message='Option 2' />
-        <ContextMenuElement icon='visibility' message='Option 3' />
-        <ContextMenuSeparator />
-        <ContextMenuElement icon='visibility' message='Option 4' />
-    </ContextMenu>
+    >
+        <template v-slot='slotProps'>
+            {{ slotProps.text }}
+            <ContextMenu>
+                <ContextMenuElement
+                    :icon='slotProps.data.visible ? "visibility_off" : "visibility"'
+                    :message='slotProps.data.visible ? "Cacher" : "Montrer"'
+                />
+            </ContextMenu>
+        </template>
+    </DataColumn>
 </template>
 
 <script setup lang='ts'>
@@ -21,7 +24,7 @@
     import { databaseClient } from '@/database/implementation'
     import type { News } from '@/database/interface/news'
     import { DataSection } from '@/utils/data_section'
-    import { ref } from 'vue'
+    import { computed, ref } from 'vue'
     import type { Ref } from 'vue'
     import ContextMenu from '@/components/dashboaard/context_menu/ContextMenu.vue'
     import ContextMenuSeparator from '@/components/dashboaard/context_menu/ContextMenuSeparator.vue'
@@ -30,7 +33,9 @@
     const NEWS_BATCH_SIZE = 20
 
     // TODO: Add categories to news (sort by year ?)
-    const news: Ref<News[]> = databaseClient.fetchedNews
+    const news = computed(
+        () => DataSection.makeSections(databaseClient.fetchedNews.value, (news) => news.visible ? 'Visibles' : 'Cachées', ['Visibles', 'Cachées'])
+    )
 
     function addNews() {
         console.log("Hi")

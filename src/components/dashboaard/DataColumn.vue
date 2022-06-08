@@ -25,7 +25,7 @@
                         :class="{ 'selected': selectedData && props['toKey'](element) == props['toKey'](selectedData) }"
                         @click="selectData(element)"
                     >
-                        {{ props['toText'](element) }}
+                        <slot :data='element' :text='toText(element)'> {{ toText(element) }} </slot>
                     </li>
                 </ul>
                 <!-- If it's a simple element -->
@@ -35,7 +35,7 @@
                     :class="{ 'selected': selectedData && props['toKey'](data) == props['toKey'](selectedData) }"
                     @click="selectData(data)"
                 >
-                    {{ props['toText'](data) }}
+                    <slot :data='data' :text='toText(data)'> {{ toText(data) }} </slot>
                 </li>
             </template>
             <li @click="createData" class='data-list-element' id="add-data-button">
@@ -55,6 +55,8 @@
     import { ref } from 'vue';
 
     const props = defineProps(['title', 'list', 'add-button-message','to-text', 'to-key'])
+
+    const toText = props['toText']
 
     const emit = defineEmits(['selectData', 'createData'])
 

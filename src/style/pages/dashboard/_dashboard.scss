@@ -39,6 +39,7 @@
             #menu-icon {
                 transition: color 0.3 linear;
                 color: $cream-white;
+                user-select: none;
             }
 
             #menu-tooltip {

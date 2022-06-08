@@ -224,7 +224,8 @@ export class SupabaseClient implements DatabaseClient {
                     news['title'],
                     news['subtitle'],
                     news['date'],
-                    concerned
+                    concerned,
+                    news['visible']
                 ))
             })
 

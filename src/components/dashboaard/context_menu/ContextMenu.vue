@@ -9,27 +9,30 @@
     import type { Ref } from 'vue'
 
     const menuContainer: Ref<HTMLElement | null> = ref(null)
-    const menuShown = ref(true)
+    const menuShown = ref(false)
 
     watch(menuContainer, (container: HTMLElement) => {
         if (container == null) {
             return
         }
 
-        console.log(container.parentElement)
-
-        container.parentElement?.addEventListener('contextmenu', onContextMenu)
+        document.addEventListener('contextmenu', onContextMenu)
         document.addEventListener('click', () => menuShown.value = false)
     })
 
     function onContextMenu(event: MouseEvent) {
-        event.preventDefault()
-
-        menuShown.value = true
-
+        const parentRect = menuContainer.value?.parentElement?.getBoundingClientRect()!
         let { clientX: menuX, clientY: menuY } = event
 
-        const parentRect = menuContainer.value?.parentElement?.getBoundingClientRect()!
+        if (!parentRect || menuX < parentRect.left || menuX > parentRect.right || menuY < parentRect.top || menuY > parentRect.bottom) {
+            menuShown.value = false
+            return
+        }
+
+        event.preventDefault()
+        menuShown.value = true
+
+
         const menuRect = menuContainer.value?.getBoundingClientRect()!
 
         if (menuX + menuRect.width > parentRect.right) {

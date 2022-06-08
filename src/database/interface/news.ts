@@ -6,4 +6,5 @@ export interface News {
     subtitle: string
     date: string
     concerned: Array<Level> | null
+    visible: boolean
 }
