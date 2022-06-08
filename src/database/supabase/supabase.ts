@@ -385,7 +385,7 @@ export class SupabaseClient implements DatabaseClient {
         if (data != null) {
             if (data.content != null){
                 // Deletes these selected files
-                const deleteFilesResponse = await supabase.from('repository_files')
+                const deleteFilesResponse = await supabase.from('repository_file')
                 .delete().in('id', data.content)
                 deleteFilesResponse.error ? console.warn(deleteFilesResponse.error.message) : null
 
@@ -401,7 +401,7 @@ export class SupabaseClient implements DatabaseClient {
             } else {
                 const deleteDepoResponse = await supabase.from('deposits')
                 .delete().match({ 'id': id })
-                
+
                 return new Promise((resolve, reject) => {
                     deleteDepoResponse.error ? reject(deleteDepoResponse.error) : resolve("Dépôt supprimé avec succès")
                 })

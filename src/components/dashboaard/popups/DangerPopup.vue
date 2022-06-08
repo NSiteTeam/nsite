@@ -2,7 +2,7 @@
     import { computed, ref } from "vue"
     import type { Ref } from "vue"
 
-    const emit = defineEmits(['deletion'])
+    const emit = defineEmits(['deletion', 'close'])
     const { title, content, messageToType, actionName } = defineProps(
         ['title', 'content', 'messageToType', 'actionName']
     )
@@ -19,7 +19,7 @@
 
 <template>
     <div class="danger-popup">
-        <h3>{{ title }}</h3>
+        <h3><span class="material-icons" @click="emit('close')">close</span>{{ title }}</h3>
         <p>{{ content }}</p>
         <div class="danger-popup-message-to-type">
             Tappez 

@@ -62,6 +62,9 @@
         .then(_ => successDelete.value = true)
         .catch(res => errorDelete.value = res)
         loadingDelete.value = false
+        fetchDeposits()
+        selectedDeposit = deposits.value[0].values[0]
+
         setTimeout(() => [successDelete.value, errorDelete.value] = [false, null], 3000)
     }
 
@@ -265,7 +268,7 @@
                 </select>
             </div>
         </div>
-        <div class="side-pannel-new-depo-files">
+        <!-- <div class="side-pannel-new-depo-files">
             <div class="side-pannel-new-depo-files-header">
                 <h4 class="side-pannel-new-depo-files-header-title">Ajoutez des Fichiers</h4>
                 <h5 class="side-pannel-new-depo-files-header-subtitle">
@@ -278,7 +281,7 @@
                     par le menu pour ajouter un fichier (en construction)
                 </i>
             </div>
-        </div>
+        </div> -->
         <div class="side-pannel-new-depo-bottom-buttons">
             <button class="side-pannel-new-depo-bottom-buttons-cancel" @click="toggleSidePannel()">
                 Annuler
@@ -367,6 +370,7 @@
         :messageToType="selectedDeposit.title"
         actionName="Supprimer définitivement le dépôt"
         @deletion="deleteCurrentDeposit()"
+        @close="toggleSidePannel()"
         v-if="displayDeleteDepoPopup"
     />
 </template>
