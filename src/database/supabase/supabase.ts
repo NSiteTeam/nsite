@@ -343,11 +343,13 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     async getDeposit(id: number): Promise<Repository | null> {
+        const uuid = supabase.auth.user()?.id
 
         try {
             const { data, error } = await supabase
                 .from('deposits')
                 .select('*')
+                .contains('owners', [uuid])
                 .eq("id", id)
                 .maybeSingle()
 
@@ -372,6 +374,43 @@ export class SupabaseClient implements DatabaseClient {
             console.log("Error while fetching owned deposit", id, error)
             return null
         }
+    }
+
+    async deleteDeposit(id: number): Promise<string | void> {
+        // Gets the files remaining in the depo
+        const { data, error } = await supabase.from('deposits')
+        .select().eq('id', id).maybeSingle()
+        error ? console.warn(error.message) : null
+
+        if (data != null) {
+            if (data.content != null){
+                // Deletes these selected files
+                const deleteFilesResponse = await supabase.from('repository_files')
+                .delete().in('id', data.content)
+                deleteFilesResponse.error ? console.warn(deleteFilesResponse.error.message) : null
+
+                if (deleteFilesResponse.data != null && !deleteFilesResponse.error) {
+                    // Deletes the depo
+                    const deleteDepoResponse = await supabase.from('deposits')
+                    .delete().match({ 'id': id })
+
+                    return new Promise((resolve, reject) => {
+                        deleteDepoResponse.error ? reject(deleteDepoResponse.error) : resolve("Dépôt supprimé avec succès")
+                    })
+                }
+            } else {
+                const deleteDepoResponse = await supabase.from('deposits')
+                .delete().match({ 'id': id })
+                
+                return new Promise((resolve, reject) => {
+                    deleteDepoResponse.error ? reject(deleteDepoResponse.error) : resolve("Dépôt supprimé avec succès")
+                })
+            }
+        } else {
+            console.warn("No data fetched")
+        }
+
+
     }
 
     async getUsername(uuid: string): Promise<string> {
