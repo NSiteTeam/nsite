@@ -169,6 +169,13 @@
         newFile.value = e.target.files[0].name
     }
 
+    function handleFileDelete() {
+        if (selectedDeposit)
+        fetchDeposit(selectedDeposit.id)
+        .then(_ => fetchFiles())
+        .catch(message => console.error(message))
+    }
+
     async function uploadFile() {
         loadingFiles.value = true
         if (selectedDeposit != null)
@@ -230,7 +237,7 @@
             </button>
         </div>
         <div class="files-details">
-            <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+            <FileItem @deleted="handleFileDelete()" v-for="(file, index) in files" :key="index" :file="file" />
         </div>
     </div>
     <div class="mask" v-if="

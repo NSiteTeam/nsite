@@ -22,7 +22,7 @@
         <h3><span class="material-icons" @click="emit('close')">close</span>{{ title }}</h3>
         <p>{{ content }}</p>
         <div class="danger-popup-message-to-type">
-            Tappez 
+            Tapez 
             <span class="danger-popup-message-to-type-highlight">
                 {{ messageToType }}
             </span>

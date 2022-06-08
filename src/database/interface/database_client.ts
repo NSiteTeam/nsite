@@ -22,14 +22,15 @@ export interface DatabaseClient {
 
     // Deposits
     uploadFileToDeposit(file: File, deposit: string, message: string, fileName?: string): Promise<string>
+    editDeposit(id: number, title: string, description: string, level: number): Promise<string>
     deleteDeposit(id: number): Promise<string | void>
+    deleteFile(id: number): Promise<any>
     postDeposit(title: string, level: Level, description: string) : Promise<void>
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getDeposits(id?: number): Promise<Repository[]>
     getOwnedDeposits(): Promise<Repository[]>
     getDeposit(id: number): Promise<Repository | null>
     getFile(id: number): Promise<CustomFile>
-    editDeposit(id: number, title: string, description: string, level: number): Promise<string>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
 
