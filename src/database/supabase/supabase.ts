@@ -46,9 +46,9 @@ export class SupabaseClient implements DatabaseClient {
 
     // The username of the connected user or null if the user is not connected
     username: Ref<string | null> = ref(null)
-    
+
     accountCreationDate: Ref<string | null> = ref(null)
-    
+
     // The last connection date of the connected user or null if the user is not connected
     last_date: Ref<string | null>  = ref(null)
 
@@ -94,7 +94,7 @@ export class SupabaseClient implements DatabaseClient {
         })
         error && res.error ? error = {status: 500, message: error.message + ' ' + res.error?.message} : null
         res.error ? error = {status: 500, message: res.error.message} : null
-        
+
         // Here the account exists, but the email is not verified yet
         const accountCreated = !error && user != null
         console.log("Error :", error)
@@ -200,39 +200,40 @@ export class SupabaseClient implements DatabaseClient {
     async fetchNews(quantity: number): Promise<void> {
         console.log(`Try to fetch ${quantity} news from ${this.newsOffset}`)
 
-        return await supabase.functions.invoke('fetch-news',
-        { body: JSON.stringify({ quantity: quantity, offset: this.newsOffset }) })
-            .then(result => {
-                const { news: array, maxNewsReached } = result['data']
+        try {
+            const { data, error } = await supabase
+                .from('news')
+                .select("*")
+                .order('date')
+                .range(this.newsOffset, this.newsOffset + quantity - 1) // -1 As range is inclusive
 
-                try {
-                    array.forEach((news: any) => {
-                        this.fetchedNews.value.push(new SupabaseNews(
-                            news['id'],
-                            news['title'],
-                            news['subtitle'],
-                            news['date'],
-                            news['concerned'] ?
-                            news['concerned'].map((level: number) => Object.values(Level)[level]) : null
-                        ))
-                    })
-                } catch (error) {
-                    console.log(`Error while updating permissions, 
-                    probably caused by changes in the database`, error)
-                }
+            if (error) {
+                throw "Error while fetching news" + error
+            }
 
-                this.newsOffset += quantity
-                this.maxNewsReached.value = maxNewsReached
+            if (!data) {
+                throw "No data was returned"
+            }
 
-                console.log(`Just fetched ${array.length} news`)
-                if (maxNewsReached) {
-                    console.log("Max news reached")
-                }
-            })
-            .catch(error => {
-                console.log("Error while fetching news", error)
+
+            data?.forEach((news: any) => {
+                const concerned = news['concerned'] ? news['concerned'].map(SupabaseLevelHelper.getLevelById) : null
+
+                this.fetchedNews.value.push(new SupabaseNews(
+                    news['id'],
+                    news['title'],
+                    news['subtitle'],
+                    news['date'],
+                    concerned
+                ))
             })
 
+            this.newsOffset += data.length
+            this.maxNewsReached.value = data.length != quantity
+
+        } catch (error) {
+            console.log(`Error while updating permissions, probably caused by changes in the database`, error)
+        }
     }
 
     async getHistoryPoints(): Promise<any> {
@@ -274,7 +275,7 @@ export class SupabaseClient implements DatabaseClient {
         // Here we can directly manipulate the database as deposits are public
         let { data, error } = !id ? await supabase.from('deposits').select() :
         await supabase.from('deposits').select().eq("id", id).maybeSingle()
-        
+
         if (id) {
             data = [data]
         }
@@ -293,7 +294,7 @@ export class SupabaseClient implements DatabaseClient {
                     )
                 }))
             } else if (error) {
-                reject(`Error while fetching deposits, 
+                reject(`Error while fetching deposits,
                 probably caused by changes in the database: ` + error.message)
             }
         })
@@ -340,7 +341,7 @@ export class SupabaseClient implements DatabaseClient {
         // Laurian: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
         // Éric: No, with this we link uuids with usernames, without we cannot display usernames in the chat.
         const { data, error } = uuid ? await supabase.from('usernames')
-        .select().eq("user", uuid).maybeSingle() : 
+        .select().eq("user", uuid).maybeSingle() :
         await supabase.from('usernames').select()
 
         return new Promise((resolve, reject) => {
@@ -451,7 +452,7 @@ export class SupabaseClient implements DatabaseClient {
         if (error) {
             console.warn(error)
         } else {
-            console.log(`Successfully edited message ${messageId} 
+            console.log(`Successfully edited message ${messageId}
             from ${newContent} to ${data.content}`)
         }
         this.editMessageInTheCache(messageId, new SupabaseMessage(
@@ -546,7 +547,7 @@ export class SupabaseClient implements DatabaseClient {
         console.log(`Added one news to the database : ${insertedData.title}`)
     }
 
-    /* What it does : 
+    /* What it does :
         1: uploads the file to a storage bucket
         2: registers the file object in the dB
         3: selects the already present files in the depo
@@ -564,7 +565,7 @@ export class SupabaseClient implements DatabaseClient {
         const author = this.uuid.value ? await this.getUsername(this.uuid.value) : "anonyme"
         // Uploads data to the storage bucket
         const escapedFile = new File([file], newName, {type: file.type});
-        
+
         console.log(deposit + '/' + newName)
         const { data, error } = await supabase.storage.from('depositsfiles').upload(
             cleanDepositName + '/' + newName, escapedFile, {

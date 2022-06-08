@@ -16,6 +16,7 @@ import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
 import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
 import ManageNews from "@/components/dashboaard/ManageNews.vue"
+import router from "@/router"
 
 const availableViewsForUser= computed(
     () => {
@@ -63,6 +64,7 @@ const component = computed(
         if (view == null) {
             if (availableViewsForUser.value.length > 0) {
                 console.log('Switched vue to "' + availableViewsForUser.value[0].name + '"')
+                router.push('/dashboard/' + availableViewsForUser.value[0].nameInURL)
                 return availableViewsForUser.value[0].component
             } else {
                 return null  // "noViewsAvailable" is true so what we return don't matter

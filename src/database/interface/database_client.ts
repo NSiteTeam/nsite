@@ -40,9 +40,10 @@ export interface DatabaseClient {
 
     // NEWS
     fetchedNews: Ref<Array<News>>
-    maxNewsReached: Ref<boolean>
+    numberOfNews: Ref<number>
     fetchNews(quantity: number): Promise<void>
     postNews(title: string, content: string) : Promise<void>
+
     editNews(id:number, title: string, content: string): Promise<string>
     editDepo(id: number, title: string, description: string, level: number): Promise<string>
 
