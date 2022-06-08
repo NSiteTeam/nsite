@@ -6,6 +6,7 @@ export class SupabaseRepository implements Repository {
     level: Level
     publication_date: string
     description: string
+    owners: string[]
     id: number
     content: Array<number>
 
@@ -15,11 +16,13 @@ export class SupabaseRepository implements Repository {
         level: Level,
         publication_date: string,
         description: string,
-        content: Array<number>
+        content: Array<number>,
+        owners: string[]
     ) {
         this.id = id
         this.title = title
         this.level = level
+        this.owners = owners
         this.publication_date = publication_date
         this.description = description
         this.content = content

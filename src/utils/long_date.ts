@@ -1,5 +1,5 @@
 // ###########################################################################
-// ############ The purpose of this class is manage LongDates easily #############
+// ########## The purpose of this class is manage LongDates easily ###########
 // ###########################################################################
 
 const months = [

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient } from '../interface/database_client'
-import { Level } from '../interface/level'
+import type { Level } from '../interface/level'
 import type { News } from '../interface/news'
 import type { HistoryPoint } from '../interface/history_point'
 import { SupabaseNews } from './supabase_news'
@@ -31,6 +31,9 @@ export class SupabaseClient implements DatabaseClient {
 
     // The value of this ref is the fetched files
     files: Ref<CustomFile[]> = ref([])
+
+    // The number of fetched news (Laurian, j'ai mis 10 au pif, il fallait une valeur)
+    numberOfNews: Ref<number> = ref(10)
 
     // The value of this ref is the fetched repositories
     repositories: Ref<Repository[]> = ref([])
@@ -293,6 +296,7 @@ export class SupabaseClient implements DatabaseClient {
                 deposit['publication_date'],
                 deposit['description'],
                 deposit['content'],
+                deposit['owners'],
             ))
         } catch (error) {
             console.log("Error while fetching owned deposits", error)
@@ -330,6 +334,7 @@ export class SupabaseClient implements DatabaseClient {
                 deposit['publication_date'],
                 deposit['description'],
                 deposit['content'],
+                deposit['owners']
             ))
         } catch (error) {
             console.log("Error while fetching owned deposits", error)
@@ -361,6 +366,7 @@ export class SupabaseClient implements DatabaseClient {
                 data['publication_date'],
                 data['description'],
                 data['content'],
+                data['owners']
             )
         } catch (error) {
             console.log("Error while fetching owned deposit", id, error)
@@ -368,20 +374,14 @@ export class SupabaseClient implements DatabaseClient {
         }
     }
 
-    async getUsername(uuid: string): Promise<any> {
-        // Laurian: WE SHOULD NEVER EXPOSE ALL USER NAMES, REPLACE THIS BY A FUNCTION !!!!
-        // Éric: No, with this we link uuids with usernames, without we cannot display usernames in the chat.
-        const { data, error } = uuid ? await supabase.from('usernames')
-        .select().eq("user", uuid).maybeSingle() :
-        await supabase.from('usernames').select()
+    async getUsername(uuid: string): Promise<string> {
+        const { data, error } = await supabase.from('profiles')
+        .select().eq("user", uuid).maybeSingle()
 
         return new Promise((resolve, reject) => {
             if (!error && (data != null)) {
                 resolve(
-                    new SupabaseUsername(
-                        data['username'],
-                        data['user'],
-                    )
+                    data['username']
                 )
             } else if (error) {
                 reject("Error while fetching data : " + error.message)
@@ -593,7 +593,6 @@ export class SupabaseClient implements DatabaseClient {
         .replace(/[<>{}%`\[\]~#^:'’"/\\|?*]/g, ' ')
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
-        const author = this.uuid.value ? await this.getUsername(this.uuid.value) : "anonyme"
         // Uploads data to the storage bucket
         const escapedFile = new File([file], newName, {type: file.type});
 
@@ -604,13 +603,13 @@ export class SupabaseClient implements DatabaseClient {
                 upsert: false
             }
         )
-        if (data != null) {
+        if (data != null && this.user.value) {
             // Registers the file in the database
             const url = encodeURI(`https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/${data.Key}`)
             const res = await supabase.from("repository_file").insert([{
                 file_url: url,
                 last_commit_text: message,
-                last_commit_author: author.username,
+                last_commit_author: this.user.value.username,
                 name: newName
             }])
             res.error ? console.warn(res.error.message) : null

@@ -1,5 +1,6 @@
 <script setup lang='ts'>
     import { databaseClient } from '@/database/implementation'
+    import { LongDate } from '@/utils/long_date'
     import type CustomFile from '@/database/interface/file'
     import type { Ref } from 'vue'
     import { ref } from 'vue'
@@ -30,10 +31,13 @@
             </p>
             <input v-if="edit" type="text" v-model="file.name" name="file-name" id="file-name" />
         </div>
+        <div class="file-date">
+            {{ LongDate.ISOStringToLongDate(file.date).beautify() }}
+        </div>
         <div class="file-message">
             <div class="file-message-author">
                 {{ file.last_commit_author }}
-            </div> : 
+            </div> :&nbsp;
             <input v-if="edit" type="text" v-model="file.last_commit_text" 
             name="file-name" id="file-name" />
             <div v-if="!edit">{{ file.last_commit_text }}</div>
