@@ -201,15 +201,21 @@ export class SupabaseClient implements DatabaseClient {
      * Add more new to the fetchedNews property
      * @param quantity the quantity of new to fetch
      */
-    async fetchNews(quantity: number): Promise<void> {
+    async fetchNews(quantity: number, onlyVisible: boolean = true): Promise<void> {
         console.log(`Try to fetch ${quantity} news from ${this.newsOffset}`)
 
         try {
-            const { data, error } = await supabase
+            let request = supabase
                 .from('news')
                 .select("*")
                 .order('date')
                 .range(this.newsOffset, this.newsOffset + quantity - 1) // -1 As range is inclusive
+
+            if (onlyVisible) {
+                request = request.eq('visible', true)
+            }
+
+            const { data, error } = await request
 
             if (error) {
                 throw "Error while fetching news" + error

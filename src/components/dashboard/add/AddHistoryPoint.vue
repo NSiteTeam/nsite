@@ -3,10 +3,10 @@ import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import { ref } from "vue"
     
-import DataColumn from '/workspace/nsite/src/components/dashboaard/DataColumn.vue'
+import DataColumn from '@/components/dashboaard/DataColumn.vue'
 import {shallowRef} from "vue";
 import type { HistoryPoint } from "@/database/interface/history_point"
-import { LongDate } from "/workspace/nsite/src/utils/long_date"
+import { LongDate } from "@/utils/long_date"
 import { timestampToFrenchDate } from "@/utils/date"
 
     const historyPoints: Ref<Array<HistoryPoint>> = ref([])

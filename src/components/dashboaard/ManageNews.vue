@@ -159,5 +159,5 @@
         }
     }
 
-    databaseClient.fetchNews(NEWS_BATCH_SIZE)
+    databaseClient.fetchNews(NEWS_BATCH_SIZE, false)
 </script>

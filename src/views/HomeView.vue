@@ -12,20 +12,17 @@
 
         <div class="news shadow2">
           <h1>Actualités</h1>
-          <div class="liste-actualites">
+          <div class="news-container">
             <div v-if='!sortedNews.length' class='loading-container'>
               <LoadingAnimation size='75%'/>
             </div>
-            <ul>
+            <ul id='news-list'>
               <li v-for="(news, index) in sortedNews" :key="index">
                 <div class="news-item">
-                  <p>{{ news.title }} <i>{{ news.date }}</i></p>
-                  <p>{{ news.subtitle }}</p>
-                  <ul>
-                    <!-- <li v-for="(concerned, index) in news.concerned" :key="index">
-                      <p>{{ concerned }}</p>
-                    </li> -->
-                  </ul>
+                  <h3 class="news-header"> {{ news.title }} <span class='news-date'> {{ news.date.beautify() }} </span> </h3>
+                  <p class='news-content'>
+                    {{ news.content.slice(0, NUMBER_OF_CHAR_PER_NEWS) }}{{ news.content.length > NUMBER_OF_CHAR_PER_NEWS ? "..." : ""}}
+                  </p>
                 </div>
               </li>
             </ul>
@@ -45,15 +42,16 @@
   import Footer from "@/components/Footer.vue";
   import LoadingAnimation from "@/components/LoadingAnimation.vue";
 
-  const NUMBER_OF_FETCHED_NEWS = 20
+  const NUMBER_OF_FETCHED_NEWS = 5
+  const NUMBER_OF_CHAR_PER_NEWS = 100
 
-  const news: Ref<Array<News>> = databaseClient.fetchedNews
   databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 
   const sortedNews = computed(
-    () => news.value.sort((a: News, b: News) => LongDate.compare(
-        LongDate.ISOStringToLongDate(a.date),
-        LongDate.ISOStringToLongDate(b.date)
+    () => databaseClient.fetchedNews.value
+      .filter((news: News) => news.visible)
+      .sort((a: News, b: News) => -1 * LongDate.compare(
+        a.date, b.date
       )
     )
   )
