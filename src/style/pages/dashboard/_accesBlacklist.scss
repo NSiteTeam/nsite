@@ -28,14 +28,26 @@
                 padding: 2%;
                 border-top:2px solid #435174;
                 border-left:2px solid #435174;
-                display: block;
 
                 p {
                     margin-top: -1%;
                 }
 
                 .quit {
-                    
+                    background-color: #6f839e;
+                    color: aliceblue;
+                    border: none;
+                    border-radius: 10%;
+                    margin-left: 90%;
+                    margin-top: -10%;
+
+
+                    .material-symbols-outlined {
+                        margin-top: 20%;                        
+                    }
+                }
+                .quit:hover {
+                    background-color: #941d1d;
                 }
             }
 
