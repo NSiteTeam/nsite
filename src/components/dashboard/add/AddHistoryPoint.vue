@@ -2,12 +2,15 @@
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import { ref } from "vue"
-    
+
+// @ts-ignore
 import DataColumn from '@/components/dashboaard/DataColumn.vue'
 import {shallowRef} from "vue";
 import type { HistoryPoint } from "@/database/interface/history_point"
 import { LongDate } from "@/utils/long_date"
 import { timestampToFrenchDate } from "@/utils/date"
+import type { Repository } from "@/database/interface/repositories";
+import type { DataSection } from "@/utils/data_section";
 
     const historyPoints: Ref<Array<HistoryPoint>> = ref([])
     databaseClient.getHistoryPoints().then(res =>
@@ -41,8 +44,8 @@ function handleSubmit() {
 <template>
 
     <DataColumn
-        title="Points d'Histoire existants: "
-        add-button-message="Ajouter un point d'Histoire: "
+        title="Points d'histoire existants: "
+        add-button-message="Ajouter un point d'Histoire"
         :list='deposits'>
 
         <div class="container">
@@ -61,7 +64,7 @@ function handleSubmit() {
             </li>
         </ul>
     </div>
-    </DataColumn>>
+    </DataColumn>
 
     <div class="submitted" v-if="submitted">
     Le point d'histoire à été ajouté à la base de données

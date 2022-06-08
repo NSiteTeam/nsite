@@ -25,13 +25,11 @@ databaseClient.fetchMessages(depoId).then((res) => {
 })
 
 function addMessage(message: string) {
-    const uuid = databaseClient.uuid.value
     // Verifies if the user is well connected
     // if (databaseClient.uuid.value) {
         // Pushes message to the window, but not the database
         const test = messages.value
         databaseClient.postMessage(
-            uuid,
             message,
             depoId
         ).catch(error => {

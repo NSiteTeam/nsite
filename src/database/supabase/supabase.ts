@@ -440,8 +440,9 @@ export class SupabaseClient implements DatabaseClient {
     async getFile(id: number): Promise<CustomFile> {
         const { data, error } = await supabase.from('repository_file')
         .select().eq('id', id).maybeSingle()
-        this.files.value.push(data)
+
         return new Promise((resolve, reject) => {
+            if (data != null)
             resolve(new SupabaseFile(
                 data.id,
                 data.name,
@@ -451,6 +452,39 @@ export class SupabaseClient implements DatabaseClient {
                 data.last_commit_text,
                 data.file_url
             ))
+        })
+    }
+    
+
+    async deleteFile(id: number): Promise<any> {
+        const { error } = await supabase.from('repository_file')
+        .delete().match({ id: id })
+
+        // Updates the fkeys in the deposits
+        const responseForTheSelect = await supabase.from('deposits')
+        .select().contains("content", [id])
+
+        if (responseForTheSelect.data) {
+            const newContents = responseForTheSelect.data.map(depo => {
+                return depo.content.filter((fileId: number) => {
+                    return id != fileId
+                })
+            })
+            const ids = responseForTheSelect.data.map(depo => {
+                return depo.id
+            })
+            for (let i = 0 ; i < responseForTheSelect.data.length ; i++) {
+                const { data, error } = await supabase.from('deposits')
+                .update({ content: newContents[i] }).match({ id: ids[i] })
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            if (responseForTheSelect) {
+                resolve('Fichier supprimsé avec succès')
+            } else {
+                reject(error)
+            }
         })
     }
 
@@ -478,10 +512,10 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async postMessage(author: string, content: string | null, depoId: number): Promise<Message[]> {
+    async postMessage(content: string | null, depoId: number): Promise<Message[]> {
         const { data, error } = await supabase.from(`deposits_chat_messages`)
         .insert([{
-            author: author,
+            author: this.user.value?.uuid ? this.user.value.uuid : "anonyme",
             content: content,
             depoId: Math.floor(depoId)
         }]).eq("depoId", depoId)

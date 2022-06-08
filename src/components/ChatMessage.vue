@@ -10,7 +10,7 @@ const username: Ref<string> = ref("anonyme")
 
 if (message.author != null) {
     await databaseClient.getUsername(message.author).then(res => {
-        username.value = res.username
+        username.value = res
     })
 } else {
     username.value = "anonyme"
@@ -50,7 +50,7 @@ function handleDeleteOrCancel() {
         <input autocomplete="off" class="message-edition-input" v-if="editMode"
         v-model="message.content" type="text">
         <p class="content" v-else>{{ message.content }}</p>
-        <div v-if="message.author == databaseClient.uuid.value || message.author == null" 
+        <div v-if="username == databaseClient.user.value.username || message.author == null" 
         class="messageButtons">
             <button @click="changeEditMode()" class="message-button">
                 {{ editMode ? "Valider" : "Modifier" }}

@@ -106,7 +106,7 @@
         return deposit.id
     }
 
-    function toggleSidePannel(target: SidePannelTarget) {
+    function toggleSidePannel(target?: SidePannelTarget) {
         if (target == SidePannelTarget.DEPOSIT) {
             displaySidePannelnewDeposit.value = true
         } else if (target == SidePannelTarget.FILE) {
@@ -124,6 +124,7 @@
     }
 
     function selectData(data: Repository) {
+        console.log(data)
         selectedDeposit = data
         fetchFiles()
     }
@@ -169,6 +170,14 @@
         newFile.value = e.target.files[0].name
     }
 
+    function handleFileDelete() {
+        if (selectedDeposit)
+        fetchDeposit(selectedDeposit.id)
+        .then(_ => fetchFiles())
+        .catch(message => console.error(message))
+        toggleSidePannel()
+    }
+
     async function uploadFile() {
         loadingFiles.value = true
         if (selectedDeposit != null)
@@ -198,7 +207,7 @@
     <div class="indication" v-else-if="loading">Création en cours ...</div>
     <div class="error" v-else-if="error">{{ error }}</div>
     <div class="good" v-if="successFiles">Le fichier a bien été envoyé</div>
-    <div class="indication" v-else-if="loadingFiles">Création en cours ...</div>
+    <div class="indication" v-else-if="loadingFiles">Envoi en cours ...</div>
     <div class="error" v-else-if="errorFiles">{{ errorFiles }}</div>
     <div class="good" v-if="successDelete">Le dépôt a bien été supprimé</div>
     <div class="indication" v-else-if="loadingDelete">Suppression en cours ...</div>
@@ -230,7 +239,7 @@
             </button>
         </div>
         <div class="files-details">
-            <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+            <FileItem @deleted="handleFileDelete()" v-for="(file, index) in files" :key="index" :file="file" />
         </div>
     </div>
     <div class="mask" v-if="

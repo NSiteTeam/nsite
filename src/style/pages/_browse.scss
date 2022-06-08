@@ -27,8 +27,7 @@
     align-items: center;
     background-color: rgba(255, 255, 255, 0.1);
     padding: 8px 12px 8px 12px;
-    width: 90%;
-    margin-right: 10px;
+    width: 100%;
     border-radius: 15px;
 
     .material-icons {
@@ -132,6 +131,7 @@ ul.level-buttons {
     }
 }
 #browse-view {
+    min-height: calc(100vh - $header-height - 110px);
     margin: 65px 110px;
 }
 

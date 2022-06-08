@@ -10,10 +10,12 @@
     import Chat from "../components/Chat.vue";
     import Files from '../components/Files.vue';
 
-    const id = Number(useRoute().params.id[0])
+    const id = Number(useRoute().params.id)
     const files: Ref<CustomFile[]> = databaseClient.files
     const repoData: Ref<Repository | null> = ref(null)
-    databaseClient.getDeposit(id).then(res => repoData.value = res)
+    await databaseClient.getDeposit(id).then(res => {
+        repoData.value = res
+    })
 </script>
 
 <template>
