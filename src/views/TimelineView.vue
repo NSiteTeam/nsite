@@ -4,11 +4,13 @@
     import { LongDate } from "../utils/long_date"
     import type date from "../utils/interface/date"
     import { timestampToFrenchDate } from "@/utils/date"
-    import { ref } from "vue"
+    import { computed, ref } from "vue"
     import type { Ref } from "vue"
     import LoadingAnimation from "@/components/LoadingAnimation.vue"
 
-    const historyPoints: Ref<Array<HistoryPoint>> = databaseClient.fetchedHistoryPoints
+    const historyPoints: Ref<Array<HistoryPoint>> = computed(
+        () => databaseClient.fetchedHistoryPoints.value.filter((e) => e.visible)
+    )
     databaseClient.fetchHistoryPoints()
 </script>
 
