@@ -20,6 +20,7 @@ export interface DatabaseClient {
 
     // Deposits
     uploadFileToDeposit(file: File, deposit: string, message: string, fileName?: string): Promise<string>
+    deleteDeposit(id: number): Promise<string | void>
     postDeposit(title: string, level: Level, description: string) : Promise<void>
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
     getDeposits(id?: number): Promise<Repository[]>

@@ -10,7 +10,7 @@
 
 
 <template>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <DataColumn
         title='Options de la liste noire'
@@ -23,28 +23,27 @@
         <div class="list">
             <h1>Liste noire</h1>
             <div class="list-2">
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
-                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd</p><div class="quit"></div></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
+                <div class="user"><p>user #fcruygbduykjrfcgbesdyrfcgbhjd<button class="quit"><span class="material-symbols-outlined">close</span></button></p></div>
             </div>
         </div>
         <div class="infos">
