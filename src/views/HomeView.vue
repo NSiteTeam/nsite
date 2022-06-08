@@ -19,7 +19,7 @@
             <ul>
               <li v-for="(news, index) in sortedNews" :key="index">
                 <div class="news-item">
-                  <p>{{ news.title }} <i>{{ formatDate(news.date) }}</i></p>
+                  <p>{{ news.title }} <i>{{ news.date }}</i></p>
                   <p>{{ news.subtitle }}</p>
                   <ul>
                     <!-- <li v-for="(concerned, index) in news.concerned" :key="index">

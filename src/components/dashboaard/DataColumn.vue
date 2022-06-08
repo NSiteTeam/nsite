@@ -52,7 +52,7 @@
 
 <script setup lang='ts'>
     import { DataSection } from '@/utils/data_section';
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
 
     const props = defineProps(['title', 'list', 'add-button-message','to-text', 'to-key'])
 

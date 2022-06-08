@@ -1,11 +1,15 @@
 .context-menu-container {
     position: fixed;
 
+    z-index: 1000;
+
     height: max-content;
     width: 12rem;
 
     background-color: #414d6c;
     @include shadow2();
+
+    user-select: none;
 
     transform-origin: 0 0;
     transition: transform 0.2s;
@@ -29,6 +33,7 @@
             background-color: #4b5b81;
         }
     }
+
     .context-menu-separator {
         height: 1px;
         background-color: white;

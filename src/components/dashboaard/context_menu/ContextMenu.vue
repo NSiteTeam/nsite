@@ -36,11 +36,15 @@
         const menuRect = menuContainer.value?.getBoundingClientRect()!
 
         if (menuX + menuRect.width > parentRect.right) {
-            menuX = parentRect.right - menuRect.width
+            if (parentRect.right - menuRect.width >= parentRect.left) {
+                menuX = parentRect.right - menuRect.width
+            }
         }
 
         if (menuY + menuRect.height > parentRect.bottom) {
-            menuY = parentRect.bottom - menuRect.height
+            if (parentRect.bottom - menuRect.height >= parentRect.top) {
+                menuY = parentRect.bottom - menuRect.height
+            }
         }
 
         menuContainer.value!.style.left = menuX + 'px'

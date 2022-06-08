@@ -1,0 +1,61 @@
+#form-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    #news-form-container {
+        padding: 32px;
+
+        #news-form-title-container {
+            display: flex;
+            font-size: x-large;
+
+            #news-title-label {
+                margin-right: 16px;
+            }
+
+            #news-form-title {
+                flex: 1;
+                margin-right: 16px;
+                font-size: large;
+            }
+
+            margin-bottom: 16px;
+        }
+
+        #level-concerned-container {
+            margin-bottom: 16px;
+
+            .level-checkbox-label {
+                margin-right: 4px;
+            }
+
+            #level-concerned {
+                margin-right: 16px;
+            }
+        }
+
+        #news-textarea {
+            margin-bottom: 16px;
+            resize: none;
+            width: 98%;
+            height: 70%;
+        }
+
+        #submit-row {
+            margin-right: 8px;
+
+            #submit-button {
+                font-size: medium;
+                float: right;
+                background-color: hsl(19, 73%, 58%);
+                color: $cream-white;
+
+                &:hover {
+                    transition: 0.3s;
+                    background-color: hsl(19, 73%, 62%);
+                }
+            }
+        }
+    }
+}

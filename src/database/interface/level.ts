@@ -15,6 +15,7 @@
     static PREMIERE = new Level('Première', 'premiere', '1ère', 5)
     static TERMINALE = new Level('Terminale', 'terminale', 'Tal', 6)
 
+    // The levels sorted by their index in ascending order
     static LEVELS = [this.SIXIEME, this.CINQUIEME, this.QUATRIEME, this.TROISIEME, this.SECONDE, this.PREMIERE, this.TERMINALE]
 
     static levelFromIndex(index: number) {

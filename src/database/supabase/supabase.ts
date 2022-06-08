@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
-import type { DatabaseClient } from '../interface/database_client'
+import type { DatabaseClient, errorMessage } from '../interface/database_client'
 import type { Level } from '../interface/level'
 import type { News } from '../interface/news'
 import type { HistoryPoint } from '../interface/history_point'
@@ -17,6 +17,7 @@ import SupabaseMessage from './supabase_message'
 import { SupabaseUser } from './supabase_user'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
+import { LongDate } from '@/utils/long_date'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -225,8 +226,8 @@ export class SupabaseClient implements DatabaseClient {
                 this.fetchedNews.value.push(new SupabaseNews(
                     news['id'],
                     news['title'],
-                    news['subtitle'],
-                    news['date'],
+                    news['content'],
+                    LongDate.ISOStringToLongDate(news['date']),
                     concerned,
                     news['visible']
                 ))
@@ -567,15 +568,76 @@ export class SupabaseClient implements DatabaseClient {
         console.log(`Added one history point : ${insertedData.title}`)
     }
 
-    async postNews(title: string, content: string): Promise<void> {
-        const insertedData = {
-            "title": title,
-            "subtitle": content,
-        }
-        const { data, error } = await supabase.from('news').insert([insertedData])
+    async createEmptyNews(title: string): Promise<News> {
+        console.log('Trying to create an empty news in the database')
+        const { data, error } = await supabase.from('news').insert([{
+            title: title
+        }])
 
-        if (error) throw error.message
-        console.log(`Added one news to the database : ${insertedData.title}`)
+        if (error) {
+            throw error.message
+        }
+
+        const addedNews = new SupabaseNews(
+            data[0]['id'],
+            data[0]['title'],
+            data[0]['content'],
+            LongDate.ISOStringToLongDate(data[0]['date']),
+            data[0]['concerned'],
+            data[0]['visible']
+        )
+
+        console.log('Added one news in the database', addedNews)
+
+        this.fetchedNews.value.push(addedNews)
+        this.newsOffset += 1
+
+        return addedNews
+    }
+
+    async switchVisibility(news: News): Promise<errorMessage | null> {
+        console.log("Trying to switch visibility of", news)
+
+        const { data, error } = await supabase
+            .from('news')
+            .update({
+                visible: !news.visible
+            })
+            .match({ id: news.id })
+
+        if (error) {
+            console.log("Error while switching visibility of a news", error)
+            return error.toString()
+        }
+
+        const index = this.fetchedNews.value.indexOf(news)
+        this.fetchedNews.value[index].visible = !news.visible
+
+        console.log("News visibility updated with success", data)
+
+        return null
+    }
+
+    async deleteNews(news: News): Promise<errorMessage | null> {
+        console.log("Trying to delete", news)
+
+        const { data, error } = await supabase
+            .from('news')
+            .delete()
+            .match({ id: news.id })
+
+        if (error) {
+            console.log("Error while deleting news", error)
+            return error.toString()
+        }
+
+        const index = this.fetchedNews.value.indexOf(news)
+        this.fetchedNews.value.splice(index, 1)
+        this.newsOffset -= 1
+
+        console.log("News deleted with success", data)
+
+        return null
     }
 
     /* What it does :
@@ -645,16 +707,31 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async editNews(id: number, title: string, content: string): Promise<string> {
-        const { data, error } = await supabase.from('news')
-        .update({ title: title, subtitle: content }).match({ id: id })
+    async updateNews(news: News): Promise<errorMessage | null> {
+        console.log("Trying to update news", news)
 
-        return new Promise((resolve, reject) => {
-            (!error && data) ? resolve("L'évènment a bien été mis à jour") : reject(error.message)
-        })
+        const { data, error } = await supabase
+            .from('news')
+            .update({
+                date: news.date.toForm(),
+                title: news.title,
+                visible: news.visible,
+                concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
+                content: news.content
+            })
+            .match({ id: news.id })
+
+        if (error) {
+            console.log("Error while updating news", error)
+            return error.toString()
+        }
+
+        console.log("News updated with success", data)
+
+        return null
     }
 
-    async editDepo(id: number, title: string, description: string, level: number): Promise<string> {
+    async editDeposit(id: number, title: string, description: string, level: number): Promise<string> {
         const { data, error } = await supabase.from('deposits')
         .update({ title: title, description: description, level: level }).match({ id: id })
 

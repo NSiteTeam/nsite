@@ -39,7 +39,7 @@ function handleEdit(cancel = false) {
     edit.value = !edit.value
 
     if (!(edit.value && cancel)) {
-        databaseClient.editDepo(depo.id, depo.title, depo.description, Number(depo.level))
+        databaseClient.editDeposit(depo.id, depo.title, depo.description, Number(depo.level))
         .then(res => success.value = res)
         .catch(res => error.value = res)
     }

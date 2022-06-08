@@ -14,7 +14,7 @@ export class DataSection<T> {
         this.expanded.value = !this.expanded.value
     }
 
-    static makeSections<T>(dataArray: T[], stringOf: (object: T) => string, order: string[] = []) {
+    static makeSections<T>(dataArray: T[], stringOf: (object: T) => string, sortBy: ((object: DataSection<T>) => number) | undefined = undefined) {
         const dataMap = new Map<string, T[]>()
         for (const dataElement of dataArray) {
             const dataElementKey = stringOf(dataElement)
@@ -35,7 +35,9 @@ export class DataSection<T> {
             ))
         }
 
-        result.sort((section) => order.indexOf(section.name))
+        if (sortBy) {
+            result.sort(sortBy)
+        }
 
         return result
     }

@@ -8,6 +8,8 @@ import type Message from './message';
 import type { User } from './user';
 import type { Level } from './level';
 
+export type errorMessage = string
+
 export interface DatabaseClient {
     // USER
     isConnected: Ref<boolean>
@@ -26,6 +28,7 @@ export interface DatabaseClient {
     getOwnedDeposits(): Promise<Repository[]>
     getDeposit(id: number): Promise<Repository | null>
     getFile(id: number): Promise<CustomFile>
+    editDeposit(id: number, title: string, description: string, level: number): Promise<string>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>
 
@@ -44,10 +47,10 @@ export interface DatabaseClient {
     fetchedNews: Ref<Array<News>>
     numberOfNews: Ref<number>
     fetchNews(quantity: number): Promise<void>
-    postNews(title: string, content: string) : Promise<void>
-
-    editNews(id:number, title: string, content: string): Promise<string>
-    editDepo(id: number, title: string, description: string, level: number): Promise<string>
+    createEmptyNews(title: string): Promise<News>
+    updateNews(news: News): Promise<errorMessage | null>
+    switchVisibility(news: News): Promise<errorMessage | null>
+    deleteNews(news: News): Promise<errorMessage | null>
 
     // TIMELINE
     postHistotyPoint(title: string, content: string, date: string) : Promise<void>

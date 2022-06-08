@@ -24,7 +24,7 @@ export class LongDate {
     month: number
     year: number
     digits: Array<number>
-    
+
 
     constructor(seconds: number = 0, minutes: number = 0, hours: number = 0,
         day: number = 1, month: number = 1, year: number = 1970) {
@@ -96,6 +96,15 @@ export class LongDate {
         } else {
             return `le ${this.day} ${months[this.month - 1]} ${this.year} à ${this.hours}h${this.minutes}`
         }
+    }
+
+    toForm(): string {
+        return `${this.year}-${this.monthOnTwoDigits()}-${this.dayOnTwoDigits()}`
+    }
+
+    static fromForm(value: string) {
+        const splitted = value.split('-')
+        return new LongDate(undefined, undefined, undefined, Number(splitted[2]), Number(splitted[1]), Number(splitted[0]))
     }
 
     // #######################################################################

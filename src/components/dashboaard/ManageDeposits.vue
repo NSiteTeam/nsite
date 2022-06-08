@@ -32,7 +32,7 @@
     const ownersUsernames = computed(_ => {
         const usernames: Ref<string[]> = ref([])
         if (selectedDeposit)
-        selectedDeposit.owners.map(owner => 
+        selectedDeposit.owners.map(owner =>
             databaseClient.getUsername(owner)
             .then(res => usernames.value.push(res))
             .catch(res => error.value = res)
