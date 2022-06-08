@@ -127,6 +127,7 @@
     async function uploadFile() {
         console.log("tabarnak")
         loadingFiles.value = true
+        if (selectedDeposit != null)
         await databaseClient.uploadFileToDeposit(
             rawFile.value, selectedDeposit!.title,
             newFileMessage.value, newFile.value
@@ -140,12 +141,10 @@
     watch(success, fetchFiles)
     watch(success, fetchDeposits)
     watch(successFiles, async () => {
-        if (selectedDeposit != null) {
-            await fetchDeposit(selectedDeposit.id)
-                .then(message => console.log(message))
-                .catch(message => console.log(message))
-        }
-        fetchFiles()
+    if (selectedDeposit != null)
+    await fetchDeposit(selectedDeposit.id)
+    .then(message => console.log(message))
+    .catch(message => console.log(message))
     })
 </script>
 
