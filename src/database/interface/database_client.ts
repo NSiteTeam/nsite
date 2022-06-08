@@ -21,8 +21,9 @@ export interface DatabaseClient {
     uploadFileToDeposit(file: File, deposit: string, message: string, fileName?: string): Promise<string>
     postDeposit(title: string, level: Level, description: string) : Promise<void>
     renameFile(id: number, newName: string, newMessage: string): Promise<any>
-    getRepos(id?: number): Promise<Repository[]>
+    getDeposits(id?: number): Promise<Repository[]>
     getOwnedDeposits(): Promise<Repository[]>
+    getDeposit(id: number): Promise<Repository | null>
     getFile(id: number): Promise<CustomFile>
     repositories: Ref<Repository[]>
     files: Ref<CustomFile[]>

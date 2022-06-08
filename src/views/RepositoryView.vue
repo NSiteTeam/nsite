@@ -1,37 +1,30 @@
 <script setup lang="ts">
-import type { Repository } from "@/database/interface/repositories"
-import { databaseClient } from "@/database/implementation"
-import { useRoute } from "vue-router"
-import { ref, computed, onMounted } from 'vue'
-import type { Ref } from "vue"
-import type CustomFile from "@/database/interface/file";
-import SupabaseMessage from "@/database/supabase/supabase_message";
-import { LongDate }from '@/utils/long_date'
-// @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
-import Chat from "../components/Chat.vue";
-// @ts-ignore : oui je sais c'est pas bien, mais c'est un bug de vue
-import Files from '../components/Files.vue';
+    import type { Repository } from "@/database/interface/repositories"
+    import { databaseClient } from "@/database/implementation"
+    import { useRoute } from "vue-router"
+    import { ref, computed, onMounted } from 'vue'
+    import type { Ref } from "vue"
+    import type CustomFile from "@/database/interface/file";
+    import SupabaseMessage from "@/database/supabase/supabase_message";
+    import { LongDate }from '@/utils/long_date'
+    import Chat from "../components/Chat.vue";
+    import Files from '../components/Files.vue';
 
-const id = Number(useRoute().params.id[0])
-const files: Ref<CustomFile[]> = databaseClient.files
-const repoData: Ref<Repository[]> = ref([])
-await databaseClient.getRepos(id).then(res => repoData.value = res)
-console.log("Got data :", repoData.value)
+    const id = Number(useRoute().params.id[0])
+    const files: Ref<CustomFile[]> = databaseClient.files
+    const repoData: Ref<Repository | null> = ref(null)
+    databaseClient.getDeposit(id).then(res => repoData.value = res)
 </script>
 
 <template>
     <!-- ensemble -->
     <div id="repo">
         <h3 id="repo-title">
-            {{ repoData[0].title }}
+            {{ repoData.title }}
             <i>
-                <div v-if=" repoData[0].level==2">
-                    Niveau : {{ repoData[0].level }}nde, 
-                    {{ LongDate.ISOStringToLongDate(repoData[0].publication_date).beautify(false) }}
-                </div>
-                <div v-else>
-                    Niveau : {{ repoData[0].level }}ème, 
-                    {{ LongDate.ISOStringToLongDate(repoData[0].publication_date).beautify(false) }}
+                <div>
+                    Niveau : {{ repoData.level.fullName }},
+                    {{ LongDate.ISOStringToLongDate(repoData.publication_date).beautify(false) }}
                 </div>
             </i>
         </h3>
@@ -52,13 +45,13 @@ console.log("Got data :", repoData.value)
             </RouterLink>
         </ul>
         <div id="repo-body" v-if="useRoute().params.content == 'content'">
-            <Files :fileIds="repoData[0].content" />
+            <Files :fileIds="repoData.content" />
             <div class="repo-descr">
                 <h4>Description</h4>
-                {{ repoData[0].description }}
+                {{ repoData.description }}
             </div>
         </div>
         <!-- CHAT -->
-        <Chat id="repo-chat" :depoId="repoData[0].id" v-if="useRoute().params.content == 'chat'" />
+        <Chat id="repo-chat" :depoId="repoData.id" v-if="useRoute().params.content == 'chat'" />
     </div>
 </template>

@@ -269,35 +269,34 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    async getRepos(id?: number): Promise<Repository[]> {
+    async getDeposits(id?: number): Promise<Repository[]> {
         console.log("Trying to fetch deposits in the database")
 
-        // Here we can directly manipulate the database as deposits are public
-        let { data, error } = !id ? await supabase.from('deposits').select() :
-        await supabase.from('deposits').select().eq("id", id).maybeSingle()
+        try {
+            const { data, error } = await supabase
+                .from('deposits')
+                .select('*')
 
-        if (id) {
-            data = [data]
-        }
-
-        return new Promise((resolve, reject) => {
-            if (error == null && data) {
-                this.repositories.value.push(data[0])
-                resolve(data.map((repositories: Repository) => {
-                    return new SupabaseRepository(
-                        repositories['id'],
-                        repositories['title'],
-                        repositories['level'],
-                        repositories['publication_date'],
-                        repositories['description'],
-                        repositories['content'],
-                    )
-                }))
-            } else if (error) {
-                reject(`Error while fetching deposits,
-                probably caused by changes in the database: ` + error.message)
+            if (error) {
+                throw error;
             }
-        })
+
+            if (data == null) {
+                throw "No data returned by request"
+            }
+
+            return data.map(deposit => new SupabaseRepository(
+                deposit['id'],
+                deposit['title'],
+                SupabaseLevelHelper.getLevelById(deposit['level']),
+                deposit['publication_date'],
+                deposit['description'],
+                deposit['content'],
+            ))
+        } catch (error) {
+            console.log("Error while fetching owned deposits", error)
+            return []
+        }
     }
 
     async getOwnedDeposits(): Promise<Repository[]> {
@@ -334,6 +333,37 @@ export class SupabaseClient implements DatabaseClient {
         } catch (error) {
             console.log("Error while fetching owned deposits", error)
             return []
+        }
+    }
+
+    async getDeposit(id: number): Promise<Repository | null> {
+
+        try {
+            const { data, error } = await supabase
+                .from('deposits')
+                .select('*')
+                .eq("id", id)
+                .maybeSingle()
+
+            if (error) {
+                throw error;
+            }
+
+            if (data == null) {
+                throw "No data returned by request"
+            }
+
+            return new SupabaseRepository(
+                data['id'],
+                data['title'],
+                SupabaseLevelHelper.getLevelById(data['level']),
+                data['publication_date'],
+                data['description'],
+                data['content'],
+            )
+        } catch (error) {
+            console.log("Error while fetching owned deposit", id, error)
+            return null
         }
     }
 
@@ -580,7 +610,7 @@ export class SupabaseClient implements DatabaseClient {
                 file_url: url,
                 last_commit_text: message,
                 last_commit_author: author.username,
-                name: file.name
+                name: newName
             }])
             res.error ? console.warn(res.error.message) : null
             res.data ? console.log(res.data) : null

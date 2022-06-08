@@ -15,6 +15,7 @@ import { useRoute } from "vue-router"
 import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
 import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
+import Blacklist from "@/components/dashboaard/Blacklist.vue"
 import ManageNews from "@/components/dashboaard/ManageNews.vue"
 import router from "@/router"
 
@@ -106,7 +107,7 @@ class View {
     static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', ManageDeposits)
     static TEACHERS = new View('Enseignants', 'teachers', 'school', ManageDeposits)
     static USERS = new View('Utilisateurs', 'users', 'manage_accounts', ManageDeposits)
-    static BLACKLIST = new View('Liste noire', 'blacklist', 'receipt_long', ManageDeposits)
+    static BLACKLIST = new View('Liste noire', 'blacklist', 'receipt_long', Blacklist)
 }
 
 </script>

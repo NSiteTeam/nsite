@@ -6,11 +6,13 @@
     import { Level } from '@/database/interface/level'
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
     import type { Ref, ComputedRef  } from "vue";
+    // @ts-ignore
     import DataColumn from '@/components/dashboaard/DataColumn.vue'
     import { DataSection } from "@/utils/data_section";
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
     const displaySidePannelNewFile: Ref<boolean> = ref(false)
+    const displaySidePannelEditDepo: Ref<boolean> = ref(false)
     const newDepositLevel: Ref<number | null> = ref(null)
     const newDepositDescription: Ref<string> = ref("")
     const error: Ref<string | null> = ref(null)
@@ -25,24 +27,43 @@
     const rawFile: Ref<any> = ref()
     const newFile: Ref<string> = ref("")
     const newFileMessage = ref("")
-    const selectedDeposit: Ref<Repository | null> = ref(null)
-    const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
+    let selectedDeposit: Repository | null = null
+    const deposits: Ref<DataSection<Repository>[]> = ref([])
 
     const levels = Level.LEVELS
 
     enum SidePannelTarget {
         DEPOSIT,
-        FILE
+        FILE,
     }
 
     // Fetch deposits and sort them into sections
     async function fetchDeposits() {
-        deposits.value = DataSection.makeSections(await databaseClient.getOwnedDeposits(), (e) => e.level.abbreviated)
+        deposits.value = DataSection.makeSections(
+            await databaseClient.getOwnedDeposits(),
+            (e) => e.level.abbreviated
+        )
+    }
+
+    async function fetchDeposit(id: number) {
+        if ((deposits.value != null) && (selectedDeposit != null)) {
+            selectedDeposit = await databaseClient.getDeposit(selectedDeposit.id)
+            if (selectedDeposit != null) {
+                const newData = await databaseClient.getDeposit(selectedDeposit.id)
+                for (let i = 0 ; i < toRaw(deposits.value).length ; i++) {
+                    for (let j = 0 ; j < deposits.value[i].values.length ; j++) {
+                        if (deposits.value[i].values[j].id == selectedDeposit.id) {
+                            deposits.value[i].values[j] = selectedDeposit
+                        }
+                    }
+                }
+            }
+        }
     }
 
     await fetchDeposits().then(() => {
         if (deposits.value.length > 0) {
-            selectedDeposit.value = deposits.value[0].values[0]
+            selectedDeposit = deposits.value[0].values[0]
         }
     })
 
@@ -66,15 +87,16 @@
     }
 
     function selectData(data: Repository) {
-        selectedDeposit.value = data
+        selectedDeposit = data
+        fetchFiles()
     }
 
     function fetchFiles() {
         files.value = []
-        selectedDeposit.value?.content?.map(async (fileId: number) => {
+        selectedDeposit?.content?.map(async (fileId: number) => {
             const file = ref()
             await databaseClient.getFile(fileId)
-            .then(res => file.value = res)
+                .then(res => file.value = res)
             files.value.push(toRaw(file.value))
         })
     }
@@ -101,20 +123,20 @@
     }
 
     const uploadInfo: ComputedRef<string> = computed(() => {
-      return files.value.length == 1
+      return rawFile.value.length == 1
         ? files.value[0].name : ''
     })
 
     function watchFiles(e: any) {
-        files.value = Array.from(e.target.files) || []
         rawFile.value = e.target.files[0] || []
         newFile.value = e.target.files[0].name
     }
 
     async function uploadFile() {
         loadingFiles.value = true
+        if (selectedDeposit != null)
         await databaseClient.uploadFileToDeposit(
-            rawFile.value, selectedDeposit.value.title, 
+            rawFile.value, selectedDeposit!.title,
             newFileMessage.value, newFile.value
         ).then(_ => successFiles.value = true)
         .catch(res => errorFiles.value = res)
@@ -123,15 +145,24 @@
     }
 
     onMounted(fetchFiles)
-    watch(selectedDeposit, fetchFiles)
     watch(success, fetchFiles)
     watch(success, fetchDeposits)
+    watch(successFiles, async () => {
+    // Prevents firering two times the API call
+    if (selectedDeposit != null && successFiles.value)
+        await fetchDeposit(selectedDeposit.id)
+        .then(_ => fetchFiles())
+        .catch(message => console.error(message))
+    })
 </script>
 
 <template>
     <div class="good" v-if="success">Le dépôt a bien été créé</div>
     <div class="indication" v-else-if="loading">Création en cours ...</div>
     <div class="error" v-else-if="error">{{ error }}</div>
+    <div class="good" v-if="successFiles">Le fichier a bien été envoyé</div>
+    <div class="indication" v-else-if="loadingFiles">Création en cours ...</div>
+    <div class="error" v-else-if="errorFiles">{{ errorFiles }}</div>
 
     <DataColumn
         @createData='toggleSidePannel(SidePannelTarget.DEPOSIT)'
@@ -145,10 +176,9 @@
 
     <div class="files">
         <div class="files-actions">
-            <button class="add files-action" @click="toggleSidePannel('file')">
+            <button class="add files-action" @click="toggleSidePannel(SidePannelTarget.FILE)">
                 <span class="material-icons plus">add</span>
                 <span class="label">Ajouter un fichier</span>
-                
             </button>
             <button class="edit files-action">
                 <span class="material-icons pen">edit</span>
@@ -159,7 +189,9 @@
                 <span class="label">Supprimer le dépôt</span>
             </button>
         </div>
-        <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+        <div class="files-details">
+            <FileItem v-for="(file, index) in files" :key="index" :file="file" />
+        </div>
     </div>
     <div class="mask" v-if="displaySidePannelnewDeposit || displaySidePannelNewFile" 
     @click="toggleSidePannel()"></div>
@@ -223,6 +255,40 @@
             </div>
             Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
             
+        </h4>
+        <div class="side-pannel-new-file-fields">
+            <div>
+                <div class="side-pannel-new-file-field-label">Votre fichier</div>
+                <label class="side-pannel-new-file-field upload-file" for="file-input">
+                    Ajouter un fichier
+                    <input class="side-pannel-new-file-field-input-text" type="text" 
+                    ref="newFileMessageElement" v-model="newFile" />
+                    <input class="side-pannel-new-file-field-file-input" @change="watchFiles"
+                    placeholder="Optionnel" type="file" name="depo-name" id="file-input" />
+                </label>
+            </div>
+            <div class="side-pannel-new-file-field">
+                <label class="side-pannel-new-file-field-label" for="depo-name">Description</label>
+                <input v-model="newFileMessage" class="side-pannel-new-file-field-input" placeholder="Optionnel"
+                type="text" name="depo-name" id="file-name" />
+            </div>
+        </div>
+        <div class="side-pannel-new-file-bottom-buttons">
+            <button class="side-pannel-new-file-bottom-buttons-cancel" @click="toggleSidePannel()">
+                Annuler
+            </button>
+            <button class="side-pannel-new-file-bottom-buttons-submit" @click="uploadFile()">
+                Envoyer
+            </button>
+        </div>
+    </div>
+    <div class="side-pannel-new-file" v-if="displaySidePannelEditDepo">
+        <h4 class="side-pannel-new-file-title">
+            <div class="material-icons side-pannel-new-file-title-cross" 
+            @click="toggleSidePannel()">
+                close
+            </div>
+            Ajoutez un nouveau fichier dans&nbsp;<u>{{ selectedDeposit.title }}</u>
         </h4>
         <div class="side-pannel-new-file-fields">
             <div>
