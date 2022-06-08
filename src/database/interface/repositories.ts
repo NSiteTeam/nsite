@@ -5,6 +5,7 @@ export interface Repository {
     title: string
     level: Level
     publication_date: string
+    owners: string[]
     description: string
     content: Array<number>
 }

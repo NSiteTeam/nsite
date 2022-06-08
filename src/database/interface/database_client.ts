@@ -15,6 +15,7 @@ export interface DatabaseClient {
 
     signIn(email: string, password: string, username: string): any
     login(email: string, password: string): any
+    getUsername(uuid: string): Promise<string>
     logout(): Promise<boolean>
 
     // Deposits
