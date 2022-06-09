@@ -5,10 +5,12 @@
     import type { Repository } from "@/database/interface/repositories"
     import Card from "@/components/Card.vue"
     import LoadingAnimation from "@/components/LoadingAnimation.vue"
-    import { useRoute } from "vue-router"
+    import { useRoute, useRouter } from "vue-router"
     import { LongDate }from "@/utils/long_date"
     import { Level } from "@/database/interface/level"
     import { getParameterOfRoute } from "@/utils/route_utils"
+
+    const router = useRouter()
 
     enum Sort {
         PUBLICATION_DATE = "Par date",
@@ -43,6 +45,12 @@
     function selectLevel(newLevel: Level) {
         console.log('Selected level', newLevel)
         selectedLevel.value = newLevel
+    }
+
+    function toggleSB() {
+        if (searchbarContent.value == "sebastien patoche") {
+            window.location.href = "https://www.youtube.com/watch?v=jw5d_W-JPP4"
+        }
     }
 
     const output = computed(
@@ -90,6 +98,7 @@
                 name="search-input"
                 class="search-input"
                 placeholder="Rechercher"
+                @input="toggleSB()"
             >
             <button class="material-icons white">
                 search
