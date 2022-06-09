@@ -2,7 +2,7 @@
 
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
     // @ts-ignore
-    import DataColumn from '@/components/dashboaard/DataColumn.vue'
+    import DataColumn from '@/components/dashboard/DataColumn.vue'
     const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
 
     function admin(){

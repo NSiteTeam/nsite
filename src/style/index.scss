@@ -28,23 +28,14 @@
 @import 'auth/_profile.scss';
 
 // Dashboard stylesheets
-@import 'pages/dashboard/_accesBlacklist.scss';
-@import 'pages/dashboard/_uploadFile.scss';
-@import 'pages/dashboard/_upload.scss';
-@import 'pages/dashboard/_addDeposit.scss';
-@import 'pages/dashboard/_addNews.scss';
-@import 'pages/dashboard/_dashboard';
-@import 'pages/dashboard/_editNews.scss';
+@import 'pages/dashboard/_fileItem.scss';
+@import 'pages/dashboard/_dashboard.scss';
+@import 'pages/dashboard/_manageDeposits.scss';
+@import 'pages/dashboard/_sidePannelNewFile.scss';
+@import 'pages/dashboard/_sidePannelNewDeposit.scss';
 @import 'pages/dashboard/_editDeposit.scss';
-
-// Dashboaard stylesheets
-@import 'pages/dashboaard/_fileItem.scss';
-@import 'pages/dashboaard/_manageDeposits.scss';
-@import 'pages/dashboaard/_sidePannelNewFile.scss';
-@import 'pages/dashboaard/_sidePannelNewDeposit.scss';
-@import 'pages/dashboaard/_editDeposit.scss';
-@import 'pages/dashboaard/_dataColumn.scss';
-@import 'pages/dashboaard/_contextMenu.scss';
-@import 'pages/dashboaard/_manageNews.scss';
-@import 'pages/dashboaard/_dangerPopup.scss';
-@import 'pages/dashboaard/_manageHistoryPoints.scss';
+@import 'pages/dashboard/_dataColumn.scss';
+@import 'pages/dashboard/_contextMenu.scss';
+@import 'pages/dashboard/_manageNews.scss';
+@import 'pages/dashboard/_dangerPopup.scss';
+@import 'pages/dashboard/_manageHistoryPoints.scss';

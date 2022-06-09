@@ -1,25 +1,18 @@
 <script lang="ts" setup>
 import { computed } from "vue"
 import { ref } from "vue"
-import UploadFile from "@/components/dashboard/add/UploadFile.vue"
-import AddDeposit from "@/components/dashboard/add/AddDeposit.vue"
-import AddNews from "@/components/dashboard/add/AddNews.vue"
-import AccesBlacklist from "@/components/dashboard/add/AccesBlacklist.vue"
-import AddHistoryPoint from "@/components/dashboard/add/AddHistoryPoint.vue"
-import EditNews from "@/components/dashboard/edit/EditNews.vue"
-import EditDeposit from "@/components/dashboard/edit/EditDeposit.vue"
 import { databaseClient } from "@/database/implementation"
 import type { Ref } from "vue"
 import type { Repository } from "@/database/interface/repositories"
 import { useRoute } from "vue-router"
 import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
-import ManageDeposits from "@/components/dashboaard/ManageDeposits.vue"
-import Blacklist from "@/components/dashboaard/Blacklist.vue"
-import ManageNews from "@/components/dashboaard/ManageNews.vue"
-import ManageHistoryPoints from "@/components/dashboaard/ManageHistoryPoints.vue"
+import ManageDeposits from "@/components/dashboard/ManageDeposits.vue"
+import Blacklist from "@/components/dashboard/Blacklist.vue"
+import ManageNews from "@/components/dashboard/ManageNews.vue"
+import ManageHistoryPoints from "@/components/dashboard/ManageHistoryPoints.vue"
 import router from "@/router"
-import WorkInProgress from '@/components/dashboaard/WorkInProgress.vue'
+import WorkInProgress from '@/components/dashboard/WorkInProgress.vue'
 
 const availableViewsForUser= computed(
     () => {

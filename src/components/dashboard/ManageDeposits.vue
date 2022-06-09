@@ -1,12 +1,12 @@
 <script setup lang="ts">
-    import FileItem from "@/components/dashboard/edit/items/FileItem.vue"
+    import FileItem from "@/components/dashboard/FileItem.vue"
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
     import { Level } from '@/database/interface/level'
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
     import type { Ref, ComputedRef  } from "vue";
-    import DataColumn from '@/components/dashboaard/DataColumn.vue'
-    import DangerPopup from '@/components/dashboaard/popups/DangerPopup.vue'
+    import DataColumn from '@/components/dashboard/DataColumn.vue'
+    import DangerPopup from '@/components/dashboard/popups/DangerPopup.vue'
     import { DataSection } from "@/utils/data_section"
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)

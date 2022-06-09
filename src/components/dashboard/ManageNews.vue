@@ -64,15 +64,15 @@
 </template>
 
 <script setup lang='ts'>
-    import DataColumn from '@/components/dashboaard/DataColumn.vue'
+    import DataColumn from '@/components/dashboard/DataColumn.vue'
     import { databaseClient } from '@/database/implementation'
     import type { News } from '@/database/interface/news'
     import { DataSection } from '@/utils/data_section'
     import { computed, ref } from 'vue'
     import type { Ref } from 'vue'
-    import ContextMenu from '@/components/dashboaard/context_menu/ContextMenu.vue'
-    import ContextMenuSeparator from '@/components/dashboaard/context_menu/ContextMenuSeparator.vue'
-    import ContextMenuElement from '@/components/dashboaard/context_menu/ContextMenuElement.vue'
+    import ContextMenu from '@/components/dashboard/context_menu/ContextMenu.vue'
+    import ContextMenuSeparator from '@/components/dashboard/context_menu/ContextMenuSeparator.vue'
+    import ContextMenuElement from '@/components/dashboard/context_menu/ContextMenuElement.vue'
     import { Level } from '@/database/interface/level'
     import { LongDate } from '@/utils/long_date'
     import { MessageType } from '@/utils/message_type'
