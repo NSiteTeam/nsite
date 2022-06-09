@@ -8,6 +8,7 @@ import { useRoute } from "vue-router"
 import { getParameterOfRoute } from "@/utils/route_utils"
 import { Permission } from "@/database/interface/permissions"
 import ManageDeposits from "@/components/dashboard/ManageDeposits.vue"
+import ManageUsers from "@/components/dashboard/ManageUsers.vue"
 import Blacklist from "@/components/dashboard/Blacklist.vue"
 import ManageNews from "@/components/dashboard/ManageNews.vue"
 import ManageHistoryPoints from "@/components/dashboard/ManageHistoryPoints.vue"
@@ -101,7 +102,7 @@ class View {
     static HISTORY = new View('Points d\'histoire', 'historypoints', 'calendar_month', ManageHistoryPoints)
     static THEMES = new View('Thèmes de l\'année', 'themes', 'subject', WorkInProgress)
     static TEACHERS = new View('Enseignants', 'teachers', 'school', WorkInProgress)
-    static USERS = new View('Utilisateurs', 'users', 'manage_accounts', WorkInProgress)
+    static USERS = new View('Utilisateurs', 'users', 'manage_accounts', ManageUsers)
     static BLACKLIST = new View('Liste noire', 'blacklist', 'receipt_long', Blacklist)
 }
 

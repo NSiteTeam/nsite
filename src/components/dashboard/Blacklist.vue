@@ -1,8 +1,12 @@
 <script setup lang="ts">
 
     import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
+    import type { Ref } from "vue";
     // @ts-ignore
     import DataColumn from '@/components/dashboard/DataColumn.vue'
+    import type { DataSection } from "@/utils/data_section";
+    import type { Repository } from "@/database/interface/repositories";
+    
     const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
 
     function admin(){

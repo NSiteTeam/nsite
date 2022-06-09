@@ -932,4 +932,18 @@ export class SupabaseClient implements DatabaseClient {
             (data != null) && (!error) ? resolve(data) : reject(error.message)
         })
     }
+
+    async getAllUsers(): Promise<any> {
+        const { data, error } = await supabase.from('profiles').select()
+        
+        return new Promise((resolve, reject) => {
+            if (error == null && data != null) {
+                resolve(data)
+            } else if (data == null) {
+                reject("No data fetched")
+            } else if (error != null) {
+                reject(error.message)
+            }
+        })
+    }
 }

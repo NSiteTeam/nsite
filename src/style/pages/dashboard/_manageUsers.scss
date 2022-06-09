@@ -1,0 +1,29 @@
+.manage-users {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    
+    &-header {
+        justify-content: space-between;
+        background-color: $cerulean-frost;
+        flex-direction: row;
+        padding: 10px;
+        border-bottom: 1px solid $cream-white;
+        display: flex;
+    }
+
+    &-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        
+        
+        &-cell {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+}
