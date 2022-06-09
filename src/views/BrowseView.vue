@@ -49,8 +49,28 @@
 
     function toggleSB() {
         if (searchbarContent.value == "sebastien patoche") {
-            window.location.href = "https://www.youtube.com/watch?v=jw5d_W-JPP4"
-        }
+            window.location.href = "https://www.youtube.com/watch?v=jw5d_W-JPP4#t=1m26s"
+        } else if (searchbarContent.value == "jjba") {
+            window.location.href = "https://youtu.be/AQx_KMoCgJU"
+        } else if (searchbarContent.value == "piou") {
+            window.location.href = "https://www.youtube.com/watch?v=u3dmwXDL-90"
+        } else if (searchbarContent.value == "thune") {
+            window.location.href = "https://www.youtube.com/watch?v=aIVsz5Pj0eE"
+        } else if (searchbarContent.value == "sylvain") {
+            window.location.href = "https://www.youtube.com/watch?v=rFycMFHuZKQ"
+        } else if (searchbarContent.value == "asterix") {
+            window.location.href = "https://www.youtube.com/watch?v=BT5MAtVK474#t=0m14s"
+        } else if (searchbarContent.value == "car") {
+            window.location.href = "https://www.youtube.com/watch?v=Yd_U0cvT4sI" 
+        } else if (searchbarContent.value == "malou") {
+            window.location.href = "https://youtu.be/Y9tFBc1yU9E"
+        } else if (searchbarContent.value == "dio") {
+            window.location.href = "https://youtu.be/i5inOAXURVw"
+        }  else if (searchbarContent.value == "rickroll") {
+            window.location.href = "https://youtu.be/dQw4w9WgXcQ"
+        } else if (searchbarContent.value == "jojo") {
+            window.location.href = "https://www.youtube.com/watch?v=bHboqSB06X4"
+        } 
     }
 
     const output = computed(
