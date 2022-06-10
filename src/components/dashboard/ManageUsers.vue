@@ -26,20 +26,27 @@
 
 <template>
     <div class="manage-users">
-        <div class="manage-users-header">
-            <div class="cell">Nom d'utilisateur</div>
-            <div class="cell">Identifiant unique</div>
-            <div class="cell">Rôle le plus haut</div>
-        </div>
-        <div class="manage-users-row" v-for="(user, index) in users" :key="index">
-            <div class="cell">
-                {{ user.username }}
+        <div class="manage-users-table">
+            <div class="header">
+                <div class="cell">Nom d'utilisateur</div>
+                <div class="cell">Identifiant unique</div>
+                <div class="cell">Rôle le plus haut</div>
             </div>
-            <div class="cell">
-                {{ user.user }}
+            <div class="row" v-for="(user, index) in users" :key="index">
+                <div class="cell">
+                    {{ user.username }}
+                </div>
+                <div class="cell">
+                    {{ user.user }}
+                </div>
+                <div class="cell">
+                    {{ getPermissionFromId(Math.max(... user.roles.map(role => Number(role)))) }}
+                </div>
             </div>
-            <div class="cell">
-                {{ getPermissionFromId(Math.max(... user.roles.map(role => Number(role)))) }}
+            <div class="footer">
+                <div class="cell"></div>
+                <div class="cell">Afficher plus</div>
+                <div class="cell"></div>
             </div>
         </div>
     </div>
