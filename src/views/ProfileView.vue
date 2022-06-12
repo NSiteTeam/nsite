@@ -17,11 +17,12 @@
                 <div class="label">Nom d'utilisateur</div>
                 <div class="value">{{ username }}</div>
                 <div class="label">Permissions</div>
-                <ul class="value">
+                <ul class="value" v-if="permissions">
                     <li class="permission" v-for="(permission, index) in permissions" :key="index">
                         {{ permission }}
                     </li>
                 </ul>
+                <i class="value" v-else>Élève lambda</i>
             </div>
         </div>
     </div>
@@ -35,7 +36,9 @@
 
     const uuid = computed(() => databaseClient.user.value?.uuid)
     const username = computed(() => databaseClient.user.value?.username)
-    const permissions = computed(() => databaseClient.user.value?.permissions)
+    const permissions = computed(() => {
+        return databaseClient.user.value ? databaseClient.user.value.permissions : null
+    })
 
     const email = computed(
         () => {
@@ -53,7 +56,6 @@
     const displayEmail = ref(false)
 
     function toggleEmail() {
-        console.log("Tabernak")
         displayEmail.value = !displayEmail.value
     }
 </script>

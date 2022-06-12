@@ -121,6 +121,8 @@ export class SupabaseClient implements DatabaseClient {
         const { error } = await supabase.auth.signOut()
         return new Promise((resolve, reject) => {
             if (!error) {
+                this.user.value = null
+                this.isConnected.value = false
                 resolve("Vous êtes déconnecté")
             } else {
                 reject(error)
@@ -184,7 +186,7 @@ export class SupabaseClient implements DatabaseClient {
                     supabase.auth.user()?.email!,
                     data.username,
                     supabase.auth.user()?.id!,
-                    data.roles.map(SupabasePermissionHelper.permissionFromId)
+                    data.roles?.map(SupabasePermissionHelper.permissionFromId)
                 )
 
             } catch (error) {

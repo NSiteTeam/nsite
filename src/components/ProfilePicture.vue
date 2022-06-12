@@ -26,6 +26,7 @@
     import { databaseClient } from "@/database/implementation";
     import { computed, watch } from "vue";
 
+    console.log(databaseClient.user.value)
     const props = defineProps(['size'])
     const size = props.size
 
@@ -70,9 +71,13 @@
 
     // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
     function mulberry32(seed: number) {
+        // WTF
         var t = seed += 0x6D2B79F5;
+        // Evil bit hack
         t = Math.imul(t ^ t >>> 15, t | 1);
+        // Same
         t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        // WTF too
         return Math.floor((((t ^ t >>> 14) >>> 0) / 4294967296)*16777215).toString(16)
     }
 

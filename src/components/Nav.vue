@@ -12,7 +12,6 @@
                 <RouterLink v-if="!connected" to="/register" class="navbar-link"><span>S'inscrire</span></RouterLink>
                 <RouterLink v-if="hasAccessToDashboard" to="/dashboard" class=navbar-link><span>Gestion des élèves</span></RouterLink>
                 <RouterLink
-                    v-if="hasAccessToDashboard"
                     to="/profile"
                     class="navbar-link"
                 >
