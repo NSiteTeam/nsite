@@ -1,6 +1,9 @@
 .manage-users {
-    height: fit-content;
-    margin: 10px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     .manage-users-table {
         overflow-y: scroll;
@@ -10,12 +13,8 @@
             width: 100%;
             display: table-header-group;
             
-            &-title {
-                display: table-cell;
-                width: 350px;
-            }
-            
             .cell {
+                cursor: pointer;
                 padding: 10px;
                 background-color: $space-cadet-dark;
 
@@ -25,6 +24,11 @@
                 
                 &:last-child {
                     border-top-right-radius: 10px;
+                }
+
+                &-content {
+                    display: flex;
+                    align-items: center;
                 }
             }
 
