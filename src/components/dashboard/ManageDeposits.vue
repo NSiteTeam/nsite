@@ -30,12 +30,12 @@
     const rawFile: Ref<any> = ref()
     const newFile: Ref<string> = ref("")
     const newFileMessage = ref("")
-    let selectedDeposit: Repository | null = null
+    const selectedDeposit: Ref<Repository | null> = ref(null)
     const deposits: Ref<DataSection<Repository>[]> = ref([])
     const ownersUsernames = computed(_ => {
         const usernames: Ref<string[]> = ref([])
-        if (selectedDeposit)
-        selectedDeposit.owners.map(owner =>
+        if (selectedDeposit.value)
+        selectedDeposit.value.owners.map(owner =>
             databaseClient.getUsername(owner)
             .then(res => usernames.value.push(res))
             .catch(res => error.value = res)
@@ -54,13 +54,13 @@
 
     async function deleteCurrentDeposit() {
         loadingDelete.value = true
-        if (selectedDeposit != null)
-        await databaseClient.deleteDeposit(selectedDeposit.id)
+        if (selectedDeposit.value != null)
+        await databaseClient.deleteDeposit(selectedDeposit.value.id)
         .then(_ => successDelete.value = true)
         .catch(res => errorDelete.value = res)
         loadingDelete.value = false
         fetchDeposits()
-        selectedDeposit = deposits.value[0].values[0]
+        selectedDeposit.value = deposits.value[0].values[0]
 
         setTimeout(() => [successDelete.value, errorDelete.value] = [false, null], 3000)
     }
@@ -74,14 +74,14 @@
     }
 
     async function fetchDeposit(id: number) {
-        if ((deposits.value != null) && (selectedDeposit != null)) {
-            selectedDeposit = await databaseClient.getDeposit(selectedDeposit.id)
-            if (selectedDeposit != null) {
-                const newData = await databaseClient.getDeposit(selectedDeposit.id)
+        if ((deposits.value != null) && (selectedDeposit.value != null)) {
+            selectedDeposit.value = await databaseClient.getDeposit(selectedDeposit.value.id)
+            if (selectedDeposit.value != null) {
+                const newData = await databaseClient.getDeposit(selectedDeposit.value.id)
                 for (let i = 0 ; i < toRaw(deposits.value).length ; i++) {
                     for (let j = 0 ; j < deposits.value[i].values.length ; j++) {
-                        if (deposits.value[i].values[j].id == selectedDeposit.id) {
-                            deposits.value[i].values[j] = selectedDeposit
+                        if (deposits.value[i].values[j].id == selectedDeposit.value.id) {
+                            deposits.value[i].values[j] = selectedDeposit.value
                         }
                     }
                 }
@@ -91,7 +91,7 @@
 
     await fetchDeposits().then(() => {
         if (deposits.value.length > 0) {
-            selectedDeposit = deposits.value[0].values[0]
+            selectedDeposit.value = deposits.value[0].values[0]
         }
     })
 
@@ -122,13 +122,13 @@
 
     function selectData(data: Repository) {
         console.log(data)
-        selectedDeposit = data
+        selectedDeposit.value = data
         fetchFiles()
     }
 
     function fetchFiles() {
         files.value = []
-        selectedDeposit?.content?.map(async (fileId: number) => {
+        selectedDeposit.value?.content?.map(async (fileId: number) => {
             const file = ref()
             await databaseClient.getFile(fileId)
                 .then(res => file.value = res)
@@ -168,8 +168,8 @@
     }
 
     function handleFileDelete() {
-        if (selectedDeposit)
-        fetchDeposit(selectedDeposit.id)
+        if (selectedDeposit.value)
+        fetchDeposit(selectedDeposit.value.id)
         .then(_ => fetchFiles())
         .catch(message => console.error(message))
         toggleSidePannel()
@@ -177,9 +177,9 @@
 
     async function uploadFile() {
         loadingFiles.value = true
-        if (selectedDeposit != null)
+        if (selectedDeposit.value != null)
         await databaseClient.uploadFileToDeposit(
-            rawFile.value, selectedDeposit!.title,
+            rawFile.value, selectedDeposit.value!.title,
             newFileMessage.value, newFile.value
         ).then(_ => successFiles.value = true)
         .catch(res => errorFiles.value = res)
@@ -192,8 +192,8 @@
     watch(success, fetchDeposits)
     watch(successFiles, async () => {
     // Prevents firering two times the API call
-    if (selectedDeposit != null && successFiles.value)
-        await fetchDeposit(selectedDeposit.id)
+    if (selectedDeposit.value != null && successFiles.value)
+        await fetchDeposit(selectedDeposit.value.id)
         .then(_ => fetchFiles())
         .catch(message => console.error(message))
     })

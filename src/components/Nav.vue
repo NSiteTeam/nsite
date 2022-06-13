@@ -15,7 +15,7 @@
                     to="/profile"
                     class="navbar-link"
                 >
-                    <ProfilePicture size='32px' />
+                    <ProfilePicture v-if="connected" size='32px' />
                 </RouterLink>
 
             </div>
