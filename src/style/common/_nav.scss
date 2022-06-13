@@ -161,7 +161,7 @@ header {
     .router-link-active {
       position: relative;
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         bottom: -14px;
         left: 0;

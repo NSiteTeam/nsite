@@ -81,103 +81,103 @@
 </template>
 
 <script setup lang="ts">
-import DataColumn from "@/components/dashboard/DataColumn.vue";
-import { databaseClient } from "@/database/implementation";
-import type { News } from "@/database/interface/news";
-import { DataSection } from "@/utils/data_section";
-import { computed, ref } from "vue";
-import type { Ref } from "vue";
-import ContextMenu from "@/components/dashboard/context_menu/ContextMenu.vue";
-import ContextMenuSeparator from "@/components/dashboard/context_menu/ContextMenuSeparator.vue";
-import ContextMenuElement from "@/components/dashboard/context_menu/ContextMenuElement.vue";
-import { Level } from "@/database/interface/level";
-import { LongDate } from "@/utils/long_date";
-import { MessageType } from "@/utils/message_type";
+import DataColumn from '@/components/dashboard/DataColumn.vue'
+import { databaseClient } from '@/database/implementation'
+import type { News } from '@/database/interface/news'
+import { DataSection } from '@/utils/data_section'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
+import ContextMenu from '@/components/dashboard/context_menu/ContextMenu.vue'
+import ContextMenuSeparator from '@/components/dashboard/context_menu/ContextMenuSeparator.vue'
+import ContextMenuElement from '@/components/dashboard/context_menu/ContextMenuElement.vue'
+import { Level } from '@/database/interface/level'
+import { LongDate } from '@/utils/long_date'
+import { MessageType } from '@/utils/message_type'
 
-const NEWS_BATCH_SIZE = 20;
+const NEWS_BATCH_SIZE = 20
 
-const selectedNews: Ref<News | null> = ref(null);
-const levels = Level.LEVELS;
+const selectedNews: Ref<News | null> = ref(null)
+const levels = Level.LEVELS
 
-const message = ref("");
-const messageClass = ref(MessageType.INDICATION);
+const message = ref('')
+const messageClass = ref(MessageType.INDICATION)
 
 const news = computed(() =>
   DataSection.makeSections(
     databaseClient.fetchedNews.value,
-    (news) => (news.visible ? "Visibles" : "Brouillons"),
-    (section) => ["Visibles", "Brouillons"].indexOf(section.name)
-  )
-);
+    (news) => (news.visible ? 'Visibles' : 'Brouillons'),
+    (section) => ['Visibles', 'Brouillons'].indexOf(section.name),
+  ),
+)
 
 // An array with true or false according to the level is concerned
 function isConcerned(level: Level) {
-  return selectedNews.value!.concerned.includes(level);
+  return selectedNews.value!.concerned.includes(level)
 }
 
 function setConcerned(level: Level) {
-  const concerned = selectedNews.value!.concerned;
+  const concerned = selectedNews.value!.concerned
   for (let i = 0; i < concerned!.length; i++) {
     if (concerned[i].index == level.index) {
-      concerned.splice(i, 1);
-      return;
+      concerned.splice(i, 1)
+      return
     }
   }
 
-  concerned.push(level);
+  concerned.push(level)
 }
 
 async function addNews() {
-  const title = prompt("Titre");
+  const title = prompt('Titre')
   if (title) {
-    const news = await databaseClient.createEmptyNews(title);
-    selectedNews.value = news;
+    const news = await databaseClient.createEmptyNews(title)
+    selectedNews.value = news
   }
 }
 
 function selectNews(news: News) {
-  selectedNews.value = news;
+  selectedNews.value = news
 }
 
 function newsToText(news: News) {
-  return news.title;
+  return news.title
 }
 
 function newsToKey(news: News) {
-  return news.id;
+  return news.id
 }
 
 function setDate(value: any) {
-  selectedNews.value!.date = LongDate.fromForm(value.srcElement.value);
+  selectedNews.value!.date = LongDate.fromForm(value.srcElement.value)
 }
 
 async function saveNews(event: MouseEvent) {
-  message.value = "Actualité en cours de sauvegarde";
-  messageClass.value = MessageType.INDICATION;
+  message.value = 'Actualité en cours de sauvegarde'
+  messageClass.value = MessageType.INDICATION
 
-  const error = await databaseClient.updateNews(selectedNews.value!);
+  const error = await databaseClient.updateNews(selectedNews.value!)
 
   if (error) {
-    message.value = error;
-    messageClass.value = MessageType.ERROR;
+    message.value = error
+    messageClass.value = MessageType.ERROR
   } else {
-    message.value = "L'actualité a été sauvegardée avec succès";
-    messageClass.value = MessageType.GOOD;
+    message.value = "L'actualité a été sauvegardée avec succès"
+    messageClass.value = MessageType.GOOD
   }
 
-  setTimeout(() => (message.value = ""), 2000);
+  setTimeout(() => (message.value = ''), 2000)
 }
 
 function switchVisibilityOfHistoryPoint(news: News) {
-  databaseClient.switchVisibilityOfHistoryPoint(news);
+  databaseClient.switchVisibilityOfHistoryPoint(news)
 }
 
 function deleteNews(news: News) {
-  if (confirm("Etes-vous sûr de vouloir supprimer cette actualité ?")) {
-    databaseClient.deleteNews(news);
-    selectedNews.value = null;
+  if (confirm('Etes-vous sûr de vouloir supprimer cette actualité ?')) {
+    databaseClient.deleteNews(news)
+    selectedNews.value = null
   }
 }
 
-databaseClient.fetchNews(NEWS_BATCH_SIZE, false);
+databaseClient.fetchNews(NEWS_BATCH_SIZE, false)
 </script>

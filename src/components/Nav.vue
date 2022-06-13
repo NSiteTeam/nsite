@@ -49,27 +49,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "@vue/reactivity";
-import { useWindowSize } from "vue-window-size";
-import { databaseClient } from "@/database/implementation";
-import { useRoute } from "vue-router";
-import { computed } from "@vue/runtime-core";
-import ProfilePicture from "@/components/ProfilePicture.vue";
+import { ref } from '@vue/reactivity'
+import { useWindowSize } from 'vue-window-size'
+import { databaseClient } from '@/database/implementation'
+import { useRoute } from 'vue-router'
+import { computed } from '@vue/runtime-core'
+import ProfilePicture from '@/components/ProfilePicture.vue'
 
-const { width } = useWindowSize();
-const route = useRoute();
+const { width } = useWindowSize()
+const route = useRoute()
 
-const toggleMenu = ref(false);
-const windowWidth = width;
+const toggleMenu = ref(false)
+const windowWidth = width
 
-const connected = databaseClient.isConnected;
+const connected = databaseClient.isConnected
 
 function toggleMenuFunction() {
-  toggleMenu.value = !toggleMenu.value;
+  toggleMenu.value = !toggleMenu.value
 }
 
 const hasAccessToDashboard = computed(
   () =>
-    databaseClient.isConnected.value && databaseClient.user.value?.permissions
-);
+    databaseClient.isConnected.value && databaseClient.user.value?.permissions,
+)
 </script>

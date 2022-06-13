@@ -12,7 +12,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import "@/style/index.scss";
+@import '@/style/index.scss';
 
 #footer {
   position: relative;

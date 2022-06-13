@@ -53,6 +53,6 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["size"]);
-const size = props.size != null ? props.size : "100px";
+const props = defineProps(['size'])
+const size = props.size != null ? props.size : '100px'
 </script>

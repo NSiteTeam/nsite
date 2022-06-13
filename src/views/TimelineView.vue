@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { databaseClient } from "@/database/implementation";
-import type { HistoryPoint } from "@/database/interface/history_point";
-import { LongDate } from "../utils/long_date";
-import type date from "../utils/interface/date";
-import { timestampToFrenchDate } from "@/utils/date";
-import { computed, ref } from "vue";
-import type { Ref } from "vue";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
+import { databaseClient } from '@/database/implementation'
+import type { HistoryPoint } from '@/database/interface/history_point'
+import { LongDate } from '../utils/long_date'
+import type date from '../utils/interface/date'
+import { timestampToFrenchDate } from '@/utils/date'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
+import LoadingAnimation from '@/components/LoadingAnimation.vue'
 
 const historyPoints: Ref<Array<HistoryPoint>> = computed(() =>
-  databaseClient.fetchedHistoryPoints.value.filter((e) => e.visible)
-);
-databaseClient.fetchHistoryPoints();
+  databaseClient.fetchedHistoryPoints.value.filter((e) => e.visible),
+)
+databaseClient.fetchHistoryPoints()
 </script>
 
 <template>

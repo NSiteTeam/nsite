@@ -4,5 +4,5 @@
  * @returns the date in format DD/MM/YYYY
  */
 export function timestampToFrenchDate(ISOtimestamp: string): string {
-  return ISOtimestamp.split("T")[0].split("-").reverse().join("/");
+  return ISOtimestamp.split('T')[0].split('-').reverse().join('/')
 }

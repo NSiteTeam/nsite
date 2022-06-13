@@ -29,7 +29,7 @@
         color: $cream-white;
       }
 
-      &[type="submit"]:hover {
+      &[type='submit']:hover {
         @include shadow1();
       }
     }

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { LongDate } from "@/utils/long_date";
+import { LongDate } from '@/utils/long_date'
 
-const props = defineProps(["exercise"]);
-const repo = props.exercise; //<!-- TODO: Rename-->
+const props = defineProps(['exercise'])
+const repo = props.exercise //<!-- TODO: Rename-->
 </script>
 
 <template>

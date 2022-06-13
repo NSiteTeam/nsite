@@ -13,7 +13,7 @@
         <div class="value">
           {{ email }}
           <span @click="toggleEmail">
-            {{ displayEmail ? "Masquer" : "Afficher" }}
+            {{ displayEmail ? 'Masquer' : 'Afficher' }}
           </span>
         </div>
         <div class="label">Nom d'utilisateur</div>
@@ -35,33 +35,33 @@
 </template>
 
 <script setup lang="ts">
-import { databaseClient } from "@/database/implementation";
-import ProfilePicture from "@/components/ProfilePicture.vue";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
-import { computed, ref } from "vue";
+import { databaseClient } from '@/database/implementation'
+import ProfilePicture from '@/components/ProfilePicture.vue'
+import LoadingAnimation from '@/components/LoadingAnimation.vue'
+import { computed, ref } from 'vue'
 
-const uuid = computed(() => databaseClient.user.value?.uuid);
-const username = computed(() => databaseClient.user.value?.username);
+const uuid = computed(() => databaseClient.user.value?.uuid)
+const username = computed(() => databaseClient.user.value?.username)
 const permissions = computed(() => {
   return databaseClient.user.value
     ? databaseClient.user.value.permissions
-    : null;
-});
+    : null
+})
 
 const email = computed(() => {
-  const email = databaseClient.user.value?.email;
+  const email = databaseClient.user.value?.email
 
   if (email && !displayEmail.value) {
-    const splitted = email.split("@");
-    return splitted[0].replace(/\w/g, "*") + "@" + splitted[1];
+    const splitted = email.split('@')
+    return splitted[0].replace(/\w/g, '*') + '@' + splitted[1]
   } else {
-    return email;
+    return email
   }
-});
+})
 
-const displayEmail = ref(false);
+const displayEmail = ref(false)
 
 function toggleEmail() {
-  displayEmail.value = !displayEmail.value;
+  displayEmail.value = !displayEmail.value
 }
 </script>

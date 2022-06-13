@@ -39,7 +39,7 @@
               <p class="news-content">
                 {{ news.content.slice(0, NUMBER_OF_CHAR_PER_NEWS)
                 }}{{
-                  news.content.length > NUMBER_OF_CHAR_PER_NEWS ? "..." : ""
+                  news.content.length > NUMBER_OF_CHAR_PER_NEWS ? '...' : ''
                 }}
               </p>
             </div>
@@ -52,27 +52,27 @@
 </template>
 
 <script setup lang="ts">
-import { timestampToFrenchDate } from "../utils/date";
-import { databaseClient } from "@/database/implementation";
-import type { News } from "@/database/interface/news";
-import { computed } from "vue";
-import type { Ref } from "vue";
-import { LongDate } from "@/utils/long_date";
-import Footer from "@/components/Footer.vue";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
+import { timestampToFrenchDate } from '../utils/date'
+import { databaseClient } from '@/database/implementation'
+import type { News } from '@/database/interface/news'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+import { LongDate } from '@/utils/long_date'
+import Footer from '@/components/Footer.vue'
+import LoadingAnimation from '@/components/LoadingAnimation.vue'
 
-const NUMBER_OF_FETCHED_NEWS = 5;
-const NUMBER_OF_CHAR_PER_NEWS = 100;
+const NUMBER_OF_FETCHED_NEWS = 5
+const NUMBER_OF_CHAR_PER_NEWS = 100
 
-databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS);
+databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
 
 const sortedNews = computed(() =>
   databaseClient.fetchedNews.value
     .filter((news: News) => news.visible)
-    .sort((a: News, b: News) => -1 * LongDate.compare(a.date, b.date))
-);
+    .sort((a: News, b: News) => -1 * LongDate.compare(a.date, b.date)),
+)
 
 function formatDate(date: string): string {
-  return timestampToFrenchDate(date);
+  return timestampToFrenchDate(date)
 }
 </script>

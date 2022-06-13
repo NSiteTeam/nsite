@@ -27,32 +27,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { databaseClient } from "@/database/implementation";
-const email = ref("");
-const password = ref("");
-const loading = ref(false);
-const failure = ref(null);
+import { ref } from 'vue'
+import { databaseClient } from '@/database/implementation'
+const email = ref('')
+const password = ref('')
+const loading = ref(false)
+const failure = ref(null)
 
 const errorMessages = {
-  "Request Failed": `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-  "Invalid login credentials": `Le mot de passe ou l'adresse mail indiquée est erronée.`,
-  "Email not confirmed": "Confirmez votre adresse email",
-};
+  'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
+  'Invalid login credentials': `Le mot de passe ou l'adresse mail indiquée est erronée.`,
+  'Email not confirmed': 'Confirmez votre adresse email',
+}
 
 async function handleLogin() {
-  loading.value = true;
+  loading.value = true
   const { connectionStatus, error } = await databaseClient.login(
     email.value,
-    password.value
-  );
-  loading.value = false;
-  failure.value = error;
+    password.value,
+  )
+  loading.value = false
+  failure.value = error
 
   console.log(
-    "État de la connection :",
+    'État de la connection :',
     connectionStatus,
-    connectionStatus ? "OK" : "\nErreur : " + error.message
-  );
+    connectionStatus ? 'OK' : '\nErreur : ' + error.message,
+  )
 }
 </script>

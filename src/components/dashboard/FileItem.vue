@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import { databaseClient } from "@/database/implementation";
-import { LongDate } from "@/utils/long_date";
-import type CustomFile from "@/database/interface/file";
-import type { Ref } from "vue";
-import { ref } from "vue";
+import { databaseClient } from '@/database/implementation'
+import { LongDate } from '@/utils/long_date'
+import type CustomFile from '@/database/interface/file'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
-const { file } = defineProps(["file"]);
-const emit = defineEmits(["deleted"]);
+const { file } = defineProps(['file'])
+const emit = defineEmits(['deleted'])
 
-const error: Ref<CustomFile | null> = ref(null);
-const deleteSuccess = ref(false);
-const deleteLoading = ref(false);
-const deleteError: Ref<string | null> = ref(null);
-const edit = ref(false);
+const error: Ref<CustomFile | null> = ref(null)
+const deleteSuccess = ref(false)
+const deleteLoading = ref(false)
+const deleteError: Ref<string | null> = ref(null)
+const edit = ref(false)
 
 function toggleEdit() {
-  edit.value = !edit.value;
+  edit.value = !edit.value
 
   if (!edit.value) {
-    databaseClient.renameFile(file.id, file.name, file.last_commit_author);
+    databaseClient.renameFile(file.id, file.name, file.last_commit_author)
   }
 }
 
 async function deleteFile() {
-  deleteLoading.value = true;
+  deleteLoading.value = true
   await databaseClient
     .deleteFile(file.id)
     .then((_) => {
-      deleteSuccess.value = true;
-      emit("deleted");
+      deleteSuccess.value = true
+      emit('deleted')
     })
     .catch((res) => {
-      deleteError.value = res;
-    });
-  deleteLoading.value = false;
+      deleteError.value = res
+    })
+  deleteLoading.value = false
   setTimeout(
     (_) =>
       ([deleteSuccess.value, deleteLoading.value, deleteError.value] = [
@@ -41,8 +41,8 @@ async function deleteFile() {
         false,
         null,
       ]),
-    3000
-  );
+    3000,
+  )
 }
 </script>
 
@@ -56,7 +56,7 @@ async function deleteFile() {
         visibility
       </a>
       <span @click="toggleEdit()" class="material-icons icon">
-        {{ edit ? "done" : "edit" }}
+        {{ edit ? 'done' : 'edit' }}
       </span>
       <span @click="deleteFile()" class="material-icons icon"> delete </span>
       <p class="file-name-label" v-if="!edit">

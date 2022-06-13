@@ -1,33 +1,29 @@
 <script setup lang="ts">
-import { watch, ref, toRaw, onMounted, computed, shallowRef } from "vue";
-import type { Ref } from "vue";
+import { watch, ref, toRaw, onMounted, computed, shallowRef } from 'vue'
+import type { Ref } from 'vue'
 // @ts-ignore
-import DataColumn from "@/components/dashboard/DataColumn.vue";
-import type { DataSection } from "@/utils/data_section";
-import type { Repository } from "@/database/interface/repositories";
+import DataColumn from '@/components/dashboard/DataColumn.vue'
+import type { DataSection } from '@/utils/data_section'
+import type { Repository } from '@/database/interface/repositories'
 
-const deposits: Ref<DataSection<Repository>[]> = shallowRef([]);
+const deposits: Ref<DataSection<Repository>[]> = shallowRef([])
 
 function admin() {
-  alert("Cet utilisateur à été mute par l'administrateur Raphaël");
+  alert("Cet utilisateur à été mute par l'administrateur Raphaël")
 }
 
 function quote() {
   alert(
-    'Cet utilisateur a été mute pour propos haineux : "Je suis fier de mon nouvel iphone à 3 smics" '
-  );
+    'Cet utilisateur a été mute pour propos haineux : "Je suis fier de mon nouvel iphone à 3 smics" ',
+  )
 }
 
 function modify() {
-  alert(
-    "Cette option n'est pas encore présente sur le site (inutile de crier)"
-  );
+  alert("Cette option n'est pas encore présente sur le site (inutile de crier)")
 }
 
 function suppr() {
-  alert(
-    "Cette option n'est pas encore présente sur le site (inutile de crier)"
-  );
+  alert("Cette option n'est pas encore présente sur le site (inutile de crier)")
 }
 </script>
 

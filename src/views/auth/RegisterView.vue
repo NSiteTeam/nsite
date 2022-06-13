@@ -24,33 +24,33 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { databaseClient } from "@/database/implementation";
+import { ref } from 'vue'
+import { databaseClient } from '@/database/implementation'
 
-const email = ref("");
-const password = ref("");
-const username = ref("");
-const loading = ref(false);
-const failure = ref(false);
-const success = ref(false);
+const email = ref('')
+const password = ref('')
+const username = ref('')
+const loading = ref(false)
+const failure = ref(false)
+const success = ref(false)
 
 const errorMessages = {
-  "Request Failed": `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-  "Password should be at least 6 characters": `Le mot de passe doit contenir au moins 6 caractères`,
-  "User already registered": "L'utilisateur a déjà été inscrit",
-};
+  'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
+  'Password should be at least 6 characters': `Le mot de passe doit contenir au moins 6 caractères`,
+  'User already registered': "L'utilisateur a déjà été inscrit",
+}
 
 async function handleRegister() {
-  loading.value = true;
-  console.log(username.value);
+  loading.value = true
+  console.log(username.value)
   const { error, accountCreated } = await databaseClient.signIn(
     email.value,
     password.value,
-    username.value
-  );
-  loading.value = false;
-  failure.value = error;
-  success.value = accountCreated;
+    username.value,
+  )
+  loading.value = false
+  failure.value = error
+  success.value = accountCreated
 
   // TODO: Ask to the user to verify his email
 }

@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import type { Repository } from "@/database/interface/repositories";
-import { databaseClient } from "@/database/implementation";
-import { useRoute } from "vue-router";
-import { ref, computed, onMounted } from "vue";
-import type { Ref } from "vue";
-import type CustomFile from "@/database/interface/file";
-import SupabaseMessage from "@/database/supabase/supabase_message";
-import { LongDate } from "@/utils/long_date";
-import Chat from "../components/Chat.vue";
-import Files from "../components/Files.vue";
+import type { Repository } from '@/database/interface/repositories'
+import { databaseClient } from '@/database/implementation'
+import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import type { Ref } from 'vue'
+import type CustomFile from '@/database/interface/file'
+import SupabaseMessage from '@/database/supabase/supabase_message'
+import { LongDate } from '@/utils/long_date'
+import Chat from '../components/Chat.vue'
+import Files from '../components/Files.vue'
 
-const id = Number(useRoute().params.id);
-const files: Ref<CustomFile[]> = databaseClient.files;
-const repoData: Ref<Repository | null> = ref(null);
+const id = Number(useRoute().params.id)
+const files: Ref<CustomFile[]> = databaseClient.files
+const repoData: Ref<Repository | null> = ref(null)
 await databaseClient.getDeposit(id).then((res) => {
-  repoData.value = res;
-});
+  repoData.value = res
+})
 </script>
 
 <template>
@@ -28,7 +28,7 @@ await databaseClient.getDeposit(id).then((res) => {
           Niveau : {{ repoData.level.fullName }},
           {{
             LongDate.ISOStringToLongDate(repoData.publication_date).beautify(
-              false
+              false,
             )
           }}
         </div>

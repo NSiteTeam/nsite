@@ -12,7 +12,7 @@
     font-size: 13px;
 
     &:before {
-      content: "";
+      content: '';
       width: 1px;
       height: 100%;
       position: absolute;
@@ -44,7 +44,7 @@
 
       & > span:before,
       & > span:after {
-        content: "";
+        content: '';
         width: 8px;
         height: 8px;
         border-radius: 50%;

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { databaseClient } from "@/database/implementation";
-import type CustomFile from "@/database/interface/file";
-import { LongDate } from "@/utils/long_date";
-import type { Ref } from "vue";
-import { ref } from "vue";
+import { databaseClient } from '@/database/implementation'
+import type CustomFile from '@/database/interface/file'
+import { LongDate } from '@/utils/long_date'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
-const { fileIds } = defineProps(["fileIds"]);
-const files: Ref<CustomFile[]> = ref([]);
+const { fileIds } = defineProps(['fileIds'])
+const files: Ref<CustomFile[]> = ref([])
 
-console.log(fileIds);
+console.log(fileIds)
 fileIds.map((fileID: string | number) => {
-  console.log(Number(fileID));
-  databaseClient.getFile(Number(fileID)).then((res) => files.value.push(res));
-});
+  console.log(Number(fileID))
+  databaseClient.getFile(Number(fileID)).then((res) => files.value.push(res))
+})
 </script>
 
 <template>

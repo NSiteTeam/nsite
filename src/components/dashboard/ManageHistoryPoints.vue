@@ -65,84 +65,84 @@
 </template>
 
 <script setup lang="ts">
-import DataColumn from "@/components/dashboard/DataColumn.vue";
-import { databaseClient } from "@/database/implementation";
-import type { HistoryPoint } from "@/database/interface/historyPoint";
-import { DataSection } from "@/utils/data_section";
-import { computed, ref } from "vue";
-import type { Ref } from "vue";
-import ContextMenu from "@/components/dashboard/context_menu/ContextMenu.vue";
-import ContextMenuSeparator from "@/components/dashboard/context_menu/ContextMenuSeparator.vue";
-import ContextMenuElement from "@/components/dashboard/context_menu/ContextMenuElement.vue";
-import { Level } from "@/database/interface/level";
-import { LongDate } from "@/utils/long_date";
-import { MessageType } from "@/utils/message_type";
+import DataColumn from '@/components/dashboard/DataColumn.vue'
+import { databaseClient } from '@/database/implementation'
+import type { HistoryPoint } from '@/database/interface/historyPoint'
+import { DataSection } from '@/utils/data_section'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
+import ContextMenu from '@/components/dashboard/context_menu/ContextMenu.vue'
+import ContextMenuSeparator from '@/components/dashboard/context_menu/ContextMenuSeparator.vue'
+import ContextMenuElement from '@/components/dashboard/context_menu/ContextMenuElement.vue'
+import { Level } from '@/database/interface/level'
+import { LongDate } from '@/utils/long_date'
+import { MessageType } from '@/utils/message_type'
 
-const selectedHistoryPoint: Ref<HistoryPoint | null> = ref(null);
+const selectedHistoryPoint: Ref<HistoryPoint | null> = ref(null)
 
-const message = ref("");
-const messageClass = ref(MessageType.INDICATION);
+const message = ref('')
+const messageClass = ref(MessageType.INDICATION)
 
 const historyPoint = computed(() =>
   DataSection.makeSections(
     databaseClient.fetchedHistoryPoints.value,
-    (historyPoint) => (historyPoint.visible ? "Visibles" : "Brouillons"),
-    (section) => ["Visibles", "Brouillons"].indexOf(section.name)
-  )
-);
+    (historyPoint) => (historyPoint.visible ? 'Visibles' : 'Brouillons'),
+    (section) => ['Visibles', 'Brouillons'].indexOf(section.name),
+  ),
+)
 async function addHistoryPoint() {
-  const title = prompt("Titre");
+  const title = prompt('Titre')
   if (title) {
-    const historyPoint = await databaseClient.createEmptyHistoryPoint(title);
-    selectedHistoryPoint.value = historyPoint;
+    const historyPoint = await databaseClient.createEmptyHistoryPoint(title)
+    selectedHistoryPoint.value = historyPoint
   }
 }
 
 function selectHistoryPoint(historyPoint: HistoryPoint) {
-  selectedHistoryPoint.value = historyPoint;
+  selectedHistoryPoint.value = historyPoint
 }
 
 function switchVisibilityOfHistoryPoint(historyPoint: HistoryPoint) {
-  databaseClient.switchVisibilityOfHistoryPoint(historyPoint);
+  databaseClient.switchVisibilityOfHistoryPoint(historyPoint)
 }
 
 function historyPointToText(historyPoint: HistoryPoint) {
-  return historyPoint.title;
+  return historyPoint.title
 }
 
 function historyPointToKey(historyPoint: HistoryPoint) {
-  return historyPoint;
+  return historyPoint
 }
 
 function setDate(value: any) {
-  selectedHistoryPoint.value!.date = LongDate.fromForm(value.srcElement.value);
+  selectedHistoryPoint.value!.date = LongDate.fromForm(value.srcElement.value)
 }
 
 async function saveHistoryPoint(event: MouseEvent) {
-  message.value = "Point d'histoire en cours de sauvegarde";
-  messageClass.value = MessageType.INDICATION;
+  message.value = "Point d'histoire en cours de sauvegarde"
+  messageClass.value = MessageType.INDICATION
 
   const error = await databaseClient.updateHistoryPoint(
-    selectedHistoryPoint.value!
-  );
+    selectedHistoryPoint.value!,
+  )
 
   if (error) {
-    message.value = error;
-    messageClass.value = MessageType.ERROR;
+    message.value = error
+    messageClass.value = MessageType.ERROR
   } else {
-    message.value = "Le point d'histoire a été sauvegardé avec succès";
-    messageClass.value = MessageType.GOOD;
+    message.value = "Le point d'histoire a été sauvegardé avec succès"
+    messageClass.value = MessageType.GOOD
   }
 
-  setTimeout(() => (message.value = ""), 2000);
+  setTimeout(() => (message.value = ''), 2000)
 }
 
 function deleteHistoryPoint(historyPoint: HistoryPoint) {
   if (confirm("Etes-vous sûr de vouloir supprimer ce point d'histoire ?")) {
-    databaseClient.deleteHistoryPoint(historyPoint);
-    selectedHistoryPoint.value = null;
+    databaseClient.deleteHistoryPoint(historyPoint)
+    selectedHistoryPoint.value = null
   }
 }
 
-databaseClient.fetchHistoryPoints();
+databaseClient.fetchHistoryPoints()
 </script>

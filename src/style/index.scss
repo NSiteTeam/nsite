@@ -3,41 +3,41 @@
 // ##########################################################################
 
 // Common stylesheets
-@import "common/_mixins.scss";
-@import "common/_settings.scss";
-@import "common/_nav.scss";
-@import "common/_loading_animation.scss";
+@import 'common/_mixins.scss';
+@import 'common/_settings.scss';
+@import 'common/_nav.scss';
+@import 'common/_loading_animation.scss';
 
 // Pages stylesheets
-@import "pages/_home.scss";
-@import "pages/_browse.scss";
-@import "pages/_timeline.scss";
+@import 'pages/_home.scss';
+@import 'pages/_browse.scss';
+@import 'pages/_timeline.scss';
 
 // Profile stylesheets
-@import "pages/profile/profile_picture";
+@import 'pages/profile/profile_picture';
 
 // Deposits stylesheets
-@import "pages/deposits/_repository";
-@import "pages/deposits/_chat.scss";
-@import "pages/deposits/_files.scss";
+@import 'pages/deposits/_repository';
+@import 'pages/deposits/_chat.scss';
+@import 'pages/deposits/_files.scss';
 
 // Authentication stylesheets
-@import "auth/_logout.scss";
-@import "auth/_register.scss";
-@import "auth/_login.scss";
-@import "auth/_profile.scss";
+@import 'auth/_logout.scss';
+@import 'auth/_register.scss';
+@import 'auth/_login.scss';
+@import 'auth/_profile.scss';
 
 // Dashboard stylesheets
-@import "pages/dashboard/_fileItem.scss";
-@import "pages/dashboard/_dashboard.scss";
-@import "pages/dashboard/_manageDeposits.scss";
-@import "pages/dashboard/_sidePannelNewFile.scss";
-@import "pages/dashboard/_manageBlacklist.scss";
-@import "pages/dashboard/_sidePannelNewDeposit.scss";
-@import "pages/dashboard/_editDeposit.scss";
-@import "pages/dashboard/_dataColumn.scss";
-@import "pages/dashboard/_contextMenu.scss";
-@import "pages/dashboard/_manageNews.scss";
-@import "pages/dashboard/_dangerPopup.scss";
-@import "pages/dashboard/_manageUsers.scss";
-@import "pages/dashboard/_manageHistoryPoints.scss";
+@import 'pages/dashboard/_fileItem.scss';
+@import 'pages/dashboard/_dashboard.scss';
+@import 'pages/dashboard/_manageDeposits.scss';
+@import 'pages/dashboard/_sidePannelNewFile.scss';
+@import 'pages/dashboard/_manageBlacklist.scss';
+@import 'pages/dashboard/_sidePannelNewDeposit.scss';
+@import 'pages/dashboard/_editDeposit.scss';
+@import 'pages/dashboard/_dataColumn.scss';
+@import 'pages/dashboard/_contextMenu.scss';
+@import 'pages/dashboard/_manageNews.scss';
+@import 'pages/dashboard/_dangerPopup.scss';
+@import 'pages/dashboard/_manageUsers.scss';
+@import 'pages/dashboard/_manageHistoryPoints.scss';

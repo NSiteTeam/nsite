@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import FileItem from "@/components/dashboard/FileItem.vue";
-import { databaseClient } from "@/database/implementation";
-import type { Repository } from "@/database/interface/repositories";
-import { Level } from "@/database/interface/level";
-import { watch, ref, toRaw, onMounted, computed, shallowRef } from "vue";
-import type { Ref, ComputedRef } from "vue";
-import DataColumn from "@/components/dashboard/DataColumn.vue";
-import DangerPopup from "@/components/dashboard/popups/DangerPopup.vue";
-import { DataSection } from "@/utils/data_section";
+import FileItem from '@/components/dashboard/FileItem.vue'
+import { databaseClient } from '@/database/implementation'
+import type { Repository } from '@/database/interface/repositories'
+import { Level } from '@/database/interface/level'
+import { watch, ref, toRaw, onMounted, computed, shallowRef } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
+import DataColumn from '@/components/dashboard/DataColumn.vue'
+import DangerPopup from '@/components/dashboard/popups/DangerPopup.vue'
+import { DataSection } from '@/utils/data_section'
 
-const displaySidePannelnewDeposit: Ref<boolean> = ref(false);
-const displaySidePannelNewFile: Ref<boolean> = ref(false);
-const displaySidePannelEditDepo: Ref<boolean> = ref(false);
-const displayDeleteDepoPopup: Ref<boolean> = ref(false);
-const newDepositLevel: Ref<number | null> = ref(null);
-const newDepositDescription: Ref<string> = ref("");
-const error: Ref<string | null> = ref(null);
-const success: Ref<boolean> = ref(false);
-const loading: Ref<boolean> = ref(false);
-const errorDelete: Ref<string | null> = ref(null);
-const successDelete: Ref<boolean> = ref(false);
-const loadingDelete: Ref<boolean> = ref(false);
-const errorFiles: Ref<string | null> = ref(null);
-const successFiles: Ref<boolean> = ref(false);
-const loadingFiles: Ref<boolean> = ref(false);
-const newDepositTitle: Ref<string> = ref("");
-const depositTableIsExpanded = ref(true);
-const files: Ref<any[]> = ref([]);
-const rawFile: Ref<any> = ref();
-const newFile: Ref<string> = ref("");
-const newFileMessage = ref("");
-const selectedDeposit: Ref<Repository | null> = ref(null);
-const deposits: Ref<DataSection<Repository>[]> = ref([]);
+const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
+const displaySidePannelNewFile: Ref<boolean> = ref(false)
+const displaySidePannelEditDepo: Ref<boolean> = ref(false)
+const displayDeleteDepoPopup: Ref<boolean> = ref(false)
+const newDepositLevel: Ref<number | null> = ref(null)
+const newDepositDescription: Ref<string> = ref('')
+const error: Ref<string | null> = ref(null)
+const success: Ref<boolean> = ref(false)
+const loading: Ref<boolean> = ref(false)
+const errorDelete: Ref<string | null> = ref(null)
+const successDelete: Ref<boolean> = ref(false)
+const loadingDelete: Ref<boolean> = ref(false)
+const errorFiles: Ref<string | null> = ref(null)
+const successFiles: Ref<boolean> = ref(false)
+const loadingFiles: Ref<boolean> = ref(false)
+const newDepositTitle: Ref<string> = ref('')
+const depositTableIsExpanded = ref(true)
+const files: Ref<any[]> = ref([])
+const rawFile: Ref<any> = ref()
+const newFile: Ref<string> = ref('')
+const newFileMessage = ref('')
+const selectedDeposit: Ref<Repository | null> = ref(null)
+const deposits: Ref<DataSection<Repository>[]> = ref([])
 const ownersUsernames = computed((_) => {
-  const usernames: Ref<string[]> = ref([]);
+  const usernames: Ref<string[]> = ref([])
   if (selectedDeposit.value)
     selectedDeposit.value.owners.map((owner) =>
       databaseClient
         .getUsername(owner)
         .then((res) => usernames.value.push(res))
-        .catch((res) => (error.value = res))
-    );
-  return usernames.value;
-});
+        .catch((res) => (error.value = res)),
+    )
+  return usernames.value
+})
 
-const levels = Level.LEVELS;
+const levels = Level.LEVELS
 
 enum SidePannelTarget {
   DEPOSIT,
@@ -54,41 +54,41 @@ enum SidePannelTarget {
 }
 
 async function deleteCurrentDeposit() {
-  loadingDelete.value = true;
+  loadingDelete.value = true
   if (selectedDeposit.value != null)
     await databaseClient
       .deleteDeposit(selectedDeposit.value.id)
       .then((_) => (successDelete.value = true))
-      .catch((res) => (errorDelete.value = res));
-  loadingDelete.value = false;
-  fetchDeposits();
-  selectedDeposit.value = deposits.value[0].values[0];
+      .catch((res) => (errorDelete.value = res))
+  loadingDelete.value = false
+  fetchDeposits()
+  selectedDeposit.value = deposits.value[0].values[0]
 
   setTimeout(
     () => ([successDelete.value, errorDelete.value] = [false, null]),
-    3000
-  );
+    3000,
+  )
 }
 
 // Fetch deposits and sort them into sections
 async function fetchDeposits() {
   deposits.value = DataSection.makeSections(
     await databaseClient.getOwnedDeposits(),
-    (e) => e.level.abbreviated
-  );
+    (e) => e.level.abbreviated,
+  )
 }
 
 async function fetchDeposit(id: number) {
   if (deposits.value != null && selectedDeposit.value != null) {
     selectedDeposit.value = await databaseClient.getDeposit(
-      selectedDeposit.value.id
-    );
+      selectedDeposit.value.id,
+    )
     if (selectedDeposit.value != null) {
-      const newData = await databaseClient.getDeposit(selectedDeposit.value.id);
+      const newData = await databaseClient.getDeposit(selectedDeposit.value.id)
       for (let i = 0; i < toRaw(deposits.value).length; i++) {
         for (let j = 0; j < deposits.value[i].values.length; j++) {
           if (deposits.value[i].values[j].id == selectedDeposit.value.id) {
-            deposits.value[i].values[j] = selectedDeposit.value;
+            deposits.value[i].values[j] = selectedDeposit.value
           }
         }
       }
@@ -98,123 +98,123 @@ async function fetchDeposit(id: number) {
 
 await fetchDeposits().then(() => {
   if (deposits.value.length > 0) {
-    selectedDeposit.value = deposits.value[0].values[0];
+    selectedDeposit.value = deposits.value[0].values[0]
   }
-});
+})
 
 function depositToText(deposit: Repository) {
-  return deposit.title;
+  return deposit.title
 }
 
 function depositToKey(deposit: Repository) {
-  return deposit.id;
+  return deposit.id
 }
 
 function toggleSidePannel(target?: SidePannelTarget) {
   if (target == SidePannelTarget.DEPOSIT) {
-    displaySidePannelnewDeposit.value = true;
+    displaySidePannelnewDeposit.value = true
   } else if (target == SidePannelTarget.FILE) {
-    displaySidePannelNewFile.value = true;
+    displaySidePannelNewFile.value = true
   } else if (target == SidePannelTarget.EDIT) {
-    displaySidePannelEditDepo.value = true;
+    displaySidePannelEditDepo.value = true
   } else if (target == SidePannelTarget.DELETE) {
-    displayDeleteDepoPopup.value = true;
+    displayDeleteDepoPopup.value = true
   } else {
-    displaySidePannelnewDeposit.value = false;
-    displaySidePannelNewFile.value = false;
-    displaySidePannelEditDepo.value = false;
-    displayDeleteDepoPopup.value = false;
+    displaySidePannelnewDeposit.value = false
+    displaySidePannelNewFile.value = false
+    displaySidePannelEditDepo.value = false
+    displayDeleteDepoPopup.value = false
   }
 }
 
 function selectData(data: Repository) {
-  console.log(data);
-  selectedDeposit.value = data;
-  fetchFiles();
+  console.log(data)
+  selectedDeposit.value = data
+  fetchFiles()
 }
 
 function fetchFiles() {
-  files.value = [];
+  files.value = []
   selectedDeposit.value?.content?.map(async (fileId: number) => {
-    const file = ref();
-    await databaseClient.getFile(fileId).then((res) => (file.value = res));
-    files.value.push(toRaw(file.value));
-  });
+    const file = ref()
+    await databaseClient.getFile(fileId).then((res) => (file.value = res))
+    files.value.push(toRaw(file.value))
+  })
 }
 
 async function addDeposit() {
-  if (newDepositTitle.value != "" && newDepositLevel.value != null) {
-    loading.value = true;
+  if (newDepositTitle.value != '' && newDepositLevel.value != null) {
+    loading.value = true
 
     await databaseClient
       .postDeposit(
         newDepositTitle.value,
         Level.levelFromIndex(newDepositLevel.value)!,
-        newDepositDescription.value
+        newDepositDescription.value,
       )
       .then(() => {
-        success.value = true;
+        success.value = true
       })
       .catch((message) => {
-        error.value = message;
-      });
+        error.value = message
+      })
 
-    loading.value = false;
+    loading.value = false
   } else {
-    error.value = "Veuillez remplir tout les champs requis";
+    error.value = 'Veuillez remplir tout les champs requis'
   }
   setTimeout(
     () => ([success.value, loading.value, error.value] = [false, false, null]),
-    3000
-  );
+    3000,
+  )
 }
 
 const uploadInfo: ComputedRef<string> = computed(() => {
-  return rawFile.value.length == 1 ? files.value[0].name : "";
-});
+  return rawFile.value.length == 1 ? files.value[0].name : ''
+})
 
 function watchFiles(e: any) {
-  rawFile.value = e.target.files[0] || [];
-  newFile.value = e.target.files[0].name;
+  rawFile.value = e.target.files[0] || []
+  newFile.value = e.target.files[0].name
 }
 
 function handleFileDelete() {
   if (selectedDeposit.value)
     fetchDeposit(selectedDeposit.value.id)
       .then((_) => fetchFiles())
-      .catch((message) => console.error(message));
-  toggleSidePannel();
+      .catch((message) => console.error(message))
+  toggleSidePannel()
 }
 
 async function uploadFile() {
-  loadingFiles.value = true;
+  loadingFiles.value = true
   if (selectedDeposit.value != null)
     await databaseClient
       .uploadFileToDeposit(
         rawFile.value,
         selectedDeposit.value!.title,
         newFileMessage.value,
-        newFile.value
+        newFile.value,
       )
       .then((_) => (successFiles.value = true))
-      .catch((res) => (errorFiles.value = res));
-  loadingFiles.value = false;
+      .catch((res) => (errorFiles.value = res))
+  loadingFiles.value = false
   setTimeout(
     (_) => ([successFiles.value, errorFiles.value] = [false, null]),
-    3000
-  );
+    3000,
+  )
 }
 
-onMounted(fetchFiles);
-watch(success, fetchFiles);
-watch(success, fetchDeposits);
+onMounted(fetchFiles)
+watch(success, fetchFiles)
+watch(success, fetchDeposits)
 watch(successFiles, async () => {
   // Prevents firering two times the API call
   if (selectedDeposit.value != null && successFiles.value)
     await fetchDeposit(selectedDeposit.value.id)
       .then((_) => fetchFiles())
-      .catch((message) => console.error(message));
-});
+      .catch((message) => console.error(message))
+})
 </script>
 
 <template>
@@ -457,7 +457,7 @@ watch(successFiles, async () => {
           >Auteurs</label
         >
         <div class="side-pannel-edit-depo-field-owners">
-          {{ ownersUsernames.join(", ") }}
+          {{ ownersUsernames.join(', ') }}
           <div class="material-icons" title="Partager">share</div>
         </div>
       </div>

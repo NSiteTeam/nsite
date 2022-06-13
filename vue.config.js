@@ -1,7 +1,7 @@
 module.exports = {
   pages: {
     index: {
-      entry: "src/main.ts",
+      entry: 'src/main.ts',
     },
   },
-};
+}

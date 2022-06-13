@@ -1,6 +1,6 @@
 <template>
   <div id="data-list" :class="{ hidden: !dataTableIsExpanded }">
-    <h3 id="data-list-title">{{ props["title"] }}</h3>
+    <h3 id="data-list-title">{{ props['title'] }}</h3>
     <span
       v-on:click="flipDataListExpansion()"
       id="data-list-menu-icon"
@@ -51,7 +51,7 @@
       <li @click="createData" class="data-list-element" id="add-data-button">
         <span class="material-icons white"> add </span>
         <span>
-          {{ props["addButtonMessage"] }}
+          {{ props['addButtonMessage'] }}
         </span>
       </li>
     </ul>
@@ -59,51 +59,51 @@
 </template>
 
 <script setup lang="ts">
-import { DataSection } from "@/utils/data_section";
-import { ref, watch } from "vue";
+import { DataSection } from '@/utils/data_section'
+import { ref, watch } from 'vue'
 
 const props = defineProps([
-  "title",
-  "list",
-  "add-button-message",
-  "to-text",
-  "to-key",
-]);
+  'title',
+  'list',
+  'add-button-message',
+  'to-text',
+  'to-key',
+])
 
-const toText = props["toText"];
+const toText = props['toText']
 
-const emit = defineEmits(["selectData", "createData"]);
+const emit = defineEmits(['selectData', 'createData'])
 
-const dataTableIsExpanded = ref(true);
-const selectedData = ref(null);
+const dataTableIsExpanded = ref(true)
+const selectedData = ref(null)
 
 function flipDataListExpansion() {
-  dataTableIsExpanded.value = !dataTableIsExpanded.value;
+  dataTableIsExpanded.value = !dataTableIsExpanded.value
 }
 
 function selectData(data: any) {
-  selectedData.value = data;
-  emit("selectData", data);
+  selectedData.value = data
+  emit('selectData', data)
 }
 
 function createData() {
-  emit("createData");
+  emit('createData')
 }
 
 function isDataSection(data: any) {
-  return data instanceof DataSection;
+  return data instanceof DataSection
 }
 
 // We select a default element
-for (const data of props["list"]) {
+for (const data of props['list']) {
   if (isDataSection(data)) {
     if (data.values.length > 0) {
-      selectData(data.values[0]);
-      break;
+      selectData(data.values[0])
+      break
     }
   } else {
-    selectData(data);
-    break;
+    selectData(data)
+    break
   }
 }
 </script>

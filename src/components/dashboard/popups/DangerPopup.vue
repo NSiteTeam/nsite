@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import type { Ref } from "vue";
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
 
-const emit = defineEmits(["deletion", "close"]);
+const emit = defineEmits(['deletion', 'close'])
 const { title, content, messageToType, actionName } = defineProps([
-  "title",
-  "content",
-  "messageToType",
-  "actionName",
-]);
+  'title',
+  'content',
+  'messageToType',
+  'actionName',
+])
 
-const typedMessage: Ref<string> = ref("");
-const allowSubmit = computed(() => typedMessage.value == messageToType);
+const typedMessage: Ref<string> = ref('')
+const allowSubmit = computed(() => typedMessage.value == messageToType)
 
 function submit() {
-  if (window.confirm("Etes-vous sûr de vous ? Cette action est irréversible !"))
-    emit("deletion");
+  if (window.confirm('Etes-vous sûr de vous ? Cette action est irréversible !'))
+    emit('deletion')
 }
 </script>
 

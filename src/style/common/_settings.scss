@@ -22,7 +22,7 @@ $header-height: 68px;
 
 @font-face {
   font-family: OpenSans;
-  src: url("/../src/assets/OpenSans-Regular.ttf");
+  src: url('/../src/assets/OpenSans-Regular.ttf');
 }
 
 body {
@@ -69,7 +69,7 @@ h2 {
 
 .wave2 {
   margin-top: -100px;
-  @include wave("/src/assets/wave.svg");
+  @include wave('/src/assets/wave.svg');
 
   @media (max-width: 1000px) {
     margin-top: 80%;
@@ -91,7 +91,7 @@ h2 {
 .wave {
   position: relative;
   z-index: 20;
-  @include wave("/src/assets/wave.svg");
+  @include wave('/src/assets/wave.svg');
 }
 
 .display-none {

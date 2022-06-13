@@ -26,16 +26,16 @@
       color: $cream-white;
     }
 
-    &[type="submit"]:hover {
+    &[type='submit']:hover {
       @include shadow1();
     }
   }
 
-  input:not([type="submit"]) {
+  input:not([type='submit']) {
     width: 100%;
   }
 
-  input[type="submit"] {
+  input[type='submit'] {
     padding: 5%;
     color: #fff;
   }
