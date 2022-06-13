@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // @ts-ignore
-import { SupabasePermissionHelper } from '@/database/supabase/supabase_permission_helper'
-import { Permission } from '@/database/interface/permissions'
-import { databaseClient } from '@/database/implementation'
-import type { User } from '@/database/interface/user'
-import type { Ref } from 'vue'
-import { computed, ref } from 'vue'
+import { SupabasePermissionHelper } from "@/database/supabase/supabase_permission_helper";
+import { Permission } from "@/database/interface/permissions";
+import { databaseClient } from "@/database/implementation";
+import type { User } from "@/database/interface/user";
+import type { Ref } from "vue";
+import { computed, ref } from "vue";
 
 enum sortTypes {
   USERNAME,
@@ -19,23 +19,23 @@ enum orders {
 }
 
 enum sortIcons {
-  DESCENDING = 'expand_more',
-  ASCENDING = 'expand_less',
+  DESCENDING = "expand_more",
+  ASCENDING = "expand_less",
 }
 
-const users: Ref<any[]> = ref([])
-const sortOrder: Ref<orders> = ref(orders.DESCENDING)
+const users: Ref<any[]> = ref([]);
+const sortOrder: Ref<orders> = ref(orders.DESCENDING);
 // const selectedUser: Ref<User | undefined> = ref()
-const selectedSortType: Ref<sortTypes> = ref(sortTypes.HIGHEST_ROLE)
+const selectedSortType: Ref<sortTypes> = ref(sortTypes.HIGHEST_ROLE);
 
 await databaseClient
   .getAllUsers()
   .then((res) => {
-    users.value = res
+    users.value = res;
   })
   .catch((err) => {
-    console.warn(err)
-  })
+    console.warn(err);
+  });
 
 const sortedData = computed(() => {
   switch (selectedSortType.value) {
@@ -45,28 +45,28 @@ const sortedData = computed(() => {
           sortOrder.value *
           (Math.max(...b.roles.map((role: any) => Number(role))) -
             Math.max(...a.roles.map((role: any) => Number(role))))
-        )
-      })
+        );
+      });
     case sortTypes.UUID:
       return users.value.sort((a, b) => {
-        return sortOrder.value * b.user.localeCompare(a.user)
-      })
+        return sortOrder.value * b.user.localeCompare(a.user);
+      });
     case sortTypes.USERNAME:
       return users.value.sort((a, b) => {
-        return sortOrder.value * b.username.localeCompare(a.username)
-      })
+        return sortOrder.value * b.username.localeCompare(a.username);
+      });
   }
-})
+});
 
 function reverseSort() {
-  sortOrder.value *= -1
+  sortOrder.value *= -1;
 }
 
 function changeSortType(newSortType: sortTypes) {
   if (selectedSortType.value == newSortType) {
-    reverseSort()
+    reverseSort();
   } else {
-    selectedSortType.value = newSortType
+    selectedSortType.value = newSortType;
   }
 }
 
@@ -75,19 +75,19 @@ function getCorrespondingIcon(sortType: sortTypes) {
     orders.ASCENDING == sortOrder.value &&
     sortType == selectedSortType.value
   ) {
-    return sortIcons.ASCENDING
+    return sortIcons.ASCENDING;
   } else if (
     orders.DESCENDING == sortOrder.value &&
     sortType == selectedSortType.value
   ) {
-    return sortIcons.DESCENDING
+    return sortIcons.DESCENDING;
   } else {
-    return ''
+    return "";
   }
 }
 
 function getPermissionFromId(permissionId: number): string {
-  return SupabasePermissionHelper.permissionFromId(permissionId)
+  return SupabasePermissionHelper.permissionFromId(permissionId);
 }
 </script>
 
@@ -101,9 +101,7 @@ function getPermissionFromId(permissionId: number): string {
         >
           <div class="cell-content">
             <div class="material-icons">
-              {{
-                getCorrespondingIcon(sortTypes.USERNAME)
-              }}
+              {{ getCorrespondingIcon(sortTypes.USERNAME) }}
             </div>
             Nom d'utilisateur
           </div>
@@ -111,9 +109,7 @@ function getPermissionFromId(permissionId: number): string {
         <div class="cell title-cell" @click="changeSortType(sortTypes.UUID)">
           <div class="cell-content">
             <div class="material-icons">
-              {{
-                getCorrespondingIcon(sortTypes.UUID)
-              }}
+              {{ getCorrespondingIcon(sortTypes.UUID) }}
             </div>
             Identifiant unique
           </div>
@@ -124,9 +120,7 @@ function getPermissionFromId(permissionId: number): string {
         >
           <div class="cell-content">
             <div class="material-icons">
-              {{
-                getCorrespondingIcon(sortTypes.HIGHEST_ROLE)
-              }}
+              {{ getCorrespondingIcon(sortTypes.HIGHEST_ROLE) }}
             </div>
             Rôle le plus haut
           </div>
@@ -142,7 +136,7 @@ function getPermissionFromId(permissionId: number): string {
         <div class="cell">
           {{
             getPermissionFromId(
-              Math.max(...user.roles.map((role) => Number(role))),
+              Math.max(...user.roles.map((role) => Number(role)))
             )
           }}
         </div>

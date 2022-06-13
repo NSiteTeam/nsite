@@ -37,22 +37,22 @@ const router = createRouter({
     {
       path: "/timeline",
       name: "timeline",
-      component: () => import("../views/TimelineView.vue")
+      component: () => import("../views/TimelineView.vue"),
     },
     {
       path: "/profile",
       name: "account",
-      component: () => import("../views/ProfileView.vue")
+      component: () => import("../views/ProfileView.vue"),
     },
     {
       path: "/dashboard/:view?",
       name: "dashboard",
-      component: () => import("../views/admin/Dashboard.vue")
+      component: () => import("../views/admin/Dashboard.vue"),
     },
     {
       path: "/dashboard/:view?/:action?/:depo?",
       name: "dashboard",
-      component: () => import("../views/admin/Dashboard.vue")
+      component: () => import("../views/admin/Dashboard.vue"),
     },
   ],
 });

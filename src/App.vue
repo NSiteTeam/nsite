@@ -7,11 +7,11 @@ import Nav from "./components/Nav.vue";
   <Nav />
   <main>
     <Suspense>
-        <RouterView />
+      <RouterView />
     </Suspense>
   </main>
 </template>
 
 <style lang="scss">
-  @import './src/style/index.scss';
+@import "./src/style/index.scss";
 </style>

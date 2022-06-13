@@ -1,3 +1,3 @@
 <template>
-    <div class="context-menu-separator" />
+  <div class="context-menu-separator" />
 </template>

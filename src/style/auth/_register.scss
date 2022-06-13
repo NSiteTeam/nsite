@@ -3,40 +3,40 @@
 // ###########################################################################
 
 #register {
-	display: flex;
-	flex-direction: column;
-    align-items: center;
-    background-color: $space-cadet;
-    padding: 4% 6% 4% 6%;
-    border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $space-cadet;
+  padding: 4% 6% 4% 6%;
+  border-radius: 40px;
 
-    h2 {
-        color: $cream-white;
+  h2 {
+    color: $cream-white;
+  }
+
+  input {
+    border: 0;
+    color: $cream-white;
+    margin-bottom: 20px;
+    padding: 3%;
+    border-radius: 5px;
+    background-color: $space-cadet-light;
+
+    &::placeholder {
+      color: $cream-white;
     }
 
-    input {
-        border: 0;
-        color: $cream-white;
-        margin-bottom: 20px;
-        padding: 3%;
-        border-radius: 5px;
-        background-color: $space-cadet-light;
-
-        &::placeholder {
-            color: $cream-white;
-        }
-
-        &[type="submit"]:hover {
-            @include shadow1()
-        }
+    &[type="submit"]:hover {
+      @include shadow1();
     }
+  }
 
-    input:not([type="submit"]) {
-        width: 100%;
-    }
+  input:not([type="submit"]) {
+    width: 100%;
+  }
 
-    input[type="submit"] {
-        padding: 5%;
-        color: #fff;
-    }
+  input[type="submit"] {
+    padding: 5%;
+    color: #fff;
+  }
 }

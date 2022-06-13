@@ -3,164 +3,162 @@
 // ###########################################################################
 
 #change-order-button {
-    @include shadow1;
-    border: 0;
-    padding: 10px;
-    margin-right: 10px;
-    background-color: $space-cadet-light;
-    color: $cream-white;
-    border-radius: 10px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  @include shadow1;
+  border: 0;
+  padding: 10px;
+  margin-right: 10px;
+  background-color: $space-cadet-light;
+  color: $cream-white;
+  border-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .filters {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .search {
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 8px 12px 8px 12px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px 8px 12px;
+  width: 100%;
+  border-radius: 15px;
+
+  .material-icons {
+    font-size: 35px;
+    background-color: transparent;
+    border: 0;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &-input {
     width: 100%;
-    border-radius: 15px;
+    padding: 2%;
+    border: 0;
+    color: $cream-white;
+    background-color: transparent;
+    font-size: 24px;
 
-    .material-icons {
-        font-size: 35px;
-        background-color: transparent;
-        border: 0;
-
-        &:hover {
-            cursor: pointer;
-        }
+    &::placeholder {
+      color: $cream-white;
+      font-size: 24px;
     }
 
-    &-input {
-        width: 100%;
-        padding: 2%;
-        border: 0;
-        color: $cream-white;
-        background-color: transparent;
-        font-size: 24px;
-
-        &::placeholder {
-            color: $cream-white;
-            font-size: 24px;
-        }
-
-        &:focus {
-            outline:  none;
-        }
+    &:focus {
+      outline: none;
     }
+  }
 }
 
 ul.level-buttons {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    padding-left: 0;
-    flex-wrap: wrap;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  flex-wrap: wrap;
 
-    .active {
-        @include shadow2;
+  .active {
+    @include shadow2;
+  }
+
+  li {
+    margin-left: 10px;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+
+    &:active {
+      @include shadow2;
     }
-
-    li {
-        margin-left: 10px;
-        font-size: 18px;
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 10px;
-        border-radius: 10px;
-
-        &:active {
-            @include shadow2;
-        }
-    }
+  }
 }
 
 .sort-keys {
-    padding-left: 0;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  h2 {
+    margin-right: 10px;
+  }
+
+  .active {
+    border: 1px solid #fff;
+  }
+
+  li {
+    @include shadow1;
+    padding: 10px;
+    color: $cream-white;
+    border-radius: 15px;
+    background-color: $space-cadet-light;
+    margin-right: 15px;
+    list-style: none;
     display: flex;
     align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    
-    h2 {
-        margin-right: 10px;
+    justify-content: space-around;
+    cursor: pointer;
+
+    .sort-keys {
+      min-width: 40px;
     }
+  }
 
-    .active {
-        border: 1px solid #fff;
+  .level-button {
+    width: 35px;
+    height: 12px;
+
+    &-all {
+      width: 30px;
     }
+  }
 
-    li {
-        @include shadow1;
-        padding: 10px;
-        color: $cream-white;
-        border-radius: 15px;
-        background-color: $space-cadet-light;
-        margin-right: 15px;
-        list-style: none;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        cursor: pointer;
-
-        .sort-keys {
-            min-width: 40px;
-        }
-    }
-
-    .level-button {
-        width: 35px;
-        height: 12px;
-
-        &-all {
-            width: 30px;
-        }
-    }
-
-    .selector {
-        font-size: 20px;
-        margin-right: 5px;
-    }
+  .selector {
+    font-size: 20px;
+    margin-right: 5px;
+  }
 }
 #browse-view {
-    min-height: calc(100vh - $header-height - 110px);
-    margin: 65px 110px;
+  min-height: calc(100vh - $header-height - 110px);
+  margin: 65px 110px;
 }
 
 #browse-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  .card {
+    @include shadow1;
+    background-color: $space-cadet-light;
+    color: $cream-white;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    flex-direction: column;
+    padding: 3%;
+    margin-right: 2%;
+    margin-top: 2%;
+    max-width: 250px;
+    border-radius: 20px;
+    cursor: pointer;
 
-    .card {
-        @include shadow1;
-        background-color: $space-cadet-light;
-        color: $cream-white;
-        display: flex;
-        flex-direction: column;
-        padding: 3%;
-        margin-right: 2%;
-        margin-top: 2%;
-        max-width: 250px;
-        border-radius: 20px;
-        cursor: pointer;
-
-        i {
-            font-size: 0.8em;
-        }
-
-        p {
-            padding-left: 5px;
-        }
-
+    i {
+      font-size: 0.8em;
     }
 
+    p {
+      padding-left: 5px;
+    }
+  }
 }

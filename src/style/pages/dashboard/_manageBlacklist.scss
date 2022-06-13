@@ -1,195 +1,188 @@
-
 .users {
-    width: 100%;
-    height: 100%;
-    overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
 
-    .user:hover {
-        transition: 00.1s;
-        width: 98%;
-        padding-left: 1%;
-        padding-right: 1%;
+  .user:hover {
+    transition: 00.1s;
+    width: 98%;
+    padding-left: 1%;
+    padding-right: 1%;
 
-        background-color: $space-cadet;
-        height: 7%;
-        display: flex;
-        align-items: center;
-        border-bottom:2px solid #435174;
+    background-color: $space-cadet;
+    height: 7%;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #435174;
 
-        p {
-            font-size: medium;
-        }
-
-        .actions {
-            width: 98%;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-
-            .admin {
-                margin-right: 5%;
-    
-                button {
-                    border: none;
-                    background-color: #ffffff00;
-                    border-radius: 5px;
-                    transition: 00.5s;
-                    color: aliceblue;
-                    padding: 10%;
-                    width:150%;
-
-                    span {
-                        font-size: 35px;
-                    }
-
-                }
-
-                button:hover {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button::after {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button:active {
-                    transition: 00.3s;
-                    background-color: $mandarin;
-                }
-                
-                
-            }
-
-            .quote {
-                margin-right: 5%;
-    
-                button {
-                    border: none;
-                    background-color: #ffffff00;
-                    border-radius: 5px;
-                    color: aliceblue;
-                    padding: 10%;
-
-                    span {
-                        font-size: 35px;
-                    }
-
-                }
-
-                button:hover {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button::after {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button:active {
-                    transition: 00.3s;
-                    background-color: $mandarin;
-                }
-            }
-
-            .modify {
-                margin-right: 5%;
-    
-                button {
-                    border: none;
-                    background-color: #ffffff00;
-                    border-radius: 5px;
-                    color: aliceblue;
-                    padding: 10%;
-
-                    span {
-                        font-size: 35px;
-                    }
-
-                }
-
-                button:hover {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button::after {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button:active {
-                    transition: 00.3s;
-                    background-color: $mandarin;
-                }
-            }
-
-            .suppr {
-                margin-right: 5%;
-    
-                button {
-                    border: none;
-                    background-color: #ffffff00;
-                    border-radius: 5px;
-                    color: aliceblue;
-                    padding: 10%;
-
-                    span {
-                        font-size: 35px;
-                    }
-
-                }
-
-                button:hover {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button::after {
-                    transition: 00.3s;
-                    background-color: $cerulean-frost;
-                }
-
-                button:active {
-                    transition: 00.3s;
-                    background-color: $mandarin;
-                }
-            }
-        }
+    p {
+      font-size: medium;
     }
 
-    .user::after {
-        transition: 00.1s;
-    }
+    .actions {
+      width: 98%;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
 
-    .user:not(:hover) {
-        width: 98%;
-        padding-left: 1%;
-        padding-right: 1%;
+      .admin {
+        margin-right: 5%;
 
-        display: flex;
-        align-items: center;
-        border-bottom:2px solid #435174;
-        height: 7%;
+        button {
+          border: none;
+          background-color: #ffffff00;
+          border-radius: 5px;
+          transition: 00.5s;
+          color: aliceblue;
+          padding: 10%;
+          width: 150%;
 
-        p {
-            font-size: small;
-            margin-left: 0%;
+          span {
+            font-size: 35px;
+          }
         }
 
-        .actions {
-            width: 0%;
-
-            span {
-                font-size: 0px;
-                color: aliceblue;
-            }
-            button {
-                background-color: #43517400;
-                border: none;
-            }
+        button:hover {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
         }
+
+        button::after {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button:active {
+          transition: 00.3s;
+          background-color: $mandarin;
+        }
+      }
+
+      .quote {
+        margin-right: 5%;
+
+        button {
+          border: none;
+          background-color: #ffffff00;
+          border-radius: 5px;
+          color: aliceblue;
+          padding: 10%;
+
+          span {
+            font-size: 35px;
+          }
+        }
+
+        button:hover {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button::after {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button:active {
+          transition: 00.3s;
+          background-color: $mandarin;
+        }
+      }
+
+      .modify {
+        margin-right: 5%;
+
+        button {
+          border: none;
+          background-color: #ffffff00;
+          border-radius: 5px;
+          color: aliceblue;
+          padding: 10%;
+
+          span {
+            font-size: 35px;
+          }
+        }
+
+        button:hover {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button::after {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button:active {
+          transition: 00.3s;
+          background-color: $mandarin;
+        }
+      }
+
+      .suppr {
+        margin-right: 5%;
+
+        button {
+          border: none;
+          background-color: #ffffff00;
+          border-radius: 5px;
+          color: aliceblue;
+          padding: 10%;
+
+          span {
+            font-size: 35px;
+          }
+        }
+
+        button:hover {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button::after {
+          transition: 00.3s;
+          background-color: $cerulean-frost;
+        }
+
+        button:active {
+          transition: 00.3s;
+          background-color: $mandarin;
+        }
+      }
     }
+  }
+
+  .user::after {
+    transition: 00.1s;
+  }
+
+  .user:not(:hover) {
+    width: 98%;
+    padding-left: 1%;
+    padding-right: 1%;
+
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #435174;
+    height: 7%;
+
+    p {
+      font-size: small;
+      margin-left: 0%;
+    }
+
+    .actions {
+      width: 0%;
+
+      span {
+        font-size: 0px;
+        color: aliceblue;
+      }
+      button {
+        background-color: #43517400;
+        border: none;
+      }
+    }
+  }
 }
