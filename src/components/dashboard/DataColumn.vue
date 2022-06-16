@@ -66,7 +66,7 @@ const props = defineProps([
   'title',
   'list',
   'add-button-message',
-  'to-text',
+  'toText',
   'to-key',
 ])
 

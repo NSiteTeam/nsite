@@ -41,11 +41,7 @@ const sortedData = computed(() => {
   switch (selectedSortType.value) {
     case sortTypes.HIGHEST_ROLE:
       return users.value.sort((a, b) => {
-        return (
-          sortOrder.value *
-          (Math.max(...b.roles.map((role: any) => Number(role))) -
-            Math.max(...a.roles.map((role: any) => Number(role))))
-        )
+        return sortOrder.value * (getMaxPermition(b) - getMaxPermition(a))
       })
     case sortTypes.UUID:
       return users.value.sort((a, b) => {
@@ -55,11 +51,21 @@ const sortedData = computed(() => {
       return users.value.sort((a, b) => {
         return sortOrder.value * b.username.localeCompare(a.username)
       })
+    default:
+      throw `Unknown permission : ${selectedSortType.value}`
   }
 })
 
 function reverseSort() {
   sortOrder.value *= -1
+}
+
+function getMaxPermition(user: any) {
+  if (user.roles) {
+    return Math.max(...user.roles?.map((role: any) => Number(role)))
+  } else {
+    return -1
+  }
 }
 
 function changeSortType(newSortType: sortTypes) {
@@ -134,11 +140,7 @@ function getPermissionFromId(permissionId: number): string {
           {{ user.user }}
         </div>
         <div class="cell">
-          {{
-            getPermissionFromId(
-              Math.max(...user.roles.map((role) => Number(role))),
-            )
-          }}
+          {{ getPermissionFromId(getMaxPermition(user)) }}
         </div>
       </div>
       <div class="footer">

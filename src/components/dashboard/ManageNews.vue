@@ -7,7 +7,7 @@
     title="Actualités"
     add-button-message="Ajouter une actualité"
     :list="news"
-    :to-text="newsToText"
+    :toText="newsToText"
     :to-key="newsToKey"
   >
     <template v-slot="slotProps">

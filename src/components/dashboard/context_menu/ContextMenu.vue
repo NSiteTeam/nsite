@@ -15,14 +15,16 @@ import type { Ref } from 'vue'
 const menuContainer: Ref<HTMLElement | null> = ref(null)
 const menuShown = ref(false)
 
-watch(menuContainer, (container: HTMLElement) => {
-  if (container == null) {
-    return
-  }
+if (menuContainer.value != null) {
+  watch(menuContainer.value, (container: HTMLElement) => {
+    if (container == null) {
+      return
+    }
 
-  document.addEventListener('contextmenu', onContextMenu)
-  document.addEventListener('click', () => (menuShown.value = false))
-})
+    document.addEventListener('contextmenu', onContextMenu)
+    document.addEventListener('click', () => (menuShown.value = false))
+  })
+}
 
 function onContextMenu(event: MouseEvent) {
   const parentRect =

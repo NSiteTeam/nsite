@@ -7,7 +7,7 @@
     title="Points d'histoire"
     add-button-message="Nouveau point d'histoire"
     :list="historyPoint"
-    :to-text="historyPointToText"
+    :toText="historyPointToText"
     :to-key="historyPointToKey"
   >
     <template v-slot="slotProps">
@@ -67,7 +67,6 @@
 <script setup lang="ts">
 import DataColumn from '@/components/dashboard/DataColumn.vue'
 import { databaseClient } from '@/database/implementation'
-import type { HistoryPoint } from '@/database/interface/historyPoint'
 import { DataSection } from '@/utils/data_section'
 import { computed, ref } from 'vue'
 import type { Ref } from 'vue'
@@ -78,7 +77,7 @@ import { Level } from '@/database/interface/level'
 import { LongDate } from '@/utils/long_date'
 import { MessageType } from '@/utils/message_type'
 
-const selectedHistoryPoint: Ref<HistoryPoint | null> = ref(null)
+const selectedHistoryPoint: Ref<any> = ref(null)
 
 const message = ref('')
 const messageClass = ref(MessageType.INDICATION)
@@ -98,19 +97,19 @@ async function addHistoryPoint() {
   }
 }
 
-function selectHistoryPoint(historyPoint: HistoryPoint) {
+function selectHistoryPoint(historyPoint: any) {
   selectedHistoryPoint.value = historyPoint
 }
 
-function switchVisibilityOfHistoryPoint(historyPoint: HistoryPoint) {
+function switchVisibilityOfHistoryPoint(historyPoint: any) {
   databaseClient.switchVisibilityOfHistoryPoint(historyPoint)
 }
 
-function historyPointToText(historyPoint: HistoryPoint) {
+function historyPointToText(historyPoint: any) {
   return historyPoint.title
 }
 
-function historyPointToKey(historyPoint: HistoryPoint) {
+function historyPointToKey(historyPoint: any) {
   return historyPoint
 }
 
@@ -137,7 +136,7 @@ async function saveHistoryPoint(event: MouseEvent) {
   setTimeout(() => (message.value = ''), 2000)
 }
 
-function deleteHistoryPoint(historyPoint: HistoryPoint) {
+function deleteHistoryPoint(historyPoint: any) {
   if (confirm("Etes-vous sûr de vouloir supprimer ce point d'histoire ?")) {
     databaseClient.deleteHistoryPoint(historyPoint)
     selectedHistoryPoint.value = null

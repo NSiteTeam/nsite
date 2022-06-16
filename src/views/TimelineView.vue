@@ -2,7 +2,6 @@
 import { databaseClient } from '@/database/implementation'
 import type { HistoryPoint } from '@/database/interface/history_point'
 import { LongDate } from '../utils/long_date'
-import type date from '../utils/interface/date'
 import { timestampToFrenchDate } from '@/utils/date'
 import { computed, ref } from 'vue'
 import type { Ref } from 'vue'

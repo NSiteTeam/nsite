@@ -236,7 +236,7 @@ watch(successFiles, async () => {
     title="Vos depôts de ressources"
     add-button-message="Créer un dépôt de ressources"
     :list="deposits"
-    :to-text="depositToText"
+    :toText="depositToText"
     :to-key="depositToKey"
   />
 

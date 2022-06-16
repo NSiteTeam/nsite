@@ -6,7 +6,6 @@ import { databaseClient } from '@/database/implementation'
 import { LongDate } from '@/utils/long_date'
 // @ts-ignore bug de vue
 import ChatMessage from '@/components/ChatMessage.vue'
-import type { Username } from '@/database/interface/username'
 
 interface EditModeState {
   messageId: number

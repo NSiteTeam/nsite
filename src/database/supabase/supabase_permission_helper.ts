@@ -4,13 +4,13 @@ export class SupabasePermissionHelper {
   static permissionFromId(id: number): Permission {
     switch (id) {
       case 0:
-        return Permission.TEACHER
+        return Permission.STUDENT
       case 1:
-        return Permission.HISTORY_ADMIN
+        return Permission.TEACHER
       case 2:
-        return Permission.NEWS_ADMIN
+        return Permission.HISTORY_ADMIN
       case 3:
-        return Permission.LEVEL_ADMIN
+        return Permission.NEWS_ADMIN
       case 4:
         return Permission.GLOBAL_ADMIN
       default:

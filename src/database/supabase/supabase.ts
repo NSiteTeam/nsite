@@ -89,10 +89,13 @@ export class SupabaseClient implements DatabaseClient {
     password: string,
     username: string,
   ): Promise<any> {
-    
+
     if (username.length < 3) return {
       accountCreated: false, 
-      error: "Nom d'utilisateur trop court"
+      error: {
+        status: 400,
+        message: "Nom d'utilisateur trop court"
+      }
     }
     console.log('Try to sign in with email: ', email)
 
