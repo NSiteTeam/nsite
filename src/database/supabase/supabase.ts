@@ -1051,9 +1051,10 @@ export class SupabaseClient implements DatabaseClient {
     })
   }
 
-  async getAllUsers(): Promise<any> {
-    const { data, error } = await supabase.from('profiles').select('*')
-
+  async getAllUsers(quantity?: number): Promise<any> {
+    const { data, error } = quantity ? await supabase.from('profiles').select('*', { count: "exact" })
+    .range(0, quantity - 1) : await supabase.from('profiles').select('*')
+    
     return new Promise((resolve, reject) => {
       if (error == null && data != null) {
         resolve(data)

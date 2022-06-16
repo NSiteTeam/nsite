@@ -12,6 +12,7 @@ import ManageUsers from '@/components/dashboard/ManageUsers.vue'
 import Blacklist from '@/components/dashboard/Blacklist.vue'
 import ManageNews from '@/components/dashboard/ManageNews.vue'
 import ManageHistoryPoints from '@/components/dashboard/ManageHistoryPoints.vue'
+import NothingAdviable from '@/components/dashboard/NothingAdviable.vue'
 import router from '@/router'
 import WorkInProgress from '@/components/dashboard/WorkInProgress.vue'
 
@@ -25,6 +26,9 @@ const availableViewsForUser = computed(() => {
 
   for (let permission of permissions) {
     switch (permission) {
+      case Permission.STUDENT:
+        console.log('hi')
+        result.push(View.FORBIDDEN)
       case Permission.TEACHER:
         result.push(View.DEPOSITS)
         result.push(View.BLACKLIST)
@@ -34,9 +38,6 @@ const availableViewsForUser = computed(() => {
         break
       case Permission.NEWS_ADMIN:
         result.push(View.NEWS)
-        break
-      case Permission.LEVEL_ADMIN:
-        result.push(View.THEMES)
         break
       case Permission.GLOBAL_ADMIN:
         result.push(View.TEACHERS)
@@ -58,7 +59,7 @@ const component = computed(() => {
   if (view == null) {
     if (availableViewsForUser.value.length > 0) {
       console.log(
-        'Switched vue to "' + availableViewsForUser.value[0].name + '"',
+        'Switched view to "' + availableViewsForUser.value[0].name + '"',
       )
       router.push('/dashboard/' + availableViewsForUser.value[0].nameInURL)
       return availableViewsForUser.value[0].component
@@ -103,9 +104,7 @@ class View {
       }
     }
 
-    console.log('Unknown view of name', name)
-
-    return null
+    return this.FORBIDDEN
   }
 
   static DEPOSITS = new View(
@@ -144,6 +143,12 @@ class View {
     'blacklist',
     'receipt_long',
     Blacklist,
+  )
+  static FORBIDDEN = new View(
+    'Passez votre chemin',
+    'access_denied',
+    'dangerous',
+    NothingAdviable,
   )
 }
 </script>

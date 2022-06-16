@@ -32,7 +32,7 @@
           v-if="hasAccessToDashboard"
           to="/dashboard"
           class="navbar-link"
-          ><span>Gestion des élèves</span></RouterLink
+          ><span>Gestion du site</span></RouterLink
         >
         <RouterLink to="/profile" class="navbar-link">
           <ProfilePicture v-if="connected" size="32px" />

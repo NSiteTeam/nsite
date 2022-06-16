@@ -36,6 +36,7 @@
     .row {
       height: 50px;
       display: table-row;
+      cursor: pointer;
 
       &:nth-child(even) {
         background-color: $space-cadet-mid-light;

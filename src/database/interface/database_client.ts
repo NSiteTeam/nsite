@@ -19,7 +19,7 @@ export interface DatabaseClient {
   login(email: string, password: string): any
   getUsername(uuid: string): Promise<string>
   logout(): Promise<boolean>
-  getAllUsers(): Promise<any>
+  getAllUsers(quantity?: number): Promise<any>
 
   // Deposits
   uploadFileToDeposit(
