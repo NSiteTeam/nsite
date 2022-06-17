@@ -241,7 +241,6 @@
   version "2.3.3"
   resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-2.3.3.tgz"
 
-<<<<<<< HEAD
 "@volar/code-gen@0.37.9":
   version "0.37.9"
   resolved "https://registry.yarnpkg.com/@volar/code-gen/-/code-gen-0.37.9.tgz#e54d6de86574f2bb03d6cce33cb586f806747fea"
@@ -275,128 +274,22 @@
 "@vue/compiler-core@3.2.37", "@vue/compiler-core@^3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.2.37.tgz#b3c42e04c0e0f2c496ff1784e543fbefe91e215a"
-=======
-"@volar/code-gen@0.34.17":
-  "integrity" "sha512-rHR7BA71BJ/4S7xUOPMPiB7uk6iU9oTWpEMZxFi5VGC9iJmDncE82WzU5iYpcbOBCVHsOjMh0+5CGMgdO6SaPA=="
-  "resolved" "https://registry.npmjs.org/@volar/code-gen/-/code-gen-0.34.17.tgz"
-  "version" "0.34.17"
-  dependencies:
-    "@volar/source-map" "0.34.17"
-
-"@volar/source-map@0.34.17":
-  "integrity" "sha512-3yn1IMXJGGWB/G817/VFlFMi8oh5pmE7VzUqvgMZMrppaZpKj6/juvJIEiXNxRsgWc0RxIO8OSp4htdPUg1Raw=="
-  "resolved" "https://registry.npmjs.org/@volar/source-map/-/source-map-0.34.17.tgz"
-  "version" "0.34.17"
-
-"@volar/vue-code-gen@0.34.17":
-  "integrity" "sha512-17pzcK29fyFWUc+C82J3JYSnA+jy3QNrIldb9kPaP9Itbik05ZjEIyEue9FjhgIAuHeYSn4LDM5s6nGjxyfhsQ=="
-  "resolved" "https://registry.npmjs.org/@volar/vue-code-gen/-/vue-code-gen-0.34.17.tgz"
-  "version" "0.34.17"
-  dependencies:
-    "@volar/code-gen" "0.34.17"
-    "@volar/source-map" "0.34.17"
-    "@vue/compiler-core" "^3.2.36"
-    "@vue/compiler-dom" "^3.2.36"
-    "@vue/shared" "^3.2.36"
-
-"@volar/vue-typescript@0.34.17":
-  "integrity" "sha512-U0YSVIBPRWVPmgJHNa4nrfq88+oS+tmyZNxmnfajIw9A/GOGZQiKXHC0k09SVvbYXlsjgJ6NIjhm9NuAhGRQjg=="
-  "resolved" "https://registry.npmjs.org/@volar/vue-typescript/-/vue-typescript-0.34.17.tgz"
-  "version" "0.34.17"
-  dependencies:
-    "@volar/code-gen" "0.34.17"
-    "@volar/source-map" "0.34.17"
-    "@volar/vue-code-gen" "0.34.17"
-    "@vue/compiler-sfc" "^3.2.36"
-    "@vue/reactivity" "^3.2.36"
-
-"@vue/compiler-core@^3.2.36", "@vue/compiler-core@3.2.37":
-  "integrity" "sha512-81KhEjo7YAOh0vQJoSmAD68wLfYqJvoiD4ulyedzF+OEk/bk6/hx3fTNVfuzugIIaTrOx4PGx6pAiBRe5e9Zmg=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.2.37.tgz"
-  "version" "3.2.37"
-  dependencies:
-    "@babel/parser" "^7.16.4"
-    "@vue/shared" "3.2.37"
-    "estree-walker" "^2.0.2"
-    "source-map" "^0.6.1"
-
-"@vue/compiler-core@3.2.33":
-  "resolved" "https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.2.33.tgz"
-  "version" "3.2.33"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
   dependencies:
     "@babel/parser" "^7.16.4"
     "@vue/shared" "3.2.37"
     estree-walker "^2.0.2"
     source-map "^0.6.1"
 
-<<<<<<< HEAD
 "@vue/compiler-dom@3.2.37", "@vue/compiler-dom@^3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/compiler-dom/-/compiler-dom-3.2.37.tgz#10d2427a789e7c707c872da9d678c82a0c6582b5"
-=======
-"@vue/compiler-dom@^3.2.36":
-  "integrity" "sha512-yxJLH167fucHKxaqXpYk7x8z7mMEnXOw3G2q62FTkmsvNxu4FQSu5+3UMb+L7fjKa26DEzhrmCxAgFLLIzVfqQ=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.2.37.tgz"
-  "version" "3.2.37"
   dependencies:
     "@vue/compiler-core" "3.2.37"
     "@vue/shared" "3.2.37"
 
-"@vue/compiler-dom@3.2.33":
-  "resolved" "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.2.33.tgz"
-  "version" "3.2.33"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
-  dependencies:
-    "@vue/compiler-core" "3.2.37"
-    "@vue/shared" "3.2.37"
-
-<<<<<<< HEAD
 "@vue/compiler-sfc@3.2.37", "@vue/compiler-sfc@^3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.37.tgz#3103af3da2f40286edcd85ea495dcb35bc7f5ff4"
-=======
-"@vue/compiler-dom@3.2.37":
-  "integrity" "sha512-yxJLH167fucHKxaqXpYk7x8z7mMEnXOw3G2q62FTkmsvNxu4FQSu5+3UMb+L7fjKa26DEzhrmCxAgFLLIzVfqQ=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.2.37.tgz"
-  "version" "3.2.37"
-  dependencies:
-    "@vue/compiler-core" "3.2.37"
-    "@vue/shared" "3.2.37"
-
-"@vue/compiler-sfc@^3.2.36":
-  "integrity" "sha512-+7i/2+9LYlpqDv+KTtWhOZH+pa8/HnX/905MdVmAcI/mPQOBwkHHIzrsEsucyOIZQYMkXUiTkmZq5am/NyXKkg=="
-  "resolved" "https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.2.37.tgz"
-  "version" "3.2.37"
-  dependencies:
-    "@babel/parser" "^7.16.4"
-    "@vue/compiler-core" "3.2.37"
-    "@vue/compiler-dom" "3.2.37"
-    "@vue/compiler-ssr" "3.2.37"
-    "@vue/reactivity-transform" "3.2.37"
-    "@vue/shared" "3.2.37"
-    "estree-walker" "^2.0.2"
-    "magic-string" "^0.25.7"
-    "postcss" "^8.1.10"
-    "source-map" "^0.6.1"
-
-"@vue/compiler-sfc@3.2.33":
-  "resolved" "https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.2.33.tgz"
-  "version" "3.2.33"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
-  dependencies:
-    "@babel/parser" "^7.16.4"
-    "@vue/compiler-core" "3.2.37"
-    "@vue/compiler-dom" "3.2.37"
-    "@vue/compiler-ssr" "3.2.37"
-    "@vue/reactivity-transform" "3.2.37"
-    "@vue/shared" "3.2.37"
-    estree-walker "^2.0.2"
-    magic-string "^0.25.7"
-    postcss "^8.1.10"
-    source-map "^0.6.1"
-
-"@vue/compiler-ssr@3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/compiler-ssr/-/compiler-ssr-3.2.37.tgz#4899d19f3a5fafd61524a9d1aee8eb0505313cff"
   dependencies:
@@ -440,33 +333,9 @@
     estree-walker "^2.0.2"
     magic-string "^0.25.7"
 
-<<<<<<< HEAD
 "@vue/reactivity@3.2.37", "@vue/reactivity@^3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.2.37.tgz#5bc3847ac58828e2b78526e08219e0a1089f8848"
-=======
-"@vue/reactivity-transform@3.2.37":
-  "integrity" "sha512-IWopkKEb+8qpu/1eMKVeXrK0NLw9HicGviJzhJDEyfxTR9e1WtpnnbYkJWurX6WwoFP0sz10xQg8yL8lgskAZg=="
-  "resolved" "https://registry.npmjs.org/@vue/reactivity-transform/-/reactivity-transform-3.2.37.tgz"
-  "version" "3.2.37"
-  dependencies:
-    "@babel/parser" "^7.16.4"
-    "@vue/compiler-core" "3.2.37"
-    "@vue/shared" "3.2.37"
-    "estree-walker" "^2.0.2"
-    "magic-string" "^0.25.7"
-
-"@vue/reactivity@^3.2.36":
-  "integrity" "sha512-/7WRafBOshOc6m3F7plwzPeCu/RCVv9uMpOwa/5PiY1Zz+WLVRWiy0MYKwmg19KBdGtFWsmZ4cD+LOdVPcs52A=="
-  "resolved" "https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.2.37.tgz"
-  "version" "3.2.37"
-  dependencies:
-    "@vue/shared" "3.2.37"
-
-"@vue/reactivity@3.2.33":
-  "resolved" "https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.2.33.tgz"
-  "version" "3.2.33"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
   dependencies:
     "@vue/shared" "3.2.37"
 
@@ -492,20 +361,9 @@
     "@vue/compiler-ssr" "3.2.37"
     "@vue/shared" "3.2.37"
 
-<<<<<<< HEAD
 "@vue/shared@3.2.37", "@vue/shared@^3.2.37":
   version "3.2.37"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.2.37.tgz#8e6adc3f2759af52f0e85863dfb0b711ecc5c702"
-=======
-"@vue/shared@^3.2.36", "@vue/shared@3.2.37":
-  "integrity" "sha512-4rSJemR2NQIo9Klm1vabqWjD8rs/ZaJSzMxkMNeJS6lHiUjjUeYFbooN19NgFjztubEKh3WlZUeOLVdbbUWHsw=="
-  "resolved" "https://registry.npmjs.org/@vue/shared/-/shared-3.2.37.tgz"
-  "version" "3.2.37"
-
-"@vue/shared@3.2.33":
-  "resolved" "https://registry.npmjs.org/@vue/shared/-/shared-3.2.33.tgz"
-  "version" "3.2.33"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
 
 "@vue/tsconfig@^0.1.3":
   version "0.1.3"
@@ -1049,7 +907,6 @@ esbuild@^0.14.27:
   version "0.14.34"
   resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.14.34.tgz"
   optionalDependencies:
-<<<<<<< HEAD
     esbuild-android-64 "0.14.34"
     esbuild-android-arm64 "0.14.34"
     esbuild-darwin-64 "0.14.34"
@@ -1070,27 +927,6 @@ esbuild@^0.14.27:
     esbuild-windows-32 "0.14.34"
     esbuild-windows-64 "0.14.34"
     esbuild-windows-arm64 "0.14.34"
-=======
-    "esbuild-android-arm64" "0.14.34"
-    "esbuild-darwin-64" "0.14.34"
-    "esbuild-darwin-arm64" "0.14.34"
-    "esbuild-freebsd-64" "0.14.34"
-    "esbuild-freebsd-arm64" "0.14.34"
-    "esbuild-linux-32" "0.14.34"
-    "esbuild-linux-64" "0.14.34"
-    "esbuild-linux-arm" "0.14.34"
-    "esbuild-linux-arm64" "0.14.34"
-    "esbuild-linux-mips64le" "0.14.34"
-    "esbuild-linux-ppc64le" "0.14.34"
-    "esbuild-linux-riscv64" "0.14.34"
-    "esbuild-linux-s390x" "0.14.34"
-    "esbuild-netbsd-64" "0.14.34"
-    "esbuild-openbsd-64" "0.14.34"
-    "esbuild-sunos-64" "0.14.34"
-    "esbuild-windows-32" "0.14.34"
-    "esbuild-windows-64" "0.14.34"
-    "esbuild-windows-arm64" "0.14.34"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
 
 escalade@^3.1.1:
   version "3.1.1"
@@ -2713,20 +2549,11 @@ vue-router@^4.0.16:
   dependencies:
     "@vue/devtools-api" "^6.0.0"
 
-<<<<<<< HEAD
 vue-tsc@^0.37.9:
   version "0.37.9"
   resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.37.9.tgz#c79b6e6915a6be234ef323cdbefed25b31f68398"
   dependencies:
     "@volar/vue-typescript" "0.37.9"
-=======
-"vue-tsc@^0.34.17":
-  "integrity" "sha512-jzUXky44ZLHC4daaJag7FQr3idlPYN719/K1eObGljz5KaS2UnVGTU/XSYCd7d6ampYYg4OsyalbHyJIxV0aEQ=="
-  "resolved" "https://registry.npmjs.org/vue-tsc/-/vue-tsc-0.34.17.tgz"
-  "version" "0.34.17"
-  dependencies:
-    "@volar/vue-typescript" "0.34.17"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
 
 vue-window-size@^1.1.2:
   version "1.1.2"
