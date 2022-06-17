@@ -1,56 +1,55 @@
 #manage-deposit {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .files-details {
-    max-height: 100%;
-    overflow: scroll;
+  max-height: 100%;
+  overflow: scroll;
 }
 
 .files-actions {
-    flex-direction: row;
+  flex-direction: row;
+  display: flex;
+  padding: 10px 10px 10px 10px;
+  border-bottom: 1px solid gray;
+
+  .files-action {
+    background: transparent;
+    border: none;
+    color: white;
+    background-color: $space-cadet-dark;
+    margin: 5px 0 0 5px;
+    padding: 5px;
+    border-radius: 5px;
     display: flex;
-    padding: 10px 10px 10px 10px;
-    border-bottom: 1px solid gray;
+    align-items: center;
+    cursor: pointer;
 
-    .files-action {
-        background: transparent;
-        border: none;
-        color: white;
-        background-color: $space-cadet-dark;
-        margin: 5px 0 0 5px;
-        padding: 5px;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
+    .label {
+      font-weight: bold;
 
-        .label {
-            font-weight: bold;
-            
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-
-        &:hover {
-
-            & > .material-icons {
-                transition: 0.2s;
-            }
-
-            & > .plus {
-                color: hsl(120, 100%, 60%);
-            }
-
-            & > .bin {
-                color: hsl(0, 98%, 60%);
-            }
-
-            & > .pen {
-                color: hsl(207, 98%, 60%);
-            }
-        }
+      &:hover {
+        text-decoration: underline;
+      }
     }
+
+    &:hover {
+      & > .material-icons {
+        transition: 0.2s;
+      }
+
+      & > .plus {
+        color: hsl(120, 100%, 60%);
+      }
+
+      & > .bin {
+        color: hsl(0, 98%, 60%);
+      }
+
+      & > .pen {
+        color: hsl(207, 98%, 60%);
+      }
+    }
+  }
 }

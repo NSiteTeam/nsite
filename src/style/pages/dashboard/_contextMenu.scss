@@ -1,43 +1,48 @@
 .context-menu-container {
-    position: fixed;
+  position: fixed;
 
-    z-index: 1000;
+  z-index: 1000;
 
-    height: max-content;
-    width: 12rem;
+  height: max-content;
+  width: 12rem;
 
-    background-color: #414d6c;
-    @include shadow2();
+  background-color: #414d6c;
+  @include shadow2();
 
-    user-select: none;
+  user-select: none;
 
-    transform-origin: 0 0;
-    transform: scale(0);
-    &.visible {
-        transition: transform 0.2s;
-        transform: scale(1);
+  transform-origin: 0 0;
+  transform: scale(0);
+  &.visible {
+      transition: transform 0.2s;
+      transform: scale(1);
+  }
+
+  .context-menu-element {
+      display: flex;
+      padding: 8px 12px;
+  }
+
+  .context-menu-element {
+    display: flex;
+    padding: 8px 12px;
+
+    .context-menu-element-icon {
+      margin-right: 16px;
     }
 
-    .context-menu-element {
-        display: flex;
-        padding: 8px 12px;
-
-        .context-menu-element-icon {
-            margin-right: 16px;
-        }
-
-        &:hover {
-            background-color: #4b5b818d;
-        }
-
-        &:active {
-            background-color: #4b5b81;
-        }
+    &:hover {
+      background-color: #4b5b818d;
     }
 
-    .context-menu-separator {
-        height: 1px;
-        background-color: white;
-        margin: 2px 8px;
+    &:active {
+      background-color: #4b5b81;
     }
+  }
+
+  .context-menu-separator {
+    height: 1px;
+    background-color: white;
+    margin: 2px 8px;
+  }
 }

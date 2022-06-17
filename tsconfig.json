@@ -4,7 +4,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     },
     // alignement avec le support navigateur de Vue
     "target": "es2017",
@@ -24,5 +24,5 @@
     {
       "path": "./tsconfig.vite-config.json"
     }
-  ],
+  ]
 }

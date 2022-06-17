@@ -1,10 +1,10 @@
-import type { Permission } from "./permissions"
+import type { Permission } from './permissions'
 
 export interface User {
-    email: email
-    username: username
-    uuid: uuid
-    permissions: Permission[]
+  email: email
+  username: username
+  uuid: uuid
+  permissions: Permission[]
 }
 
 export type username = string

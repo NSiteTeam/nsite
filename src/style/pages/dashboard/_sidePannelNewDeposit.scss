@@ -1,116 +1,116 @@
 .side-pannel-new-depo {
-    @include shadow1;
-    position: fixed;
-    z-index: 40;
-    right: 0;
-    top: 0;
-    width: 50vw;
-    min-width: 400px;
-    max-width: 95%;
-    height: 100vh;
-    background-color: $space-cadet-mid;
-    animation: 3s linear 1s slidein;
-    
-    &-title {
+  @include shadow1;
+  position: fixed;
+  z-index: 40;
+  right: 0;
+  top: 0;
+  width: 50vw;
+  min-width: 400px;
+  max-width: 95%;
+  height: 100vh;
+  background-color: $space-cadet-mid;
+  animation: 3s linear 1s slidein;
+
+  &-title {
+    padding: 10px;
+    display: flex;
+    margin: 0;
+    align-items: center;
+    border-bottom: 1px solid #6d9dc56b;
+
+    &-cross {
+      display: block;
+      margin: 10px;
+    }
+  }
+
+  &-fields {
+    border-bottom: 1px solid #6d9dc56b;
+    padding: 15px 20px 0 20px;
+
+    .side-pannel-new-depo-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+
+      &-label {
+        font-weight: bold;
+      }
+
+      &-input {
+        width: 60%;
         padding: 10px;
-        display: flex;
+      }
+    }
+  }
+
+  &-files {
+    &-header {
+      padding: 15px 20px 0 20px;
+
+      &-title {
         margin: 0;
-        align-items: center;
-        border-bottom: 1px solid #6d9dc56b;
-        
-        &-cross {
-            display: block;
-            margin: 10px;
-        }
-    }
-    
-    &-fields {
-        border-bottom: 1px solid #6d9dc56b;
-        padding: 15px 20px 0 20px;
+        font-size: 14;
+      }
 
-        .side-pannel-new-depo-field {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
-
-            &-label {
-                font-weight: bold;
-            }
-    
-            &-input {
-                width: 60%;
-                padding: 10px;
-            }
-        }
+      &-subtitle {
+        margin: 0;
+        font-size: 12;
+        font-style: italic;
+      }
     }
 
-    &-files {
-        &-header {
-            padding: 15px 20px 0 20px;
-
-            &-title {
-                margin: 0;
-                font-size: 14;
-            }
-
-            &-subtitle {
-                margin: 0;
-                font-size: 12;
-                font-style: italic;
-            }
-        }
-
-        &-menu {
-            margin: 10px;
-        }
+    &-menu {
+      margin: 10px;
     }
-    
-    &-bottom-buttons {
-        border-top: 1px solid #6d9dc56b;
-        position: absolute;
-        display: flex;
-        justify-content: space-between;
-        bottom: 0;
-        width: 100%;
+  }
 
-        button {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            border: none;
-            font-size: 14px;
-        }
+  &-bottom-buttons {
+    border-top: 1px solid #6d9dc56b;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    bottom: 0;
+    width: 100%;
 
-        &-cancel {
-            background-color: hsl(0, 0%, 90%);
-
-            &:hover {
-                transition: 0.3s;
-                background-color: hsl(0, 0%, 100%);
-            }
-        }
-
-        &-submit {
-            background-color: hsl(19, 73%, 58%);
-            color: $cream-white;
-
-            &:hover {
-                transition: 0.3s;
-                background-color: hsl(19, 73%, 62%);
-            }
-        }
+    button {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      border: none;
+      font-size: 14px;
     }
+
+    &-cancel {
+      background-color: hsl(0, 0%, 90%);
+
+      &:hover {
+        transition: 0.3s;
+        background-color: hsl(0, 0%, 100%);
+      }
+    }
+
+    &-submit {
+      background-color: hsl(19, 73%, 58%);
+      color: $cream-white;
+
+      &:hover {
+        transition: 0.3s;
+        background-color: hsl(19, 73%, 62%);
+      }
+    }
+  }
 }
 
 .mask {
-    position: fixed;
-    z-index: 35;
-    right: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5)
+  position: fixed;
+  z-index: 35;
+  right: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
 }

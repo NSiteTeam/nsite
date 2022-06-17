@@ -1,129 +1,129 @@
 .side-pannel-edit-depo {
-    @include shadow1;
-    position: fixed;
-    z-index: 40;
-    right: 0;
-    top: 0;
-    width: 50vw;
-    min-width: 400px;
-    max-width: 95%;
-    height: 100vh;
-    background-color: $space-cadet-mid-light;
-    animation: 3s linear 1s slidein;
+  @include shadow1;
+  position: fixed;
+  z-index: 40;
+  right: 0;
+  top: 0;
+  width: 50vw;
+  min-width: 400px;
+  max-width: 95%;
+  height: 100vh;
+  background-color: $space-cadet-mid-light;
+  animation: 3s linear 1s slidein;
 
-    &-title {
+  &-title {
+    padding: 10px;
+    display: flex;
+    margin: 0;
+    align-items: center;
+    border-bottom: 1px solid #6d9dc56b;
+
+    &-cross {
+      display: block;
+      margin: 10px;
+    }
+  }
+
+  &-fields {
+    border-bottom: 1px solid #6d9dc56b;
+    padding: 15px 20px 0 20px;
+
+    .side-pannel-edit-depo-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+
+      &-label {
+        font-weight: bold;
+      }
+
+      &-input {
+        width: 50%;
         padding: 10px;
+      }
+
+      &-fieldinput-title {
+        font-weight: bold;
+      }
+
+      &-owners {
         display: flex;
-        margin: 0;
         align-items: center;
-        border-bottom: 1px solid #6d9dc56b;
-        
-        &-cross {
-            display: block;
-            margin: 10px;
+
+        .material-icons {
+          margin-left: 10px;
+          background-color: $space-cadet-dark;
+          padding: 5px;
+          border-radius: 10px;
         }
-    }
-    
-    &-fields {
-        border-bottom: 1px solid #6d9dc56b;
-        padding: 15px 20px 0 20px;
-
-        .side-pannel-edit-depo-field {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
-
-            &-label {
-                font-weight: bold;
-            }
-    
-            &-input {
-                width: 50%;
-                padding: 10px;
-            }
-
-            &-fieldinput-title {
-                font-weight: bold;
-            }
-
-            &-owners {
-                display: flex;
-                align-items: center;
-
-                .material-icons {
-                    margin-left: 10px;
-                    background-color: $space-cadet-dark;
-                    padding: 5px;
-                    border-radius: 10px;
-                }
-            }
-        }
-
-        .upload-file {
-            background-color: $space-cadet-mid;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 10px;
-        }
+      }
     }
 
-    &-files {
-        &-header {
-            padding: 15px 20px 0 20px;
-
-            &-title {
-                margin: 0;
-                font-size: 14;
-            }
-
-            &-subtitle {
-                margin: 0;
-                font-size: 12;
-                font-style: italic;
-            }
-        }
-
-        &-menu {
-            margin: 10px;
-        }
+    .upload-file {
+      background-color: $space-cadet-mid;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 10px;
     }
-    
-    &-bottom-buttons {
-        border-top: 1px solid #6d9dc56b;
-        position: absolute;
-        display: flex;
-        justify-content: space-between;
-        bottom: 0;
-        width: 100%;
+  }
 
-        button {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            border: none;
-            font-size: 14px;
-        }
+  &-files {
+    &-header {
+      padding: 15px 20px 0 20px;
 
-        &-cancel {
-            background-color: hsl(0, 0%, 90%);
+      &-title {
+        margin: 0;
+        font-size: 14;
+      }
 
-            &:hover {
-                transition: 0.3s;
-                background-color: hsl(0, 0%, 100%);
-            }
-        }
-
-        &-submit {
-            background-color: hsl(19, 73%, 58%);
-            color: $cream-white;
-
-            &:hover {
-                transition: 0.3s;
-                background-color: hsl(19, 73%, 62%);
-            }
-        }
+      &-subtitle {
+        margin: 0;
+        font-size: 12;
+        font-style: italic;
+      }
     }
+
+    &-menu {
+      margin: 10px;
+    }
+  }
+
+  &-bottom-buttons {
+    border-top: 1px solid #6d9dc56b;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    bottom: 0;
+    width: 100%;
+
+    button {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      border: none;
+      font-size: 14px;
+    }
+
+    &-cancel {
+      background-color: hsl(0, 0%, 90%);
+
+      &:hover {
+        transition: 0.3s;
+        background-color: hsl(0, 0%, 100%);
+      }
+    }
+
+    &-submit {
+      background-color: hsl(19, 73%, 58%);
+      color: $cream-white;
+
+      &:hover {
+        transition: 0.3s;
+        background-color: hsl(19, 73%, 62%);
+      }
+    }
+  }
 }

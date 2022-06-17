@@ -4,37 +4,39 @@
 // ###########################################################################
 
 @mixin shadow1 {
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 @mixin shadow2 {
-    box-shadow: rgba(0, 0, 0, 0.11) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  box-shadow: rgba(0, 0, 0, 0.11) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 @mixin wave($path, $color: transparent) {
-    background-image: url($path);
-    aspect-ratio: 1402/300;
-    width: calc(100% + 110px);
-    margin-left: -110px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-color: $color;
+  background-image: url($path);
+  aspect-ratio: 1402/300;
+  width: calc(100% + 110px);
+  margin-left: -110px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-color: $color;
 }
 
 @mixin size($size: 64px) {
-    font-size: $size;
+  font-size: $size;
 }
 
 @mixin message($color) {
-    position: absolute;
-    z-index: 10000;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: max-content;
-    background: $color;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 10px;
+  position: absolute;
+  z-index: 10000;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  background: $color;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }

@@ -1,36 +1,36 @@
 .files {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  width: 100%;
+
+  .file {
+    border-bottom: 1px solid gray;
+    padding: 10px;
+    min-height: 75px;
+    background-color: $space-cadet-light;
     display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    width: 100%;
-    
-    .file {
-        border-bottom: 1px solid gray;
-        padding: 10px;
-        min-height: 75px;
-        background-color: $space-cadet-light;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    align-items: center;
+    justify-content: space-between;
 
-        &-name {
-            display: flex;
-            align-items: center;
+    &-name {
+      display: flex;
+      align-items: center;
 
-            .icon {
-                margin-right: 5px;
-                padding: 5px;
-                background-color: $space-cadet-dark;
-                border-radius: 5px;
-            }
-        }
-
-        &-message {
-            display: flex;
-
-            &-author {
-                text-decoration: underline;
-            }
-        }
+      .icon {
+        margin-right: 5px;
+        padding: 5px;
+        background-color: $space-cadet-dark;
+        border-radius: 5px;
+      }
     }
+
+    &-message {
+      display: flex;
+
+      &-author {
+        text-decoration: underline;
+      }
+    }
+  }
 }

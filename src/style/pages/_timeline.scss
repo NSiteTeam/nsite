@@ -3,85 +3,87 @@
 // ###########################################################################
 
 .container {
-    margin: 65px 0 0 110px;
-    height: 100vh;
+  margin: 65px 0 0 110px;
+  height: 100vh;
 
-    ul {
-        list-style: none;
+  ul {
+    list-style: none;
+    color: $cream-white;
+    font-size: 13px;
+
+    &:before {
+      content: '';
+      width: 1px;
+      height: 100%;
+      position: absolute;
+      border-left: 2px dashed $cerulean-frost;
+    }
+
+    li {
+      position: relative;
+      margin-left: 30px;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 14px;
+      border-radius: 6px;
+      width: 200px;
+      @include shadow1;
+
+      &:not(:first-child) {
+        margin-top: 60px;
         color: $cream-white;
-        font-size: 13px;
+      }
 
-        &:before {
-            content: '';
-            width: 1px;
-            height: 100%;
-            position: absolute;
-            border-left: 2px dashed $cerulean-frost;
-        }
+      & > span {
+        width: 2px;
+        height: 100%;
+        background: $cerulean-frost;
+        left: -30px;
+        top: 0;
+        position: absolute;
+      }
 
-        li {
-            position: relative;
-            margin-left: 30px ;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 14px;
-            border-radius: 6px;
-            width: 200px;
-            @include shadow1;
+      & > span:before,
+      & > span:after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 2px solid $cerulean-frost;
+        position: absolute;
+        background: $cerulean-frost;
+        left: -5px;
+        top: 0;
+      }
 
-            &:not(:first-child) {
-                margin-top: 60px;
-                color: $cream-white;
-            }
+      span:after {
+        top: 100%;
+      }
+    }
+  }
 
-            & > span {
-                width: 2px;
-                height: 100%;
-                background: $cerulean-frost;
-                left: -30px;
-                top: 0;
-                position: absolute;
-            }
-
-            & > span:before, & > span:after {
-                content: '';
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                border: 2px solid $cerulean-frost;
-                position: absolute;
-                background: $cerulean-frost;
-                left: -5px;
-                top: 0;
-            }
-            
-            span:after {
-                top: 100%;
-            }
-        }
+  div {
+    .title,
+    .type {
+      font-weight: 600;
+      font-size: 12px;
     }
 
-    div {
-        .title, .type {
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .info {
-            font-weight: 300;
-        }
+    .info {
+      font-weight: 300;
     }
+  }
 
-    span.number {
-        span {
-            position: absolute;
-            font-size: 10px;
-            left: -70px;
-            font-weight: bold;
-            margin-right: 10px;
+  span.number {
+    span {
+      position: absolute;
+      font-size: 10px;
+      left: -70px;
+      font-weight: bold;
+      margin-right: 10px;
 
-            &:last-child {
-                top: 100%;
-            }
-        }
+      &:last-child {
+        top: 100%;
+      }
     }
+  }
 }

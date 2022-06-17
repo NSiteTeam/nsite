@@ -1,0 +1,77 @@
+.manage-users {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .manage-users-table {
+    overflow-y: scroll;
+    display: table;
+
+    .header {
+      width: 100%;
+      display: table-header-group;
+
+      .cell {
+        cursor: pointer;
+        padding: 10px;
+        background-color: $space-cadet-dark;
+
+        &:first-child {
+          border-top-left-radius: 10px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 10px;
+        }
+
+        &-content {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .row {
+      height: 50px;
+      display: table-row;
+      cursor: pointer;
+
+      &:nth-child(even) {
+        background-color: $space-cadet-mid-light;
+      }
+
+      &:nth-child(odd) {
+        background-color: $space-cadet;
+      }
+    }
+
+    .cell {
+      vertical-align: middle;
+      border-spacing: 10px;
+      padding: 10px;
+      display: table-cell;
+      width: 350px;
+      overflow: hidden;
+    }
+  }
+
+  .footer {
+    display: table-footer-group;
+    text-align: center;
+    cursor: pointer;
+
+    .cell {
+      background-color: $space-cadet-dark;
+
+      &:first-child {
+        border-radius: 0 0 0 10px;
+      }
+
+      &:last-child {
+        border-radius: 0 0 10px 0;
+      }
+    }
+  }
+}

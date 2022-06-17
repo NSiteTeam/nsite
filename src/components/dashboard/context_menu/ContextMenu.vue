@@ -56,5 +56,4 @@
         menuContainer.value!.style.left = menuX + 'px'
         menuContainer.value!.style.top = menuY + 'px'
     }
-
 </script>
