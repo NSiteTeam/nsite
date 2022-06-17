@@ -30,12 +30,7 @@
     "prettier": "^2.7.1",
     "sass-loader": "^13.0.0",
     "vite": "^2.9.9",
-<<<<<<< HEAD
     "vitest": "^0.15.1",
     "vue-tsc": "^0.37.9"
-=======
-    "vitest": "^0.14.2",
-    "vue-tsc": "^0.34.17"
->>>>>>> ee1f96e ([misc] trying to fix continuous integration)
   }
 }
