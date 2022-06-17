@@ -1,15 +1,20 @@
 <template>
-    <div :class='{ hidden: !menuShown }' ref='menuContainer' class="context-menu-container">
+    <div ref='menuContainer' class="context-menu-container">
         <slot />
     </div>
 </template>
 
 <script lang='ts' setup>
+    /**
+     * We can't use :class and a ref to handle visibility of the menu because its to slow
+     */
+
     import { ref, onMounted, watch } from 'vue'
     import type { Ref } from 'vue'
 
     const menuContainer: Ref<HTMLElement | null> = ref(null)
-    const menuShown = ref(false)
+
+    const props = defineProps(['scope'])
 
     watch(menuContainer, (container: HTMLElement) => {
         if (container == null) {
@@ -17,33 +22,34 @@
         }
 
         document.addEventListener('contextmenu', onContextMenu)
-        document.addEventListener('click', () => menuShown.value = false)
+        document.addEventListener('click', () => menuContainer.value?.classList.remove('visible'))
     })
 
     function onContextMenu(event: MouseEvent) {
-        const parentRect = menuContainer.value?.parentElement?.getBoundingClientRect()!
+        const parentRect =  menuContainer.value?.parentElement?.getBoundingClientRect()!
+        const scopeRect = props['scope'] ? document.querySelector(props['scope']).getBoundingClientRect() : parentRect
+
         let { clientX: menuX, clientY: menuY } = event
 
         if (!parentRect || menuX < parentRect.left || menuX > parentRect.right || menuY < parentRect.top || menuY > parentRect.bottom) {
-            menuShown.value = false
+            menuContainer.value?.classList.remove('visible')
             return
         }
 
         event.preventDefault()
-        menuShown.value = true
+        menuContainer.value?.classList.remove('visible')
+        setTimeout(() => menuContainer.value?.classList.add('visible'))
 
-
-        const menuRect = menuContainer.value?.getBoundingClientRect()!
-
-        if (menuX + menuRect.width > parentRect.right) {
-            if (parentRect.right - menuRect.width >= parentRect.left) {
-                menuX = parentRect.right - menuRect.width
+        const menu = menuContainer.value
+        if (menuX + menu?.clientWidth! > scopeRect.right) {
+            if (scopeRect.right - menu?.clientWidth! >= scopeRect.left) {
+                menuX = scopeRect.right - menu?.clientWidth!
             }
         }
 
-        if (menuY + menuRect.height > parentRect.bottom) {
-            if (parentRect.bottom - menuRect.height >= parentRect.top) {
-                menuY = parentRect.bottom - menuRect.height
+        if (menuY + menu?.clientHeight! > scopeRect.bottom) {
+            if (scopeRect.bottom - menu?.clientHeight! >= scopeRect.top) {
+                menuY = scopeRect.bottom - menu?.clientHeight!
             }
         }
 

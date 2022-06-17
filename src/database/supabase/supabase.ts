@@ -119,6 +119,8 @@ export class SupabaseClient implements DatabaseClient {
         console.log("Trying to sign out")
 
         const { error } = await supabase.auth.signOut()
+        this.updateUserInfos()
+
         return new Promise((resolve, reject) => {
             if (!error) {
                 resolve("Vous êtes déconnecté")

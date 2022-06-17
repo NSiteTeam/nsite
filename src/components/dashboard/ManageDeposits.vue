@@ -3,10 +3,13 @@
     import { databaseClient } from "@/database/implementation";
     import type { Repository } from "@/database/interface/repositories";
     import { Level } from '@/database/interface/level'
-    import { watch, ref, toRaw, onMounted, computed, shallowRef} from "vue";
+    import { watch, ref, toRaw, onMounted, computed, shallowRef, provide} from "vue";
     import type { Ref, ComputedRef  } from "vue";
     import DataColumn from '@/components/dashboard/DataColumn.vue'
     import DangerPopup from '@/components/dashboard/popups/DangerPopup.vue'
+    import ContextMenu from '@/components/dashboard/context_menu/ContextMenu.vue'
+    import ContextMenuElement from '@/components/dashboard/context_menu/ContextMenuElement.vue'
+    import ContextMenuSeparator from '@/components/dashboard/context_menu/ContextMenuSeparator.vue'
     import { DataSection } from "@/utils/data_section"
 
     const displaySidePannelnewDeposit: Ref<boolean> = ref(false)
@@ -69,7 +72,8 @@
     async function fetchDeposits() {
         deposits.value = DataSection.makeSections(
             await databaseClient.getOwnedDeposits(),
-            (e) => e.level.abbreviated
+            (e) => e.level.abbreviated,
+            (e) => e.values[0].level.index // We're sure that the data section isn't empty when this lambda is called
         )
     }
 
@@ -121,7 +125,7 @@
     }
 
     function selectData(data: Repository) {
-        console.log(data)
+        console.log('Selected deposit', data)
         selectedDeposit = data
         fetchFiles()
     }
@@ -218,7 +222,29 @@
         :list='deposits'
         :to-text='depositToText'
         :to-key='depositToKey'
-    />
+    >
+        <template v-slot='slotProps'>
+            {{ slotProps.text }}
+            <ContextMenu scope='#data-names'>
+                <ContextMenuElement
+                    icon='add'
+                    message='Ajouter un fichier'
+                    @click.prevent='selectData(slotProps.data); toggleSidePannel(SidePannelTarget.FILE)'
+                />
+                <ContextMenuElement
+                    icon='edit'
+                    message='Editer'
+                    @click.prevent='selectData(slotProps.data); toggleSidePannel(SidePannelTarget.EDIT)'
+                />
+                <ContextMenuSeparator />
+                <ContextMenuElement
+                    icon='delete_forever'
+                    message='Supprimer'
+                    @click.prevent='selectData(slotProps.data); toggleSidePannel(SidePannelTarget.EDIT)'
+                />
+            </ContextMenu>
+        </template>
+    </DataColumn>
 
     <div class="files">
         <div class="files-actions">

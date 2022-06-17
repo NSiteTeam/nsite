@@ -36,7 +36,7 @@ export class DataSection<T> {
         }
 
         if (sortBy) {
-            result.sort(sortBy)
+            result.sort((a, b) => sortBy(a) - sortBy(b))
         }
 
         return result
