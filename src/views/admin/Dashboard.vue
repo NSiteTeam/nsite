@@ -1,4 +1,14 @@
 <script lang="ts" setup>
+// @ts-ignore
+import ManageDeposits from '@/components/dashboard/ManageDeposits.vue'
+// @ts-ignore
+import ManageUsers from '@/components/dashboard/ManageUsers.vue'
+// @ts-ignore
+import Blacklist from '@/components/dashboard/Blacklist.vue'
+// @ts-ignore
+import ManageNews from '@/components/dashboard/ManageNews.vue'
+// @ts-ignore
+import ManageHistoryPoints from '@/components/dashboard/ManageHistoryPoints.vue'
 import { computed } from 'vue'
 import { ref } from 'vue'
 import { databaseClient } from '@/database/implementation'
@@ -7,11 +17,6 @@ import type { Repository } from '@/database/interface/repositories'
 import { useRoute } from 'vue-router'
 import { getParameterOfRoute } from '@/utils/route_utils'
 import { Permission } from '@/database/interface/permissions'
-import ManageDeposits from '@/components/dashboard/ManageDeposits.vue'
-import ManageUsers from '@/components/dashboard/ManageUsers.vue'
-import Blacklist from '@/components/dashboard/Blacklist.vue'
-import ManageNews from '@/components/dashboard/ManageNews.vue'
-import ManageHistoryPoints from '@/components/dashboard/ManageHistoryPoints.vue'
 import NothingAdviable from '@/components/dashboard/NothingAdviable.vue'
 import SelectView from '@/components/dashboard/SelectView.vue'
 import router from '@/router'

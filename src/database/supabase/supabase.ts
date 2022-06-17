@@ -89,14 +89,14 @@ export class SupabaseClient implements DatabaseClient {
     password: string,
     username: string,
   ): Promise<any> {
-
-    if (username.length < 3) return {
-      accountCreated: false, 
-      error: {
-        status: 400,
-        message: "Nom d'utilisateur trop court"
+    if (username.length < 3)
+      return {
+        accountCreated: false,
+        error: {
+          status: 400,
+          message: "Nom d'utilisateur trop court",
+        },
       }
-    }
     console.log('Try to sign in with email: ', email)
 
     let { user, error } = await supabase.auth.signUp({
@@ -184,36 +184,37 @@ export class SupabaseClient implements DatabaseClient {
     const isConnected = supabase.auth.session() != null
     this.isConnected.value = isConnected
 
-    if (isConnected) {
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('username, roles')
-          .eq('user', supabase.auth.user()?.id)
-          .maybeSingle()
+    if (!isConnected) {
+      console.log("User isn't connected")
+      return
+    }
 
-        if (error) {
-          throw error
-        }
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, roles')
+        .eq('user', supabase.auth.user()?.id)
+        .maybeSingle()
 
-        if (!data) {
-          throw 'Data returned by the request is null'
-        }
-
-        this.user.value = new SupabaseUser(
-          supabase.auth.user()?.email!,
-          data.username,
-          supabase.auth.user()?.id!,
-          data.roles?.map(SupabasePermissionHelper.permissionFromId),
-        )
-      } catch (error) {
-        console.log('Error while updating user infos', error)
+      if (error) {
+        throw error
       }
 
-      console.log('Just updated user infos', this.user.value)
-    } else {
-      console.log("User isn't connected")
+      if (!data) {
+        throw 'Data returned by the request is null'
+      }
+
+      this.user.value = new SupabaseUser(
+        supabase.auth.user()?.email!,
+        data.username,
+        supabase.auth.user()?.id!,
+        data.roles?.map(SupabasePermissionHelper.permissionFromId),
+      )
+    } catch (error) {
+      console.log('Error while updating user infos', error)
     }
+
+    console.log('Just updated user infos', this.user.value)
   }
 
   /**
@@ -435,44 +436,49 @@ export class SupabaseClient implements DatabaseClient {
       .maybeSingle()
     error ? console.warn(error.message) : null
 
-    if (data != null) {
-      if (data.content != null) {
-        // Deletes these selected files
-        const deleteFilesResponse = await supabase
-          .from('repository_file')
-          .delete()
-          .in('id', data.content)
-        deleteFilesResponse.error
-          ? console.warn(deleteFilesResponse.error.message)
-          : null
-
-        if (deleteFilesResponse.data != null && !deleteFilesResponse.error) {
-          // Deletes the depo
-          const deleteDepoResponse = await supabase
-            .from('deposits')
-            .delete()
-            .match({ id: id })
-
-          return new Promise((resolve, reject) => {
-            deleteDepoResponse.error
-              ? reject(deleteDepoResponse.error)
-              : resolve('Dépôt supprimé avec succès')
-          })
-        }
-      } else {
-        const deleteDepoResponse = await supabase
-          .from('deposits')
-          .delete()
-          .match({ id: id })
-
-        return new Promise((resolve, reject) => {
-          deleteDepoResponse.error
-            ? reject(deleteDepoResponse.error)
-            : resolve('Dépôt supprimé avec succès')
-        })
-      }
-    } else {
+    // If there is nothing, return nothing
+    if (data == null) {
       console.warn('No data fetched')
+      return
+    }
+
+    // If there is nothing in the depo, delete it
+    if (data.content == null) {
+      const deleteDepoResponse = await supabase
+        .from('deposits')
+        .delete()
+        .match({ id: id })
+
+      return new Promise((resolve, reject) => {
+        deleteDepoResponse.error
+          ? reject(deleteDepoResponse.error)
+          : resolve('Dépôt supprimé avec succès')
+      })
+    }
+
+    // Deletes these selected files
+    const deleteFilesResponse = await supabase
+      .from('repository_file')
+      .delete()
+      .in('id', data.content)
+
+    if (deleteFilesResponse.error) {
+      console.warn(deleteFilesResponse.error.message)
+      return
+    }
+
+    if (deleteFilesResponse.data != null) {
+      // Deletes the depo
+      const deleteDepoResponse = await supabase
+        .from('deposits')
+        .delete()
+        .match({ id: id })
+
+      return new Promise((resolve, reject) => {
+        deleteDepoResponse.error
+          ? reject(deleteDepoResponse.error)
+          : resolve('Dépôt supprimé avec succès')
+      })
     }
   }
 
@@ -484,13 +490,13 @@ export class SupabaseClient implements DatabaseClient {
       .maybeSingle()
 
     return new Promise((resolve, reject) => {
-      if (!error && data != null) {
-        resolve(data['username'])
-      } else if (error) {
+      if (error) {
         reject('Error while fetching data : ' + error.message)
-      } else if (data == null) {
+      }
+      if (data == null) {
         reject('No data fetched')
       }
+      resolve(data['username'])
     })
   }
 
@@ -547,11 +553,10 @@ export class SupabaseClient implements DatabaseClient {
     }
 
     return new Promise((resolve, reject) => {
-      if (responseForTheSelect) {
-        resolve('Fichier supprimsé avec succès')
-      } else {
+      if (error) {
         reject(error)
       }
+      resolve('Fichier supprimé avec succès')
     })
   }
 
@@ -564,20 +569,22 @@ export class SupabaseClient implements DatabaseClient {
     return new Promise((resolve, reject) => {
       if (error) {
         reject(error)
-      } else if (data === null) {
-        reject('No messages fetched')
-      } else {
-        resolve(
-          data.map((message: Message) => {
-            return new SupabaseMessage(
-              message.content,
-              message.author,
-              message.date,
-              message.id,
-            )
-          }),
-        )
       }
+      if (data === null) {
+        reject('No messages fetched')
+        return
+      }
+
+      resolve(
+        data.map((message: Message) => {
+          return new SupabaseMessage(
+            message.content,
+            message.author,
+            message.date,
+            message.id,
+          )
+        }),
+      )
     })
   }
 
@@ -599,20 +606,21 @@ export class SupabaseClient implements DatabaseClient {
     return new Promise((resolve, reject) => {
       if (error) {
         reject(error)
-      } else if (data === null) {
-        reject('No messages fetched')
-      } else {
-        resolve(
-          data.map((message: Message) => {
-            return new SupabaseMessage(
-              message.content,
-              message.author,
-              message.date,
-              message.id,
-            )
-          }),
-        )
       }
+      if (data === null) {
+        reject('No messages fetched')
+        return
+      }
+      resolve(
+        data.map((message: Message) => {
+          return new SupabaseMessage(
+            message.content,
+            message.author,
+            message.date,
+            message.id,
+          )
+        }),
+      )
     })
   }
 
@@ -621,11 +629,13 @@ export class SupabaseClient implements DatabaseClient {
       .from('deposits_chat_messages')
       .delete()
       .match({ id: messageId })
+    
     if (error) {
       console.warn(error)
-    } else {
-      console.log('Successfully deleted message ' + messageId)
+      return
     }
+    console.log('Successfully deleted message ' + messageId)
+
     this.deleteMessageInTheCache(messageId)
   }
 
@@ -639,12 +649,15 @@ export class SupabaseClient implements DatabaseClient {
         id: messageId,
       })
       .maybeSingle()
+    
     if (error) {
       console.warn(error)
-    } else {
-      console.log(`Successfully edited message ${messageId}
-            from ${newContent} to ${data.content}`)
+      return
     }
+
+    console.log(`Successfully edited message ${messageId}
+          from ${newContent} to ${data.content}`)
+      
     this.editMessageInTheCache(
       messageId,
       new SupabaseMessage(data.content, data.author, data.date, data.id),
@@ -964,11 +977,8 @@ export class SupabaseClient implements DatabaseClient {
     }
     // OMG that was a long journey to upload a file 😅
     return new Promise((resolve, reject) => {
-      if (error) {
-        reject(error.message)
-      } else {
-        resolve('Le fichier a bien été téléversé')
-      }
+      if (error) reject(error.message)
+      resolve('Le fichier a bien été téléversé')
     })
   }
 
@@ -1055,17 +1065,22 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async getAllUsers(quantity?: number): Promise<any> {
-    const { data, error } = quantity ? await supabase.from('profiles').select('*', { count: "exact" })
-    .range(0, quantity - 1) : await supabase.from('profiles').select('*')
-    
+    const { data, error } = quantity
+      ? await supabase
+          .from('profiles')
+          .select('*', { count: 'exact' })
+          .range(0, quantity - 1)
+      : await supabase.from('profiles').select('*')
+
     return new Promise((resolve, reject) => {
-      if (error == null && data != null) {
-        resolve(data)
-      } else if (data == null) {
-        reject('No data fetched')
-      } else {
+      if (error) {
         reject(error)
       }
+      if (data == null) {
+        reject('No data fetched')
+        return
+      }
+      resolve(data)
     })
   }
 }
