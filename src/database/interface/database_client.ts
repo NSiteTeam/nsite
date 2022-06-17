@@ -59,7 +59,7 @@ export interface DatabaseClient {
   // NEWS
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
-  fetchNews(quantity: number, visibility: boolean): Promise<void>
+  fetchNews(quantity: number, visibility?: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>
   switchVisibilityOfHistoryPoint(news: News): Promise<errorMessage | null>

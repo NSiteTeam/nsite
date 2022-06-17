@@ -16,8 +16,8 @@
 
     const props = defineProps(['scope'])
 
-    watch(menuContainer, (container: HTMLElement) => {
-        if (container == null) {
+    watch(menuContainer, (container: Ref<HTMLElement | null>) => {
+        if (container.value == null) {
             return
         }
 
