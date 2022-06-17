@@ -20,7 +20,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 25px;
+    font-size: 20px;
+    font-weight: bold;
 
     p {
       background-color: $space-cadet-dark;
