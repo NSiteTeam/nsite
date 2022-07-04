@@ -63,7 +63,7 @@ h2 {
 }
 
 .good {
-  @include message(rgb(67, 205, 25));
+  @include message(hsl(106, 78%, 45%));
   transition: 0.5s;
 }
 

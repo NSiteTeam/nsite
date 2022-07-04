@@ -15,12 +15,15 @@
     color: $cream-white;
   }
 
+  .input-box {
+    margin-bottom: 20px;
+  }
+
   input {
     border: 0;
     color: $cream-white;
-    margin-bottom: 20px;
-    padding: 3%;
-    border-radius: 5px;
+    padding: 5px;
+    border-radius: 5px;                     
     background-color: $space-cadet-light;
 
     &::placeholder {
@@ -29,6 +32,48 @@
 
     &[type='submit']:hover {
       @include shadow1();
+    }
+  }
+
+  .strength-bar {
+    height: 5px;
+    display: flex;
+
+    &-level {
+      height: 5px;
+      margin-top: 2px;
+      width: calc(33% + 3px);
+      border-radius: 5px;
+      margin-right: 2px;
+    }
+    
+    &-level.active.color1 {
+      background-color: hsl(0, 100%, 55%);
+    }
+    
+    &-level.active.color2 {
+      background-color: hsl(198, 100%, 55%);
+    }
+    
+    &-level.active.color3 {
+      background-color: hsl(106, 78%, 45%);
+    }
+  }
+
+  .input-box {
+    position: relative;
+
+    .material-icons {
+      position: absolute;
+      right: 0;
+      top: 2px;
+      cursor: pointer;
+      // Avoids annoying user selection in various browsers
+      user-select: none; /* supported by Chrome and Opera */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
     }
   }
 
