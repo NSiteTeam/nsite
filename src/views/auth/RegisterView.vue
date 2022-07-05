@@ -57,11 +57,11 @@
         </span>
       </span>
       <div class="password-strength-info">
-        Pour être fort, le mot de passe doit :
+        Le mot de passe doit contenir:
         <ul>
-          <li>Contenir au moins une lettre majuscule et minuscule</li>
-          <li>Contenir un caractère spécial</li>
-          <li>Avoir une longueur de 8 caractères ou plus</li>
+          <li>Au moins une lettre majuscule et minuscule</li>
+          <li>Un caractère spécial</li>
+          <li>8 caractères ou plus</li>
         </ul>
       </div>
       <input type="submit" value="S'inscrire" :disabled="loading" />
@@ -89,7 +89,7 @@ enum strengthLevels {
   STRONG,
 }
 
-const strengthLevelsNames = ['', 'Faible', 'Correct', 'Fort']
+const strengthLevelsNames = ['', 'faible', 'correct', 'fort']
 
 const email: Ref<string> = ref('')
 const password: Ref<string> = ref('')

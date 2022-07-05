@@ -7,7 +7,7 @@
   flex-direction: column;
   align-items: center;
   background-color: $space-cadet;
-  padding: 4% 6% 4% 6%;
+  padding: 2% 3% 2% 3%;
   border-radius: 20px;
   @include shadow1();
 
@@ -17,6 +17,7 @@
 
   .input-box {
     margin-bottom: 20px;
+    font-size: 13px;
   }
 
   input {
@@ -37,14 +38,16 @@
 
   .strength-bar {
     height: 5px;
+    width: 106%;
     display: flex;
 
     &-level {
       height: 5px;
       margin-top: 2px;
-      width: calc(33% + 3px);
+      width: calc(35% + 3px);
       border-radius: 5px;
       margin-right: 2px;
+      font-size: 14px;
     }
 
     .color1 {
@@ -61,7 +64,7 @@
   }
 
   .text-color1 {
-    color: hsl(0, 100%, 25%);
+    color: hsl(0, 100%, 60%);
   }
 
   .text-color2 {
@@ -93,7 +96,8 @@
     color: hsl(0, 0%, 70%);
     font-size: 12px;
     max-width: 220px;
-    margin-top: -20px;
+    margin: -15px 0 10px 0;
+    padding-left: 35px;
 
     ul {
       margin: 0;

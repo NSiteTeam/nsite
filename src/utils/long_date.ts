@@ -52,13 +52,14 @@ export class LongDate {
   }
 
   static ISOStringToLongDate(rawDate: string): LongDate {
+    const plainJSObject = new Date(rawDate)
     return new LongDate(
-      Number(rawDate.split('T')[1].split(':')[2].split('.')[0]),
-      Number(rawDate.split('T')[1].split(':')[1]),
-      Number(rawDate.split('T')[1].split(':')[0]),
-      Number(rawDate.split('T')[0].split('-')[2]),
-      Number(rawDate.split('T')[0].split('-')[1]),
-      Number(rawDate.split('T')[0].split('-')[0]),
+      plainJSObject.getSeconds(),
+      plainJSObject.getMinutes(),
+      plainJSObject.getHours(),
+      plainJSObject.getDay(),
+      plainJSObject.getMonth(),
+      plainJSObject.getFullYear(),
     )
   }
 
