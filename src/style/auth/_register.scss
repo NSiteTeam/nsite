@@ -3,8 +3,8 @@
 // ###########################################################################
 
 #register {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   background-color: $space-cadet;
   padding: 4% 6% 4% 6%;
@@ -23,7 +23,7 @@
     border: 0;
     color: $cream-white;
     padding: 5px;
-    border-radius: 5px;                     
+    border-radius: 5px;
     background-color: $space-cadet-light;
 
     &::placeholder {
@@ -46,18 +46,30 @@
       border-radius: 5px;
       margin-right: 2px;
     }
-    
-    &-level.active.color1 {
+
+    .color1 {
       background-color: hsl(0, 100%, 55%);
     }
-    
-    &-level.active.color2 {
+
+    .color2 {
       background-color: hsl(198, 100%, 55%);
     }
-    
-    &-level.active.color3 {
+
+    .color3 {
       background-color: hsl(106, 78%, 45%);
     }
+  }
+
+  .text-color1 {
+    color: hsl(0, 100%, 25%);
+  }
+
+  .text-color2 {
+    color: hsl(198, 100%, 55%);
+  }
+
+  .text-color3 {
+    color: hsl(106, 78%, 45%);
   }
 
   .input-box {
@@ -74,6 +86,19 @@
       -khtml-user-select: none; /* Konqueror HTML */
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* Internet Explorer/Edge */
+    }
+  }
+
+  .password-strength-info {
+    color: hsl(0, 0%, 70%);
+    font-size: 12px;
+    max-width: 220px;
+    margin-top: -20px;
+
+    ul {
+      margin: 0;
+      padding-left: 10px;
+      list-style-type: '- ';
     }
   }
 
