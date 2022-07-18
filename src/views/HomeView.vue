@@ -31,7 +31,7 @@
             <div class="mt-3">
               <SmallTitle class="news-header">
                 {{ news.title }}
-                <span class="text-xs italic text-indicator"> {{ news.date.beautify() }} </span>
+                <span class="text-xs italic"> {{ news.date.beautify() }} </span>
               </SmallTitle>
               <p class="mt-1 pl-3 text-justify">
                 {{ formatMessage(news.content) }}

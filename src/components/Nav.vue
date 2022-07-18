@@ -1,75 +1,107 @@
 <template>
-  <header class="shadow1">
-    <RouterLink to="/" class="banner">
+  <header
+    class="
+      sticky top-0 z-30
+      shadow-lg bg-gradient-to-r from-primary to-primary-light
+      h-16
+      flex items-center place-content-between
+    "
+  >
+    <RouterLink
+      to="/"
+      class="flex items-center content-center"
+    >
       <img
         src="../../src/assets/logo.svg"
-        width="64"
-        height="64"
-        class="logo"
+        class="w-14 h-14 ml-4"
       />
-      <h2 v-if="windowWidth > 1440">Les mathématiques à Saint Jean Hulst</h2>
+      <MediumTitle class="hidden lg:block">Les mathématiques à Saint Jean Hulst</MediumTitle>
     </RouterLink>
-    <nav>
+
+    <nav class="h-full mr-6">
+      <Overlay :on='menuToggled' />
       <div
-        id="navbar-links"
-        :class="
-          toggleMenu || windowWidth > 800 ? 'display-block' : 'display-none'
-        "
+        :class="{
+          'flex': true,
+          'h-full items-center': !isBelowMediumDevice,
+          'hidden': isBelowMediumDevice && !menuToggled,
+          'fixed top-0 right-0 z-50 m-4 py-4 pr-10 rounded-lg shadow-lg flex-col bg-primary items-start text-xl': isBelowMediumDevice && menuToggled
+        }"
       >
-        <RouterLink to="/browse" class="navbar-link browse-link"
-          ><span>Parcourir</span></RouterLink
+        <!-- Close menu button -->
+        <div
+          :class="{
+            'absolute top-0 right-0 m-6': true,
+            'hidden': !isBelowMediumDevice || !menuToggled,
+          }"
         >
-        <RouterLink to="/timeline" class="navbar-link"
-          ><span>Un peu d'Histoire</span></RouterLink
-        >
-        <RouterLink v-if="!connected" to="/login" class="navbar-link"
-          ><span>Se connecter</span></RouterLink
-        >
-        <RouterLink v-if="!connected" to="/register" class="navbar-link"
-          ><span>S'inscrire</span></RouterLink
-        >
-        <RouterLink
-          v-if="hasAccessToDashboard"
-          to="/dashboard"
-          class="navbar-link"
-          ><span>Gestion du site</span></RouterLink
-        >
-        <RouterLink to="/profile" class="navbar-link">
+          <span
+            @click="menuToggled = false"
+            class="material-icons cursor-pointer select-none float-right"
+          >
+            close
+          </span>
+        </div>
+        <NavBarLink to="/browse" :minify='isBelowMediumDevice'>Parcourir</NavBarLink>
+        <NavBarLink to="/timeline" :minify='isBelowMediumDevice'>Histoire</NavBarLink>
+        <NavBarLink to="/login" :minify='isBelowMediumDevice' v-if='!connected'>Se connecter</NavBarLink>
+        <NavBarLink to="/register" :minify='isBelowMediumDevice' v-if='!connected'>S'inscrire</NavBarLink>
+        <NavBarLink to="/dashboard" :minify='isBelowMediumDevice' v-if='hasAccessToDashboard'>Gestion du site</NavBarLink>
+        <NavBarLink to="/profile" :minify='isBelowMediumDevice'>
           <ProfilePicture v-if="connected" size="32px" />
-        </RouterLink>
+        </NavBarLink>
       </div>
-      <span
-        @click="toggleMenuFunction()"
-        class="material-icons white menu-button"
+
+      <!-- Hamburger menu button -->
+      <div
+        :class="{
+          'center h-full': isBelowMediumDevice,
+          'hidden': !isBelowMediumDevice,
+        }"
       >
-        menu
-      </span>
+        <span
+          @click="menuToggled = !menuToggled"
+          class="material-icons cursor-pointer select-none"
+        >
+          menu
+        </span>
+      </div>
     </nav>
   </header>
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue'
 import { ref } from '@vue/reactivity'
 import { useWindowSize } from 'vue-window-size'
 import { databaseClient } from '@/database/implementation'
 import { useRoute } from 'vue-router'
-import { computed } from '@vue/runtime-core'
+import { computed, onMounted } from '@vue/runtime-core'
 import ProfilePicture from '@/components/ProfilePicture.vue'
+import MediumTitle from '@/components/style/MediumTitle.vue'
+import Overlay from '@/components/style/Overlay.vue'
+import NavBarLink from '@/components/style/NavBarLink.vue'
 
-const { width } = useWindowSize()
+const MEDIUM_SIZE = 768 // This is the width of the medium device in the default tailwind config
+
 const route = useRoute()
-
-const toggleMenu = ref(false)
-const windowWidth = width
+const { width: windowWidth } = useWindowSize()
 
 const connected = databaseClient.isConnected
+const menuToggled = ref(false)
 
 function toggleMenuFunction() {
-  toggleMenu.value = !toggleMenu.value
+  menuToggled.value = !menuToggled.value
 }
 
 const hasAccessToDashboard = computed(
-  () =>
-    databaseClient.isConnected.value && databaseClient.user.value?.permissions,
+  () => databaseClient.isConnected.value && databaseClient.user.value?.permissions,
 )
+
+const isBelowMediumDevice = computed(() => windowWidth.value <= MEDIUM_SIZE)
+
+watch(isBelowMediumDevice, (_) => {
+  menuToggled.value = false
+})
+
 </script>

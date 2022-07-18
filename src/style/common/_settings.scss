@@ -3,11 +3,11 @@
 // #########################################################
 
 // Color palette
-$space-cadet-dark: hsl(223, 25%, 25%);
-$space-cadet: hsl(223, 25%, 34%);
-$space-cadet-mid-light: hsl(223, 26%, 37%);
-$space-cadet-mid: hsl(223, 26%, 40%);
-$space-cadet-light: hsl(223, 26%, 45%);
+$space-cadet-dark: #303950;
+$space-cadet: #414d6c;
+$space-cadet-mid-light: #465477;
+$space-cadet-mid: #4b5b81;
+$space-cadet-light: #556691;
 $viridian-green: #119da4;
 $cerulean-frost: #6d9dc5;
 $cream-white: #e4f5ff;
@@ -154,7 +154,7 @@ h2 {
 }
 
 .no-scrollbar {
-  ::-webkit-scrollbar { // Chrome, Safari and Opera
+  &::-webkit-scrollbar { // Chrome, Safari and Opera
     display: none;
   }
   scrollbar-width: none;  // Firefox

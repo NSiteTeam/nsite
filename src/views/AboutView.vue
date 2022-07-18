@@ -1,5 +1,5 @@
 <template>
-  <div class="p-16">
+  <div class="p-8 md:p-16">
     <LargeTitle>A propos de ce site</LargeTitle>
     <div class="pl-4 border-l-2 border-l-white/10">
       <MediumTitle class="mt-8">Qui a créé ce site ?</MediumTitle>

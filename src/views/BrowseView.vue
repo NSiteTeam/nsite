@@ -1,3 +1,74 @@
+
+<template>
+    <div class="p-8">
+    <div class="search">
+      <input
+        type="text"
+        v-model="searchbarContent"
+        autocomplete="off"
+        name="search-input"
+        class="search-input"
+        placeholder="Rechercher"
+        @input="toggleSB()"
+      />
+      <button class="material-icons white">search</button>
+    </div>
+    <div class="filters">
+      <ul class="level-buttons">
+        <h2>Niveaux :</h2>
+        <li
+          :class="selectedLevel == null ? 'active' : ''"
+          class="level-button-all"
+          @click="selectLevel(null)"
+        >
+          <RouterLink to="/browse/"> Tout </RouterLink>
+        </li>
+        <li
+          v-bind:class="{ active: level == selectedLevel }"
+          class="level-button"
+          @click="selectLevel(level)"
+          v-for="level in levels"
+          :key="level"
+        >
+          <RouterLink :to="'/browse/' + level.nameInURL">
+            {{ level.abbreviated }}
+          </RouterLink>
+        </li>
+      </ul>
+
+      <ul class="sort-keys">
+        <h2>Type de tri :</h2>
+        <button id="change-order-button" @click="changeOrder()">
+          <span v-if="reversed" class="material-icons"> arrow_drop_up </span>
+          <span v-else class="material-icons"> arrow_drop_down </span>
+          Ordre {{ reversed ? 'Croissant' : 'Décroissant' }}
+        </button>
+
+        <li
+          @click="changeSort(sortType)"
+          v-bind:class="{ active: sort == sortType }"
+          v-for="sortType in Sort"
+          :key="sortType"
+        >
+          {{ sortType }}
+        </li>
+      </ul>
+    </div>
+    <h2>Résultats :</h2>
+    <div v-if="loading" class="loading-container">
+      <LoadingAnimation size="25%" />
+    </div>
+    <div v-else-if="!output.length" class="center-text">
+      <p>Aucun depôt trouvé</p>
+    </div>
+    <Transition v-else name="fade">
+      <div id="browse-container">
+        <Card :exercise="repo" v-for="repo in output" :key="repo.id" />
+      </div>
+    </Transition>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { databaseClient } from '@/database/implementation'
 import { computed, ref } from 'vue'
@@ -114,73 +185,3 @@ const levels = computed(() => {
   return Array.from(levels).sort((a, b) => a.index - b.index)
 })
 </script>
-
-<template>
-  <div id="browse-view">
-    <div class="search">
-      <input
-        type="text"
-        v-model="searchbarContent"
-        autocomplete="off"
-        name="search-input"
-        class="search-input"
-        placeholder="Rechercher"
-        @input="toggleSB()"
-      />
-      <button class="material-icons white">search</button>
-    </div>
-    <div class="filters">
-      <ul class="level-buttons">
-        <h2>Niveaux :</h2>
-        <li
-          :class="selectedLevel == null ? 'active' : ''"
-          class="level-button-all"
-          @click="selectLevel(null)"
-        >
-          <RouterLink to="/browse/"> Tout </RouterLink>
-        </li>
-        <li
-          v-bind:class="{ active: level == selectedLevel }"
-          class="level-button"
-          @click="selectLevel(level)"
-          v-for="level in levels"
-          :key="level"
-        >
-          <RouterLink :to="'/browse/' + level.nameInURL">
-            {{ level.abbreviated }}
-          </RouterLink>
-        </li>
-      </ul>
-
-      <ul class="sort-keys">
-        <h2>Type de tri :</h2>
-        <button id="change-order-button" @click="changeOrder()">
-          <span v-if="reversed" class="material-icons"> arrow_drop_up </span>
-          <span v-else class="material-icons"> arrow_drop_down </span>
-          Ordre {{ reversed ? 'Croissant' : 'Décroissant' }}
-        </button>
-
-        <li
-          @click="changeSort(sortType)"
-          v-bind:class="{ active: sort == sortType }"
-          v-for="sortType in Sort"
-          :key="sortType"
-        >
-          {{ sortType }}
-        </li>
-      </ul>
-    </div>
-    <h2>Résultats :</h2>
-    <div v-if="loading" class="loading-container">
-      <LoadingAnimation size="25%" />
-    </div>
-    <div v-else-if="!output.length" class="center-text">
-      <p>Aucun depôt trouvé</p>
-    </div>
-    <Transition v-else name="fade">
-      <div id="browse-container">
-        <Card :exercise="repo" v-for="repo in output" :key="repo.id" />
-      </div>
-    </Transition>
-  </div>
-</template>

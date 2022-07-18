@@ -130,10 +130,6 @@ ul.level-buttons {
     margin-right: 5px;
   }
 }
-#browse-view {
-  min-height: calc(100vh - $header-height - 110px);
-  margin: 65px 110px;
-}
 
 #browse-container {
   display: flex;
