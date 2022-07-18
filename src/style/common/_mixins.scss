@@ -13,17 +13,6 @@
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-@mixin wave($path, $color: transparent) {
-  background-image: url($path);
-  aspect-ratio: 1402/300;
-  width: calc(100% + 110px);
-  margin-left: -110px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  background-color: $color;
-}
-
 @mixin size($size: 64px) {
   font-size: $size;
 }

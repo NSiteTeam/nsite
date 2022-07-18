@@ -1,78 +1,92 @@
 <template>
-  <div id="home-container">
-    <div class="catch-line shadow2">
-      <h1>
+  <div
+    class="
+      grid lg:grid-rows-1 lg:grid-cols-3
+      p-5
+    "
+  >
+    <ShadowBox class="lg:col-span-2">
+      <LargeTitle>
         Les professeurs de mathématiques de Saint Jean Hulst ont enfin un site
         internet pour vous aider !
-      </h1>
-      <ul>
-        <li>
-          <span class="emoji">🖋️</span> Les annales des précédents DS avec les
-          corrigés
-        </li>
-        <li>
-          <span class="emoji">📃</span> Des fiches d'exercices pour s'entraîner
-        </li>
-        <li>
-          <span class="emoji">🏅</span> Les concours de mathématiques organisés
-          par Saint Jean Hulst
-        </li>
-        <li>
-          <span class="emoji">🤓</span> De quoi se préparer pour la rentrée
-        </li>
-      </ul>
-    </div>
+      </LargeTitle>
+      <div
+        v-for="(message, index) in MESSAGES"
+        :key='index'
+        class="flex my-4 text-lg"
+      >
+        <span class="cursor-pointer select-none">{{ message.smiley}}</span>
+        <span>{{ message.text }}</span>
+      </div>
+    </ShadowBox>
 
-    <div class="news shadow2">
-      <h1>Actualités</h1>
-      <div class="news-container">
-        <div v-if="!sortedNews.length" class="loading-container">
-          <LoadingAnimation size="75%" />
-        </div>
-        <ul id="news-list">
+    <ShadowBox>
+      <LargeTitle>Actualités</LargeTitle>
+      <div class="news-container max-h-[60vh] no-scrollbar overflow-y-scroll">
+        <CenteredLoadingAnimation v-if='!newsFetched' animation-size='75%'/>
+
+        <ul v-else>
           <li v-for="(news, index) in sortedNews" :key="index">
-            <div class="news-item">
-              <h3 class="news-header">
+
+            <div class="mt-3">
+              <SmallTitle class="news-header">
                 {{ news.title }}
-                <span class="news-date"> {{ news.date.beautify() }} </span>
-              </h3>
-              <p class="news-content">
-                {{ news.content.slice(0, NUMBER_OF_CHAR_PER_NEWS)
-                }}{{
-                  news.content.length > NUMBER_OF_CHAR_PER_NEWS ? '...' : ''
-                }}
+                <span class="text-xs italic text-indicator"> {{ news.date.beautify() }} </span>
+              </SmallTitle>
+              <p class="mt-1 pl-3 text-justify">
+                {{ formatMessage(news.content) }}
               </p>
             </div>
+
           </li>
         </ul>
       </div>
-    </div>
+    </ShadowBox>
   </div>
   <Footer />
 </template>
 
 <script setup lang="ts">
-import { timestampToFrenchDate } from '../utils/date'
-import { databaseClient } from '@/database/implementation'
-import type { News } from '@/database/interface/news'
-import { computed } from 'vue'
-import type { Ref } from 'vue'
-import { LongDate } from '@/utils/long_date'
-import Footer from '@/components/Footer.vue'
-import LoadingAnimation from '@/components/LoadingAnimation.vue'
+  import { timestampToFrenchDate } from '../utils/date'
+  import { databaseClient } from '@/database/implementation'
+  import type { News } from '@/database/interface/news'
+  import { computed, ref } from 'vue'
+  import type { Ref } from 'vue'
+  import { LongDate } from '@/utils/long_date'
+  import Footer from '@/components/Footer.vue'
+  import CenteredLoadingAnimation from '@/components/style/CenteredLoadingAnimation.vue'
+  import ShadowBox from '@/components/style/ShadowBox.vue'
+  import LargeTitle from '@/components/style/LargeTitle.vue'
+  import SmallTitle from '@/components/style/SmallTitle.vue'
 
-const NUMBER_OF_FETCHED_NEWS = 5
-const NUMBER_OF_CHAR_PER_NEWS = 100
+  const NUMBER_OF_FETCHED_NEWS = 5
+  const NUMBER_OF_CHAR_PER_NEWS = 137
 
-databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS)
+  type Message = {
+    smiley: string,
+    text: string
+  }
 
-const sortedNews = computed(() =>
-  databaseClient.fetchedNews.value
-    .filter((news: News) => news.visible)
-    .sort((a: News, b: News) => -1 * LongDate.compare(a.date, b.date)),
-)
+  const MESSAGES: Array<Message> = [
+    { smiley: '🖋️', text: 'Les annales des précédents DS avec les corrigés' },
+    { smiley: '📃', text: 'Des fiches d\'exercices pour s\'entraîner' },
+    { smiley: '🏅', text: 'Les concours de mathématiques organisés par Saint Jean Hulst' },
+    { smiley: '🤓', text: 'De quoi se préparer pour la rentrée' },
+  ]
 
-function formatDate(date: string): string {
-  return timestampToFrenchDate(date)
-}
+  const newsFetched = ref<boolean>(false)
+
+  const sortedNews = computed(() =>
+    databaseClient.fetchedNews.value
+      .filter((news: News) => news.visible)
+      .sort((a: News, b: News) => -1 * LongDate.compare(a.date, b.date)),
+  )
+
+  databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS).then(_ => {
+    newsFetched.value = true
+  })
+
+  function formatMessage(message: string) {
+    return message.slice(0, NUMBER_OF_CHAR_PER_NEWS) + (message.length > NUMBER_OF_CHAR_PER_NEWS ? '...' : '')
+  }
 </script>

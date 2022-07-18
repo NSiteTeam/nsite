@@ -26,6 +26,8 @@ $header-height: 68px;
 }
 
 body {
+  background: $space-cadet;
+  background-repeat: no-repeat;
   margin: 0;
   color: $cream-white;
 }
@@ -65,33 +67,6 @@ h2 {
 .good {
   @include message(hsl(106, 78%, 45%));
   transition: 0.5s;
-}
-
-.wave2 {
-  margin-top: -100px;
-  @include wave('/src/assets/wave.svg');
-
-  @media (max-width: 1000px) {
-    margin-top: 80%;
-  }
-
-  @media (max-width: $mobile-width) {
-    margin-top: 250%;
-  }
-
-  @media (max-width: 400px) {
-    margin-top: 350%;
-  }
-
-  @media (max-width: 350px) {
-    margin-top: 520%;
-  }
-}
-
-.wave {
-  position: relative;
-  z-index: 20;
-  @include wave('/src/assets/wave.svg');
 }
 
 .display-none {
@@ -164,11 +139,10 @@ h2 {
   cursor: pointer;
 }
 
-.loading-container {
+.center {
   display: flex;
-  place-content: center;
-
-  padding: 50px 0;
+  justify-content: center;
+  align-items: center;
 }
 
 .center-text {
@@ -177,6 +151,14 @@ h2 {
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+
+.no-scrollbar {
+  ::-webkit-scrollbar { // Chrome, Safari and Opera
+    display: none;
+  }
+  scrollbar-width: none;  // Firefox
+  -ms-overflow-style: none;  // IE and Edge
 }
 
 input,
@@ -191,8 +173,4 @@ textarea {
   &:focus {
     border-color: $cream-white;
   }
-}
-
-.emoji {
-  font-size: 1.3em;
 }
