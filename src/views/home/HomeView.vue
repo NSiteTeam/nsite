@@ -5,23 +5,33 @@
       p-5
     "
   >
-    <ShadowBox class="lg:col-span-2">
+    <ShadowBox class="lg:col-span-2 bg-white/10">
       <LargeTitle>
-        Les professeurs de mathématiques de Saint Jean Hulst ont enfin un site
-        internet pour vous aider !
+        Un site dédié <KeywordTitle>
+        aux mathématiques</KeywordTitle>
       </LargeTitle>
-      <div
-        v-for="(message, index) in MESSAGES"
-        :key='index'
-        class="flex my-4 text-lg"
-      >
-        <span class="cursor-pointer select-none">{{ message.smiley}}</span>
-        <span>{{ message.text }}</span>
-      </div>
+
+      <Catchphrase smiley='🖋️'>
+        Les annales des précédents DS avec <KeywordText>
+        les corrigés</KeywordText>
+      </Catchphrase>
+      <Catchphrase smiley='📃'>
+        Des <KeywordText>fiches d'exercices</KeywordText> pour
+        s'entraîner
+      </Catchphrase>
+      <Catchphrase smiley='🏅'>
+        Les concours <KeywordText> de mathématiques
+        </KeywordText> organisés par Saint Jean Hulst
+      </Catchphrase>
+      <Catchphrase smiley='🤓'>
+        De quoi <KeywordText>se préparer</KeywordText> pour
+        la rentrée
+      </Catchphrase>
+
     </ShadowBox>
 
-    <ShadowBox>
-      <LargeTitle>Actualités</LargeTitle>
+    <ShadowBox class="bg-white/10">
+      <LargeTitle>Les <KeywordTitle>actualités</KeywordTitle> de Saint Jean</LargeTitle>
       <div class="news-container max-h-[60vh] no-scrollbar overflow-y-scroll">
         <CenteredLoadingAnimation v-if='!newsFetched' animation-size='75%'/>
 
@@ -46,13 +56,16 @@
   <Footer />
 </template>
 
-<script setup lang="ts">
-  import { timestampToFrenchDate } from '../utils/date'
+<script setup lang="tsx">
+  import { timestampToFrenchDate } from '../../utils/date'
   import { databaseClient } from '@/database/implementation'
   import type { News } from '@/database/interface/news'
   import { computed, ref } from 'vue'
   import type { Ref } from 'vue'
   import { LongDate } from '@/utils/long_date'
+  import Catchphrase from './Catchphrase.vue'
+  import KeywordText from './KeywordText.vue'
+  import KeywordTitle from './KeywordTitle.vue'
   import Footer from '@/components/Footer.vue'
   import CenteredLoadingAnimation from '@/components/style/CenteredLoadingAnimation.vue'
   import ShadowBox from '@/components/style/ShadowBox.vue'
@@ -61,18 +74,6 @@
 
   const NUMBER_OF_FETCHED_NEWS = 5
   const NUMBER_OF_CHAR_PER_NEWS = 137
-
-  type Message = {
-    smiley: string,
-    text: string
-  }
-
-  const MESSAGES: Array<Message> = [
-    { smiley: '🖋️', text: 'Les annales des précédents DS avec les corrigés' },
-    { smiley: '📃', text: 'Des fiches d\'exercices pour s\'entraîner' },
-    { smiley: '🏅', text: 'Les concours de mathématiques organisés par Saint Jean Hulst' },
-    { smiley: '🤓', text: 'De quoi se préparer pour la rentrée' },
-  ]
 
   const newsFetched = ref<boolean>(false)
 

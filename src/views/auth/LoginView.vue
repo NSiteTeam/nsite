@@ -1,58 +1,155 @@
 <template>
-  <div class="login-container">
-    <form id="login" @submit.prevent="handleLogin">
-      <div
-        class="good"
-        v-if="!loading && databaseClient.isConnected.value && !failure"
-      >
-        Vous êtes bien connecté !
-      </div>
-      <div
-        v-else-if="!loading && failure && !databaseClient.isConnected.value"
-        class="error"
-      >
-        {{ failure.message }}
-      </div>
-      <div class="indication" v-else-if="loading">
-        Tentative de connection ...
-      </div>
-      <div class="login-form">
-        <h2>Se connecter</h2>
-        <input type="email" v-model="email" placeholder="Email" />
-        <input type="password" v-model="password" placeholder="Mot de passe" />
-        <input type="submit" value="Se connecter" :disabled="loading" />
+  <AuthView>
+    <form @submit.prevent="tryLogin" class="h-full w-full">
+      <div class="flex flex-col h-full">
+        <LargeTitle>Se connecter</LargeTitle>
+
+        <InputField
+          class='mt-4'
+          type="email"
+          label="Adresse email"
+          placeholder="jean.dupont@gmail.com"
+          v-model='email'
+          :error='emailError'
+        />
+
+        <InputField
+          class='mt-4'
+          type="password"
+          label="Mot de passe"
+          v-model="password"
+          :error='passwordError'
+          placeholder="********"
+        />
+
+        <SubmitButton
+          message='Continuer'
+          :invalidFields='invalidFields'
+          :submitting='submitting'
+        />
       </div>
     </form>
-  </div>
+  </AuthView>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { databaseClient } from '@/database/implementation'
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const failure = ref(null)
+  /**
+   * TODO: Allow user to reset its password.
+   */
+  import { computed, ref, watch } from 'vue'
+  import { databaseClient } from '@/database/implementation'
+  import LargeTitle from '@/components/style/LargeTitle.vue'
+  import InputField from '@/components/style/InputField.vue'
+  import AuthView from './AuthView.vue'
+  import SubmitButton from '@/components/style/SubmitButton.vue'
+  import { MessageStack, MessageType } from '@/utils/message_stack'
+  import type { Message } from '@/utils/message_stack'
+  import { useRouter } from 'vue-router'
 
-const errorMessages = {
-  'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-  'Invalid login credentials': `Le mot de passe ou l'adresse mail indiquée est erronée.`,
-  'Email not confirmed': 'Confirmez votre adresse email',
-}
+  const router = useRouter()
 
-async function handleLogin() {
-  loading.value = true
-  const { connectionStatus, error } = await databaseClient.login(
-    email.value,
-    password.value,
-  )
-  loading.value = false
-  failure.value = error
+  const email = ref('')
+  const password = ref('')
 
-  console.log(
-    'État de la connection :',
-    connectionStatus,
-    connectionStatus ? 'OK' : '\nErreur : ' + error.message,
-  )
-}
+  const emailError = ref('')
+  const passwordError = ref('')
+
+  const submitting = ref(false)
+
+  let lastMessage: Message | null = null
+
+  if (databaseClient.isConnected.value) {
+    goHome()
+  }
+
+  watch(email, (value) => {
+    if (value && !isEmail(value)) {
+      emailError.value = 'Cette adresse email n\'est pas valide'
+    } else {
+      emailError.value = ''
+    }
+  })
+
+  watch(password, (value) => {
+    if (value && value.length < 6) {
+      passwordError.value = 'Le mot de passe doit contenir au moins 6 caractères'
+    } else {
+      passwordError.value = ''
+    }
+  })
+
+  const invalidFields = computed(() => {
+    return email.value == '' ||
+      password.value == '' ||
+      emailError.value != '' ||
+      passwordError.value != ''
+  })
+
+  async function tryLogin() {
+    console.log("Try to login")
+
+    // We remove the last message
+    if (lastMessage) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+    }
+
+    lastMessage = {
+      type: MessageType.INFO,
+      text: 'Connexion en cours...',
+      timeout: 5000
+    }
+    MessageStack.getInstance().push(lastMessage)
+    submitting.value = true
+
+    const error = await databaseClient.login(email.value, password.value)
+
+    submitting.value = false
+
+    if (error == null) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.SUCCESS,
+        text: 'Connexion réussie',
+        timeout: 2000
+      }
+      MessageStack.getInstance().push(lastMessage)
+
+      email.value = ''
+      password.value = ''
+
+      goHome()
+    } else {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.ERROR,
+        text: tryTranslate(error),
+        timeout: 5000
+      }
+      MessageStack.getInstance().push(lastMessage)
+    }
+  }
+
+  // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+  function isEmail(email: string) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  function goHome() {
+    router.push('/')
+  }
+
+  function tryTranslate(englishError: string) {
+    switch (englishError) {
+      case 'Invalid login credentials':
+        return 'Identifiants invalides'
+      case 'Email not confirmed':
+        return 'Votre adresse email n\'a pas été confirmée'
+      default:
+        return englishError
+    }
+  }
 </script>

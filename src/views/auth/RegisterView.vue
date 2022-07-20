@@ -1,146 +1,277 @@
 <template>
-  <div class="login-container">
-    <form id="register" @submit.prevent="handleRegister">
-      <div class="good" v-if="!loading && success && !failure">
-        Vérifiez votre adresse email pour vous connecter
-      </div>
-      <div v-else-if="!loading && failure && !success" class="error">
-        {{ failure.message }}
-      </div>
-      <div class="indication" v-else-if="loading">
-        Tentative de connection ...
-      </div>
-      <h2>S'inscrire</h2>
-      <span class="input-box">
-        <input
-          type="username"
-          v-model="username"
-          placeholder="Nom d'utilisateur"
+  <AuthView>
+    <form @submit.prevent="tryRegister" class="h-full w-full">
+      <div class="flex flex-col h-full">
+        <LargeTitle>S'inscrire</LargeTitle>
+
+        <p class='text-sm text-gray-500 italic'>
+          Le compte n'est pas nécessaire pour les utilisateurs n'étant pas enseignants.
+        </p>
+
+        <InputField
+          class='mt-4'
+          type="email"
+          label="Adresse email"
+          placeholder="jean.dupont@gmail.com"
+          v-model='email'
+          :error='emailError'
         />
-      </span>
-      <span class="input-box">
-        <input type="email" v-model="email" placeholder="Email" />
-      </span>
-      <span class="input-box password">
-        <input
-          :type="displayPassword ? 'text' : 'password'"
+
+        <InputField
+          class='mt-4'
+          type="password"
+          label="Mot de passe"
           v-model="password"
-          placeholder="Mot de passe"
-          @input="calculateStrength()"
+          :error='passwordError'
+          placeholder="********"
         />
-        <span class="material-icons" @click="togglePassword()">
-          visibility{{ displayPassword ? '' : '_off' }}
-        </span>
-        <div class="strength-bar">
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 0 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 1 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 2 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
+        <div class="w-full mt-1">
+          <div
+            class='h-2 rounded bg-gradient-to-r transition-all duration-500'
+            :class="{
+              'w-1/12 from-purple-200 to-purple-700': passwordStrength == 0,
+              'w-1/6 from-red-200 to-red-700': passwordStrength == 1,
+              'w-2/6 from-orange-200 to-orange-700': passwordStrength == 2,
+              'w-3/6 from-yellow-200 to-yellow-700': passwordStrength == 3,
+              'w-4/6 from-amber-200 to-amber-700': passwordStrength == 4,
+              'w-5/6 from-green-200 to-green-700': passwordStrength == 5,
+              'w-full from-blue-200 to-blue-700': passwordStrength == 6,
+            }"
+          ></div>
+          <span class="text-sm text-gray-600">
+            {{ passwordStrengthMessage }}
+          </span>
         </div>
-        <span v-if="passwordStrength > 0">Mot de passe </span>
-        <span class="strength-message" :class="'text-color' + passwordStrength">
-          {{ strengthLevelsNames[passwordStrength] }}
-        </span>
-      </span>
-      <div class="password-strength-info">
-        Le mot de passe doit contenir:
-        <ul>
-          <li>Au moins une lettre majuscule et minuscule</li>
-          <li>Un caractère spécial</li>
-          <li>8 caractères ou plus</li>
-        </ul>
+
+        <InputField
+          class='mt-4'
+          type="password"
+          label="Confirmez votre mot de passe"
+          v-model="confirmPassword"
+          :error='confirmPasswordError'
+          placeholder="********"
+        />
+
+        <SubmitButton
+          message="S'inscrire"
+          :invalidFields='invalidFields'
+          :submitting='submitting'
+        />
       </div>
-      <input type="submit" value="S'inscrire" :disabled="loading" />
     </form>
-  </div>
+  </AuthView>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Ref } from 'vue'
-import { databaseClient } from '@/database/implementation'
+  /**
+   * TODO: 1. Go to a "waiting for email confirmation" page
+   *       2. Password confirmation
+   */
+  import { computed, ref, watch } from 'vue'
+  import { databaseClient } from '@/database/implementation'
+  import LargeTitle from '@/components/style/LargeTitle.vue'
+  import InputField from '@/components/style/InputField.vue'
+  import AuthView from './AuthView.vue'
+  import SubmitButton from '@/components/style/SubmitButton.vue'
+  import { MessageStack, MessageType } from '@/utils/message_stack'
+  import type { Message } from '@/utils/message_stack'
+  import { useRouter } from 'vue-router'
 
-// Strength checks RegExp
-const strongPassword = new RegExp(
-  '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z].*[a-z]).{8,}$',
-)
-const mediumPassword = new RegExp(
-  '((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))|((?=.*[a-z])(?=.*[A-Z])(?=.{10,}))',
-)
+  const router = useRouter()
 
-enum strengthLevels {
-  UNKNOWN,
-  WEAK,
-  MEDIUM,
-  STRONG,
-}
+  const email = ref('')
+  const password = ref('')
+  const confirmPassword = ref('')
 
-const strengthLevelsNames = ['', 'faible', 'correct', 'fort']
+  const emailError = ref('')
+  const passwordError = ref('')
+  const confirmPasswordError = ref('')
 
-const email: Ref<string> = ref('')
-const password: Ref<string> = ref('')
-const username: Ref<string> = ref('')
-const displayPassword = ref(false)
-const passwordStrength: Ref<strengthLevels> = ref(strengthLevels.UNKNOWN)
-const loading: Ref<boolean> = ref(false)
-const failure = ref()
-const success: Ref<boolean> = ref(false)
+  const submitting = ref(false)
 
-function calculateStrength(): void {
-  // If the password validates the strong password regex, set the password strength to STRONG (=3)
-  if (strongPassword.test(password.value)) {
-    passwordStrength.value = strengthLevels.STRONG
-    // Else if the password validates the strong password regex, set the password strength to STRONG (=2)
-  } else if (mediumPassword.test(password.value)) {
-    passwordStrength.value = strengthLevels.MEDIUM
-    // Else if there is no password, set the password strength to UNKNOWN (=0)
-  } else if (password.value.length == 0) {
-    passwordStrength.value = strengthLevels.UNKNOWN
-  } else {
-    // If the password is neither inexistent, medium nor strong, set its strong to WEAK (=1)
-    passwordStrength.value = strengthLevels.WEAK
+  const passwordStrength = ref(0)
+  const passwordStrengthMessage = ref('')
+
+  let lastMessage: Message | null = null
+
+  if (databaseClient.isConnected.value) {
+    goHome()
   }
-}
 
-function togglePassword() {
-  displayPassword.value = !displayPassword.value
-}
+  watch(email, (value) => {
+    if (value && !isEmail(value)) {
+      emailError.value = 'Cette adresse email n\'est pas valide'
+    } else {
+      emailError.value = ''
+    }
+  })
 
-const errorMessages = {
-  'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-  'Password should be at least 6 characters': `Le mot de passe doit contenir au moins 6 caractères`,
-  'User already registered': "L'utilisateur a déjà été inscrit",
-  "Nom d'utilisateur trop court": "Nom d'utilisateur trop court",
-}
+  watch(password, (value) => {
+    let strength = 0
+    let tip = ''
 
-async function handleRegister() {
-  if (passwordStrength.value < 2) {
-    failure.value = { message: 'Mot de passe trop faible' }
-    return
+    if (value.length >= 6) {
+      strength += 1
+    } else if (!tip) {
+      tip = 'Le mot de passe doit contenir au moins 6 caractères.'
+    }
+
+    if (value.match(/[a-z]/)) {
+      strength += 1
+    } else if (!tip) {
+      tip = 'Le mot de passe doit contenir au moins une lettre minuscule.'
+    }
+
+    if (value.match(/[A-Z]/)) {
+      strength += 1
+    } else if (!tip) {
+      tip = 'Le mot de passe doit contenir au moins une lettre majuscule.'
+    }
+
+    if (value.match(/[0-9]/)) {
+      strength += 1
+    } else if (!tip) {
+      tip = 'Le mot de passe doit contenir au moins un chiffre.'
+    }
+
+    if (value.match(/[^a-zA-Z0-9]/)) {
+      strength += 1
+    } else if (!tip) {
+      tip = 'Le mot de passe doit contenir au moins un caractère spécial.'
+    }
+
+    if (value.length > 12) {
+      strength += 1
+    }
+
+    passwordStrength.value = strength
+
+    let strengthMessage = null
+    switch (strength) {
+      case 0:
+        strengthMessage = '😕 Très faible.'
+        break
+      case 1:
+        strengthMessage = '😑 Faible.'
+        break
+      case 2:
+        strengthMessage = '😐 Moyen.'
+        break
+      case 3:
+        strengthMessage = '😊 Bon.'
+        break
+      case 4:
+        strengthMessage = '🙂 Très bon.'
+        break
+      case 5:
+        strengthMessage = '😁 Excellent.'
+        break
+      case 6:
+        strengthMessage = '🤩 Wow.'
+        break
+    }
+
+    if (strength < 5 && password.value) {
+      passwordError.value = ' ' // Little hack to make the error border pop out
+      if (confirmPasswordError.value == '') {
+        confirmPasswordError.value = 'Votre mot de passe doit être sûr'
+      }
+    } else {
+      passwordError.value = ''
+    }
+
+    if (strength == 5) {
+      tip = 'Votre mot de passe est sûr.'
+    } else if (strength == 6) {
+      tip = 'Votre mot de passe est extrêmement sécurisé.'
+    }
+
+    passwordStrengthMessage.value = `${strengthMessage} ${tip}`
+  })
+
+  const invalidFields = computed(() => {
+    return email.value == '' ||
+      password.value == '' ||
+      confirmPassword.value == '' ||
+      emailError.value != '' ||
+      passwordError.value != '' ||
+      confirmPasswordError.value != ''
+  })
+
+  async function tryRegister() {
+    console.log("Try to register")
+
+    // We remove the last message
+    if (lastMessage) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+    }
+
+    lastMessage = {
+      type: MessageType.INFO,
+      text: 'Inscription en cours...',
+      timeout: 5000
+    }
+    MessageStack.getInstance().push(lastMessage)
+    submitting.value = true
+
+    const error = await databaseClient.register(email.value, password.value)
+
+    submitting.value = false
+
+    if (error == null) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.SUCCESS,
+        text: 'Inscription réussie, si l\'adresse email que vous avez fournie est valide, vous recevrez un email de confirmation pour activer votre compte.', // TODO see supabase.ts.register
+        timeout: 10000
+      }
+      MessageStack.getInstance().push(lastMessage)
+
+      email.value = ''
+      password.value = ''
+      confirmPassword.value = ''
+
+      goHome()
+    } else {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.ERROR,
+        text: tryTranslate(error),
+        timeout: 5000
+      }
+      MessageStack.getInstance().push(lastMessage)
+    }
   }
-  loading.value = true
-  console.log(username.value)
-  const { error, accountCreated } = await databaseClient.signIn(
-    email.value,
-    password.value,
-    username.value,
-  )
-  loading.value = false
-  failure.value = error
-  success.value = accountCreated
-}
+
+  watch([confirmPassword, password], (values) => {
+    if (values[0] != values[1] && values[1] != '') {
+      confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
+    } else if (passwordError.value != '') {
+      confirmPasswordError.value = 'Votre mot de passe doit être sûr'
+    } else {
+      confirmPasswordError.value = ''
+    }
+  })
+
+  // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+  function isEmail(email: string) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  function goHome() {
+    router.push('/')
+  }
+
+  function tryTranslate(englishError: string) {
+    switch (englishError) {
+      case 'Invalid login credentials':
+        return 'Identifiants invalides'
+      default:
+        return englishError
+    }
+  }
 </script>

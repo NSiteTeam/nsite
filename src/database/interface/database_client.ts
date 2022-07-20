@@ -5,18 +5,31 @@ import type { HistoryPoint } from './history_point'
 import type { Repository } from './repositories'
 import type CustomFile from './file'
 import type Message from './message'
-import type { User } from './user'
+import type { User, email, password, username } from './user'
 import type { Level } from './level'
 
 export type errorMessage = string
 
 export interface DatabaseClient {
-  // USER
+  /* User */
   isConnected: Ref<boolean>
   user: Ref<User | null>
 
-  signIn(email: string, password: string, username: string): any
-  login(email: string, password: string): any
+  /**
+   * Sign in the user with the given email and password
+   * @param email the email of the user
+   * @param password the password of the user
+   * @returns if the account was created or not. The return will be true even if the email is not yet verified
+   */
+  register(email: email, password: password): any
+
+  /**
+   * Login the user with the given email and password
+   * @param email The email of the user
+   * @param password The password of the user
+   * @returns An error message if the login failed, null otherwise
+   */
+  login(email: email, password: password): Promise<errorMessage | null>
   getUsername(uuid: string): Promise<string>
   logout(): Promise<boolean>
   getAllUsers(quantity?: number): Promise<any>

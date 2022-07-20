@@ -26,10 +26,10 @@ $header-height: 68px;
 }
 
 body {
-  background: $space-cadet;
+  //background: $space-cadet;
   background-repeat: no-repeat;
   margin: 0;
-  color: $cream-white;
+  min-height: 100vh;
 }
 
 #app {
@@ -38,21 +38,14 @@ body {
 }
 
 *:not(.material-icons) {
-  font-family: OpenSans;
 }
 
-a,
-NavLink {
-  color: $cream-white;
+a {
   text-decoration: none;
 
   &:hover {
     cursor: pointer;
   }
-}
-
-h2 {
-  color: $cream-white;
 }
 
 .error {
@@ -161,7 +154,7 @@ h2 {
   -ms-overflow-style: none;  // IE and Edge
 }
 
-input,
+/*input,
 textarea {
   border: 1px solid #737373;
   background-color: $space-cadet;
@@ -173,4 +166,4 @@ textarea {
   &:focus {
     border-color: $cream-white;
   }
-}
+}*/

@@ -3,17 +3,18 @@
     :class="{
       'h-full center relative': true,
       'after:content-[\'\'] after:absolute': isActive,
-      'after:from-marker after:via-marker after:to-transparent': isActive,
+      'after:from-primary after:to-transparent': isActive,
       'pl-6': minify,
-      'after:bottom-0 after:h-1.5 after:w-full after:bg-gradient-to-t': isActive && !minify,
-      'after:left-0 after:w-1.5 after:h-full after:bg-gradient-to-r': isActive && minify,
+      'after:bottom-0 after:h-1 after:w-full after:bg-gradient-to-t after:rounded-t-full': isActive && !minify,
+      'after:left-0 after:w-1.5 after:h-full after:bg-gradient-to-r after:rounded-r-full': isActive && minify,
     }"
   >
-    <RouterLink :to='to' active-class="">
+    <RouterLink :to='to'>
       <span
         :class="{
-          'hover:text-marker transition-colors text-lg leading-loose': true,
+          'hover:text-accent transition-all text-lg leading-loose inline-block': true,
           'mx-4': !minify,
+          'translate-x-2': minify && isActive,
         }"
       >
         <slot />

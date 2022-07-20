@@ -1,20 +1,87 @@
 import type { User, email, username, uuid } from '../interface/user'
 import type { Permission } from '../interface/permissions'
+import { databaseClient } from '../implementation'
+import { supabase } from './supabase_client'
+import { SupabasePermissionHelper } from './supabase_permission_helper'
+import { watch } from 'vue'
+
 export class SupabaseUser implements User {
   email: email
-  username: username
   uuid: uuid
-  permissions: Permission[]
+
+  fetchedPermissions: Permission[] | null = null
+  fetchedUsername: string | null = null
 
   constructor(
     email: email,
-    username: username,
     uuid: uuid,
-    permissions: Permission[],
   ) {
     this.email = email
-    this.username = username
     this.uuid = uuid
-    this.permissions = permissions
+  }
+
+  async getPermissions(): Promise<Permission[]> {
+    console.log("Fetching user's permissions")
+
+    if (this.fetchedPermissions) {
+      console.log("User's permissions already fetched, returning cached value")
+      return this.fetchedPermissions
+    }
+
+    try {
+      // TODO-API:, replace this by a call to the API
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('roles')
+        .eq('user', supabase.auth.user()?.id)
+        .maybeSingle()
+
+      if (error) {
+        throw error
+      }
+
+      if (!data) {
+        throw 'Data returned by the request is null'
+      }
+
+      // TODO-TEST: Assert there is no changes that are not reflected in the database
+      return data.roles?.map(SupabasePermissionHelper.permissionFromId)
+    } catch (error) {
+      console.log('Error while updating user infos', error)
+
+      throw error
+    }
+  }
+
+  async getUsername(): Promise<string> {
+    console.log("Fetching user's username")
+
+    if (this.fetchedUsername) {
+      console.log("User's username already fetched, returning cached value")
+      return this.fetchedUsername
+    }
+
+    try {
+      // TODO-API:, replace this by a call to the API
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('user', supabase.auth.user()?.id)
+        .maybeSingle()
+
+      if (error) {
+        throw error
+      }
+
+      if (!data) {
+        throw 'Data returned by the request is null'
+      }
+
+      return data.username
+    } catch (error) {
+      console.log('Error while updating user infos', error)
+
+      throw error
+    }
   }
 }

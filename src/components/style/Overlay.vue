@@ -1,8 +1,9 @@
 <template>
   <div
+    @click='closeOverlay'
     :class="{
       'hidden': !on,
-      'fixed top-0 left-0 w-screen h-screen bg-black/30 z-40': on
+      'fixed top-0 left-0 w-screen h-screen bg-black/20 z-40': on
     }"
   ></div>
 </template>
@@ -14,4 +15,10 @@
       default: false
     }
   })
+
+  const emit = defineEmits(['close'])
+
+  const closeOverlay = () => {
+    emit('close')
+  }
 </script>

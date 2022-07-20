@@ -15,19 +15,77 @@ import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
 import SupabaseMessage from './supabase_message'
 import { SupabaseUser } from './supabase_user'
+import { supabase } from './supabase_client'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import { databaseClient } from '../implementation'
 
 export class SupabaseClient implements DatabaseClient {
   constructor() {
     // At initialization we try to restore the previous session
-    this.updateUserInfos()
+    this.updateConnectionStatus()
+  }
+
+  /* User */
+  isConnected: Ref<boolean> = ref(false)
+  user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
+
+  async register(email: string, password: string): Promise<errorMessage | null> {
+    console.log(`Send registration request with email ${email}`)
+
+    let { user, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    }, {
+      redirectTo: window.location.host
+    })
+
+    if (error) {
+      console.log(`Registration failed with code ${error.status} and message ${error.message}`)
+
+      return error.message
+    }
+
+    console.log('Registration request back without error, waiting for email confirmation')
+
+    /**
+     * TODO-API: Here we cannot now if their was already an user with the same email.
+     * (https://github.com/supabase/supabase-js/issues/296). So we should transfer
+     * account creation in the API where the function createUser() is available and
+     * return if an user with the same email already exists.
+     */
+
+    return null
+  }
+
+  async login(email: string, password: string): Promise<errorMessage | null> {
+    console.log(`Send login request with email ${email}`)
+
+    const { error } = await supabase.auth.signIn({
+      email: email,
+      password: password
+    })
+
+    if (error) {
+      console.log(`Connection failed with code ${error.status} and message ${error.message}`)
+
+      return error.message
+    }
+
+    console.log('Login request back without error')
+
+    this.updateConnectionStatus()
+
+    if (!this.isConnected) {
+      console.log(`Despite there was no error, the user is not connected`)
+
+      return 'Une erreur est survenue, réessayez plus tard'
+    }
+
+    console.log('The user is now connected')
+
+    return null
   }
 
   // The value of this ref is the fetched files
@@ -62,9 +120,6 @@ export class SupabaseClient implements DatabaseClient {
   // The value of this ref is the fetched messages
   messages: Ref<Repository[]> = ref([])
 
-  // The value of this ref is true if the user is connected to the database
-  isConnected: Ref<boolean> = ref(false)
-  user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
 
   /**
    * A list of news fetched from the database.
@@ -77,55 +132,6 @@ export class SupabaseClient implements DatabaseClient {
   // A list of history points fetched from the database
   fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
-  /**
-   * Sign in the user with the given email and password
-   * @param email the email of the user
-   * @param password the password of the user
-   * @param username the username of the user
-   * @returns if the account was created or not. The return can be true even if the email is not yet verified
-   */
-  async signIn(
-    email: string,
-    password: string,
-    username: string,
-  ): Promise<any> {
-    if (username.length < 3)
-      return {
-        accountCreated: false,
-        error: {
-          status: 400,
-          message: "Nom d'utilisateur trop court",
-        },
-      }
-    console.log('Try to sign in with email: ', email)
-
-    let { user, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
-    console.log(user)
-
-    const res = await supabase.from('profiles').insert({
-      user: user?.id,
-      username: username,
-    })
-    error && res.error
-      ? (error = {
-          status: 500,
-          message: error.message + ' ' + res.error?.message,
-        })
-      : null
-    res.error ? (error = { status: 500, message: res.error.message }) : null
-
-    // Here the account exists, but the email is not verified yet
-    const accountCreated = !error && user != null
-    console.log('Error :', error)
-    console.log('Account created:', accountCreated)
-    return {
-      accountCreated: accountCreated,
-      error: error,
-    }
-  }
 
     /**
      * Sign in the user with the given email and password
@@ -137,7 +143,7 @@ export class SupabaseClient implements DatabaseClient {
         console.log("Trying to sign out")
 
         const { error } = await supabase.auth.signOut()
-        this.updateUserInfos()
+        this.updateConnectionStatus()
 
         return new Promise((resolve, reject) => {
             if (!error) {
@@ -148,38 +154,13 @@ export class SupabaseClient implements DatabaseClient {
         })
     }
 
-    /**
-     * Login the user with the given email and password
-     * @param email The email of the user
-     * @param password The password of the user
-     * @returns If the login was successful or not
-     */
-    async login(email: string, password: string): Promise<any> {
-      console.log("Try to login with email: ", email)
-
-      const { error } = await supabase.auth.signIn({
-          email: email,
-          password: password
-      })
-
-      await this.updateUserInfos()
-
-      console.log("Connection status:", this.isConnected.value)
-
-      return {
-          "connectionStatus": this.isConnected.value,
-          "error": error,
-      }
-    }
-
   /**
    * Private method to update the data of the user. For the moment it updates :
    *  - Connection status
    *  - User email
-   *  - User permissions (always verified server-side)
    */
-  private async updateUserInfos() {
-    console.log('Try to update user infos')
+  private updateConnectionStatus() {
+    console.log('Updating connection status')
 
     const isConnected = supabase.auth.session() != null
     this.isConnected.value = isConnected
@@ -187,34 +168,16 @@ export class SupabaseClient implements DatabaseClient {
     if (!isConnected) {
       console.log("User isn't connected")
       return
+    } else {
+      console.log('User is connected')
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username, roles')
-        .eq('user', supabase.auth.user()?.id)
-        .maybeSingle()
+    this.user.value = new SupabaseUser(
+      supabase.auth.user()?.email!,
+      supabase.auth.user()?.id!
+    )
 
-      if (error) {
-        throw error
-      }
-
-      if (!data) {
-        throw 'Data returned by the request is null'
-      }
-
-      this.user.value = new SupabaseUser(
-        supabase.auth.user()?.email!,
-        data.username,
-        supabase.auth.user()?.id!,
-        data.roles?.map(SupabasePermissionHelper.permissionFromId),
-      )
-    } catch (error) {
-      console.log('Error while updating user infos', error)
-    }
-
-    console.log('Just updated user infos', this.user.value)
+    console.log('Just updated connection status', this.user.value)
   }
 
   /**

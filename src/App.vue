@@ -1,17 +1,18 @@
-<script setup lang="ts">
-// @ts-ignore Bug de vue
-import Nav from './components/Nav.vue'
-</script>
-
 <template>
   <Nav />
   <main>
+    <MessagesView />
     <Suspense>
       <RouterView />
     </Suspense>
   </main>
 </template>
 
+<script setup lang="ts">
+  import Nav from '@/components/NavBar/NavBar.vue'
+  import MessagesView from '@/components/MessagesView.vue'
+</script>
+
 <style lang="scss">
-@import './src/style/index.scss';
+  @import './src/style/index.scss'
 </style>
