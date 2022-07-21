@@ -4,8 +4,6 @@ import ManageDeposits from '@/components/dashboard/ManageDeposits.vue'
 // @ts-ignore
 import ManageUsers from '@/components/dashboard/ManageUsers.vue'
 // @ts-ignore
-import Blacklist from '@/components/dashboard/Blacklist.vue'
-// @ts-ignore
 import ManageNews from '@/components/dashboard/ManageNews.vue'
 // @ts-ignore
 import ManageHistoryPoints from '@/components/dashboard/ManageHistoryPoints.vue'
@@ -26,17 +24,16 @@ const availableViewsForUser = computed(() => {
   let result: View[] = []
   const permissions = databaseClient.user.value?.permissions
 
-  if (permissions == null) {
+  if (permissions == null || permissions.includes(Permission.STUDENT)) {
     return result
   }
 
   for (let permission of permissions) {
     switch (permission) {
       case Permission.STUDENT:
-        result.push(View.FORBIDDEN)
+        result = [View.FORBIDDEN]
       case Permission.TEACHER:
         result.push(View.DEPOSITS)
-        result.push(View.BLACKLIST)
         break
       case Permission.HISTORY_ADMIN:
         result.push(View.HISTORY)
@@ -111,7 +108,6 @@ class View {
       this.THEMES,
       this.TEACHERS,
       this.USERS,
-      this.BLACKLIST,
     ]) {
       if (view.nameInURL == name) {
         return view
@@ -151,12 +147,6 @@ class View {
     'users',
     'manage_accounts',
     ManageUsers,
-  )
-  static BLACKLIST = new View(
-    'Liste noire',
-    'blacklist',
-    'receipt_long',
-    Blacklist,
   )
   static FORBIDDEN = new View(
     'Passez votre chemin',

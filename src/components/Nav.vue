@@ -55,6 +55,7 @@ import { databaseClient } from '@/database/implementation'
 import { useRoute } from 'vue-router'
 import { computed } from '@vue/runtime-core'
 import ProfilePicture from '@/components/ProfilePicture.vue'
+import { SupabasePermissionHelper } from '@/database/supabase/supabase_permission_helper'
 
 const { width } = useWindowSize()
 const route = useRoute()
@@ -68,8 +69,14 @@ function toggleMenuFunction() {
   toggleMenu.value = !toggleMenu.value
 }
 
+const hasEnoughPerms = computed(() =>
+  databaseClient.user.value?.permissions.some((role) => {
+    return SupabasePermissionHelper.idFromPermission(role)
+  }),
+)
+
 const hasAccessToDashboard = computed(
   () =>
-    databaseClient.isConnected.value && databaseClient.user.value?.permissions,
+    databaseClient.isConnected.value && hasEnoughPerms.value,
 )
 </script>

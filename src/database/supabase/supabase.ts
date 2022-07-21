@@ -108,6 +108,7 @@ export class SupabaseClient implements DatabaseClient {
     const res = await supabase.from('profiles').insert({
       user: user?.id,
       username: username,
+      roles: [0]
     })
     error && res.error
       ? (error = {
