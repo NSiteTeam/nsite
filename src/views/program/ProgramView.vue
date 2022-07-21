@@ -51,72 +51,78 @@
         </div>
     </div>
 
-    <template v-for='(section, row_index) in sections' :key='row_index'>
-      <div class='flex items-center mt-8'>
-        <CollapseIcon
-          :collapsed='!section.expanded'
-          @click='collaspseSectionAt(row_index)'
-          :disabled='loaded && section.content.length < 1' />
-        <MediumTitle class='ml-4'>
-          {{ section.level.fullName }}
-          <span
-            v-if='loaded && section.content.length == 0'
-            class='ml-4 text-gray-400 italic text-xs font-semibold'
-          >
-            (Ce niveau est vide)
-          </span>
-        </MediumTitle>
+    <template v-if='sections.length'>
+      <template v-for='(section, row_index) in sections' :key='row_index'>
+        <div class='flex items-center mt-8' @click='collaspseSectionAt(row_index)'>
+          <CollapseIcon
+            :collapsed='!section.expanded'
+            :disabled='loaded && section.content.length < 1' />
+          <MediumTitle class='ml-4'>
+            {{ section.level.fullName }}
+            <span
+              v-if='loaded && section.content.length == 0'
+              class='ml-4 text-gray-400 italic text-xs font-semibold'
+            >
+              (Ce niveau est vide)
+            </span>
+          </MediumTitle>
 
-        <BarSeparator class='flex-1'/>
-      </div>
-      <div
-        class='flex flex-row items-stretch flex-nowrap overflow-x-auto md:flex-wrap'
-        :class='{
-          "max-h-0": !section.expanded,
-          "max-h-full": section.expanded
-        }'
-      >
-        <template v-if='loaded'>
+          <BarSeparator class='flex-1'/>
+        </div>
+        <div
+          class='flex flex-row items-stretch flex-nowrap overflow-x-scroll snap-x snap-proximity md:flex-wrap'
+          :class='{
+            "max-h-0": !section.expanded,
+            "max-h-full": section.expanded
+          }'
+        >
+          <template v-if='loaded'>
 
-            <template v-if='section.content.length'>
-              <ShadowBox
-                v-for='(theme, column_index) in section.content' :key='column_index'
-                class='w-80 shrink-0 flex flex-col md:justify-between'
-                reactOnHover
-                @click='goToTheme(theme)'
-              >
-                <div>
-                  <SmallTitle>{{ theme.name }}</SmallTitle>
-                  <p>{{ theme.description }}</p>
-                </div>
-                <div class="flex flex-wrap justify-around mt-4">
-                  <Badge primary><Keyword bold>{{ theme.numberOfExercises }}</Keyword> fiches d'exercices </Badge>
-                  <Badge tertiary><Keyword bold>{{ theme.numberOfInterrogations }}</Keyword> interrogations</Badge>
-                  <Badge secondary><Keyword bold>{{ theme.numberOfCorrections }}</Keyword> corrigés</Badge>
-                </div>
-              </ShadowBox>
-            </template>
+              <template v-if='section.content.length'>
+                <ShadowBox
+                  v-for='(theme, column_index) in section.content' :key='column_index'
+                  class='w-80 shrink-0 flex flex-col md:justify-between snap-start'
+                  reactOnHover
+                  @click='goToTheme(theme)'
+                >
+                  <div>
+                    <SmallTitle>{{ theme.name }}</SmallTitle>
+                    <p>{{ theme.description }}</p>
+                  </div>
+                  <div class="flex flex-wrap justify-around mt-4">
+                    <Badge primary><Keyword bold>{{ theme.numberOfExercises }}</Keyword> fiches d'exercices </Badge>
+                    <Badge tertiary><Keyword bold>{{ theme.numberOfInterrogations }}</Keyword> interrogations</Badge>
+                    <Badge secondary><Keyword bold>{{ theme.numberOfCorrections }}</Keyword> corrigés</Badge>
+                  </div>
+                </ShadowBox>
+              </template>
 
+          </template>
+          <template v-else>
 
-        </template>
-        <template v-else>
+            <ShadowBox class='w-80 shrink-0' v-for='index in numberOfCards()' :key='index' reactOnHover>
+              <SmallTitle skeleton class='w-32'/>
+              <SkeletonText class='w-full' />
+              <SkeletonText class='w-full' />
+              <SkeletonText class='w-full' />
+              <SkeletonText class='w-full' />
+              <SkeletonText class='w-2/3' />
+              <div class='mt-8'>
+                  <SkeletonText class='w-10 inline-block' />
+                  <SkeletonText class='w-10 inline-block' />
+                  <SkeletonText class='w-10 inline-block' />
+              </div>
+            </ShadowBox>
 
-          <ShadowBox class='w-80 shrink-0' v-for='index in numberOfCards()' :key='index' reactOnHover>
-            <SmallTitle skeleton class='w-32'/>
-            <SkeletonText class='w-full' />
-            <SkeletonText class='w-full' />
-            <SkeletonText class='w-full' />
-            <SkeletonText class='w-full' />
-            <SkeletonText class='w-2/3' />
-            <div class='mt-8'>
-                <SkeletonText class='w-10 inline-block' />
-                <SkeletonText class='w-10 inline-block' />
-                <SkeletonText class='w-10 inline-block' />
-            </div>
-          </ShadowBox>
+          </template>
+        </div>
+      </template>
+    </template>
 
-        </template>
-      </div>
+    <template v-else>
+      <p class='text-center text-gray-400 italic text-lg mt-8'>
+        Aucun résultat trouvés pour ces filtres 😢
+      </p>
     </template>
   </div>
   <div class='h-16'></div>
@@ -154,6 +160,12 @@
   import { useWindowSize } from "vue-window-size"
   import { getParameterOfRoute, getQueryParameterOfRoute } from "@/utils/route_utils"
 
+  const route = useRoute()
+  const router = useRouter()
+  const { width: windowsWidth } = useWindowSize()
+
+  /* FILTERS */
+
   type Filter = {
     name: string,
     nameInUrl: string,
@@ -183,8 +195,6 @@
 
   const ALL_FILTERS = SUPER_FILTERS.concat(COLLEGE_FILTERS).concat(LYCEE_FILTERS)
 
-  const route = useRoute()
-
   const getSearch = () => decodeURI(getQueryParameterOfRoute(route.query['search']) ?? '')
   const getFilterName = () => ALL_FILTERS.find(filter => filter.nameInUrl === getQueryParameterOfRoute(route.query['filter']))?.name ?? ALL_FILTER.name
 
@@ -196,28 +206,26 @@
     filter.value = getFilterName()
   })
 
-  const router = useRouter()
+
+  /* PROGRAM */
+
+  type Section = {
+    level: Level,
+    expanded: boolean,
+    content: Theme[],
+  }
 
   const program: Ref<SchoolProgram | null> = ref(null)
   const loaded = ref(false)
+  databaseClient.getProgram().then(value => {
+    program.value = value
+    loaded.value = true
+  })
 
-  const { width: windowsWidth } = useWindowSize()
+  /* SECTIONS */
 
-  const computeSections = () => {
-    let levels
-    if (filter.value == ALL_FILTER.name) {
-      levels = Level.LEVELS
-    } else if (School.SCHOOLS.map(school => school.name).includes(filter.value)) {
-      levels = Level.LEVELS.filter(level => level.school.name == filter.value)
-    } else {
-      levels = [Level.LEVELS.find(level => level.fullName == filter.value)]
-    }
-
-    if (!levels) {
-      throw new Error(`Could not find levels for filter ${filter.value}`)
-    }
-
-    sections.value = levels.map(level => {
+  const computeAllSections = () => {
+    return Level.LEVELS.map(level => {
       if (!level) {
         throw new Error(`Could not find level for filter ${filter.value}`)
       }
@@ -228,10 +236,38 @@
       }
     })
   }
+  const allSections = ref(computeAllSections())
+  watch([program, windowsWidth], () => allSections.value = computeAllSections())
 
-  const sections = ref()
-  computeSections()
-  watch([program, windowsWidth, filter, search], computeSections)
+  const computeFiltered = () => {
+    /* First we make a filter function to keep only the sections that match the filter */
+    let filterLevels: (level: Level) => boolean
+    if (filter.value === ALL_FILTER.name) {
+      filterLevels = (_: Level) => true
+    } else if (SUPER_FILTERS.map((filter) => filter.name).includes(filter.value)) {
+      filterLevels = (level: Level) => level.school.name === filter.value
+    } else {
+      filterLevels = (level: Level) => level.fullName === filter.value
+    }
+
+    /* We create another filter function to keep only the sections that match the search */
+    let filterSearch: (theme: Theme) => boolean
+    if (search.value == '') {
+      filterSearch = (_: Theme) => true
+    } else {
+      filterSearch = (theme: Theme) => theme.name.toLowerCase().includes(search.value.toLowerCase())
+    }
+
+    return allSections?.value
+      .filter(section => filterLevels(section.level))  // We keep only the sections that match the filter
+      .map((section: Section) => ({ // We create a new section with the content that match the search
+        ...section,
+        content: section.content.filter(filterSearch)
+      }))
+      .filter(section => !loaded.value || !search.value || section.content.length > 0) // If the program is loaded and there is a search, we keep the section with content found
+  }
+  const sections = ref(computeFiltered())
+  watch([allSections, search, filter], () => sections.value = computeFiltered()) // We use this to make the sections collapsables
 
   watch([filter, search], (values) => {
     const [newFilterName, newSearch] = values
@@ -266,11 +302,6 @@
       sections.value[index].expanded = !sections.value[index].expanded
     }
   }
-
-  databaseClient.getProgram().then(value => {
-    program.value = value
-    loaded.value = true
-  })
 
   const numberOfCards = () => { // 1, 2 or 3
     return Math.floor(Math.random() * 3) + 1

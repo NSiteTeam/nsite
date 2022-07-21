@@ -11,13 +11,9 @@
         {{ theme.description }}
       </p>
 
-      <template v-if='resourcesLoaded'>
+      <div>
 
-      </template>
-
-      <template v-else>
-
-      </template>
+      </div>
 
     </template>
     <template v-else>
