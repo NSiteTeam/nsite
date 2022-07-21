@@ -17,4 +17,21 @@ export class SupabasePermissionHelper {
         throw 'Unknown permission key' + id
     }
   }
+
+  static idFromPermission(permission: Permission): number {
+    switch (permission) {
+      case Permission.STUDENT:
+        return 0
+      case Permission.TEACHER:
+        return 1
+      case Permission.HISTORY_ADMIN:
+        return 2
+      case Permission.NEWS_ADMIN:
+        return 3
+      case Permission.GLOBAL_ADMIN:
+        return 4
+      default:
+        throw 'Unknown permission' + permission
+    }
+  }
 }

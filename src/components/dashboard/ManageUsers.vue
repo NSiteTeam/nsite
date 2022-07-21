@@ -24,8 +24,6 @@ enum sortIcons {
 }
 
 const users: Ref<any[]> = ref([])
-const amount: Ref<number> = ref(5)
-const increment = 5
 const sortOrder: Ref<orders> = ref(orders.DESCENDING)
 const selectedUser: Ref<User | undefined> = ref()
 const selectedSortType: Ref<sortTypes> = ref(sortTypes.HIGHEST_ROLE)
@@ -44,15 +42,15 @@ const sortedData = computed(() => {
     case sortTypes.HIGHEST_ROLE:
       return users.value.sort((a, b) => {
         return sortOrder.value * (getMaxPermition(b) - getMaxPermition(a))
-      }).slice(0, amount.value)
+      })
     case sortTypes.UUID:
       return users.value.sort((a, b) => {
         return sortOrder.value * b.user.localeCompare(a.user)
-      }).slice(0, amount.value)
+      })
     case sortTypes.USERNAME:
       return users.value.sort((a, b) => {
         return sortOrder.value * b.username.localeCompare(a.username)
-      }).slice(0, amount.value)
+      })
     default:
       throw `Unknown permission : ${selectedSortType.value}`
   }
@@ -92,11 +90,6 @@ function getCorrespondingIcon(sortType: sortTypes) {
   } else {
     return ''
   }
-}
-
-function handleGetMore() {
-  amount.value += increment
-  console.log(amount.value)
 }
 
 function getPermissionFromId(permissionId: number): string {
@@ -149,11 +142,6 @@ function getPermissionFromId(permissionId: number): string {
         <div class="cell">
           {{ getPermissionFromId(getMaxPermition(user)) }}
         </div>
-      </div>
-      <div class="footer" @click="handleGetMore()">
-        <div class="cell"></div>
-        <div class="cell">Afficher plus</div>
-        <div class="cell"></div>
       </div>
     </div>
   </div>

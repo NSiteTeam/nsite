@@ -55,14 +55,9 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue'),
     },
     {
-      path: '/dashboard/:view?',
-      name: 'dashboard',
-      component: () => import('../views/admin/Dashboard.vue'),
-    },
-    {
       path: '/dashboard/:view?/:action?/:depo?',
       name: 'dashboard',
-      component: () => import('../views/admin/Dashboard.vue'),
+      component: () => import('@/views/admin/Dashboard.vue'),
     },
   ],
 })

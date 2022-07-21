@@ -1,30 +1,26 @@
 .manage-users {
-  height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  padding-right: 0;
+  height: fit-content;
+  max-height: 100%;
+  overflow-y: scroll;
+  
   .manage-users-table {
+    width: calc(100% + 10px);
     overflow-y: scroll;
+    width: 100%;
     display: table;
 
     .header {
       width: 100%;
       display: table-header-group;
+      position: sticky;
 
       .cell {
         cursor: pointer;
         padding: 10px;
+        text-align: center;
         background-color: $space-cadet-dark;
-
-        &:first-child {
-          border-top-left-radius: 10px;
-        }
-
-        &:last-child {
-          border-top-right-radius: 10px;
-        }
 
         &-content {
           display: flex;
@@ -54,24 +50,6 @@
       display: table-cell;
       width: 350px;
       overflow: hidden;
-    }
-  }
-
-  .footer {
-    display: table-footer-group;
-    text-align: center;
-    cursor: pointer;
-
-    .cell {
-      background-color: $space-cadet-dark;
-
-      &:first-child {
-        border-radius: 0 0 0 10px;
-      }
-
-      &:last-child {
-        border-radius: 0 0 10px 0;
-      }
     }
   }
 }
