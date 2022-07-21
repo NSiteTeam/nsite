@@ -107,7 +107,84 @@
   })
 
   watch(password, (value) => {
-    let strength = 0
+    evaluatePassword(value)
+  })
+  evaluatePassword(password.value)
+
+  const invalidFields = computed(() => {
+    return email.value == '' ||
+      password.value == '' ||
+      confirmPassword.value == '' ||
+      emailError.value != '' ||
+      passwordError.value != '' ||
+      confirmPasswordError.value != ''
+  })
+
+  async function tryRegister() {
+    console.log("Try to register")
+
+    // We remove the last message
+    if (lastMessage) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+    }
+
+    lastMessage = {
+      type: MessageType.INFO,
+      text: 'Inscription en cours...',
+      timeout: 5000
+    }
+    MessageStack.getInstance().push(lastMessage)
+    submitting.value = true
+
+    const error = await databaseClient.register(email.value, password.value)
+
+    submitting.value = false
+
+    if (error == null) {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.SUCCESS,
+        text: 'Inscription réussie, si l\'adresse email que vous avez fournie est valide, vous recevrez un email de confirmation pour activer votre compte.', // TODO see supabase.ts.register
+        timeout: 10000
+      }
+      MessageStack.getInstance().push(lastMessage)
+
+      email.value = ''
+      password.value = ''
+      confirmPassword.value = ''
+
+      goHome()
+    } else {
+      MessageStack.getInstance().closeMessage(lastMessage)
+      lastMessage = {
+        type: MessageType.ERROR,
+        text: tryTranslate(error),
+        timeout: 5000
+      }
+      MessageStack.getInstance().push(lastMessage)
+    }
+  }
+
+  watch([confirmPassword, password], (values) => {
+    if (values[0] != values[1] && values[1] != '') {
+      confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
+    } else if (passwordError.value != '') {
+      confirmPasswordError.value = 'Votre mot de passe doit être sûr'
+    } else {
+      confirmPasswordError.value = ''
+    }
+  })
+
+  // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+  function isEmail(email: string) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  function evaluatePassword(value: string) {let strength = 0
     let tip = ''
 
     if (value.length >= 6) {
@@ -187,80 +264,7 @@
     }
 
     passwordStrengthMessage.value = `${strengthMessage} ${tip}`
-  })
-
-  const invalidFields = computed(() => {
-    return email.value == '' ||
-      password.value == '' ||
-      confirmPassword.value == '' ||
-      emailError.value != '' ||
-      passwordError.value != '' ||
-      confirmPasswordError.value != ''
-  })
-
-  async function tryRegister() {
-    console.log("Try to register")
-
-    // We remove the last message
-    if (lastMessage) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-    }
-
-    lastMessage = {
-      type: MessageType.INFO,
-      text: 'Inscription en cours...',
-      timeout: 5000
-    }
-    MessageStack.getInstance().push(lastMessage)
-    submitting.value = true
-
-    const error = await databaseClient.register(email.value, password.value)
-
-    submitting.value = false
-
-    if (error == null) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.SUCCESS,
-        text: 'Inscription réussie, si l\'adresse email que vous avez fournie est valide, vous recevrez un email de confirmation pour activer votre compte.', // TODO see supabase.ts.register
-        timeout: 10000
-      }
-      MessageStack.getInstance().push(lastMessage)
-
-      email.value = ''
-      password.value = ''
-      confirmPassword.value = ''
-
-      goHome()
-    } else {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.ERROR,
-        text: tryTranslate(error),
-        timeout: 5000
-      }
-      MessageStack.getInstance().push(lastMessage)
-    }
   }
-
-  watch([confirmPassword, password], (values) => {
-    if (values[0] != values[1] && values[1] != '') {
-      confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
-    } else if (passwordError.value != '') {
-      confirmPasswordError.value = 'Votre mot de passe doit être sûr'
-    } else {
-      confirmPasswordError.value = ''
-    }
-  })
-
-  // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-  function isEmail(email: string) {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
 
   function goHome() {
     router.push('/')

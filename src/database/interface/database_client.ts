@@ -7,11 +7,16 @@ import type CustomFile from './file'
 import type Message from './message'
 import type { User, email, password, username } from './user'
 import type { Level } from './level'
+import type { SchoolProgram, Theme } from './school_program'
 
 export type errorMessage = string
 
 export interface DatabaseClient {
-  /* User */
+
+  /**
+   * USER SECTION
+   */
+
   isConnected: Ref<boolean>
   user: Ref<User | null>
 
@@ -21,7 +26,7 @@ export interface DatabaseClient {
    * @param password the password of the user
    * @returns if the account was created or not. The return will be true even if the email is not yet verified
    */
-  register(email: email, password: password): any
+  register(email: email, password: password): Promise<errorMessage | null>
 
   /**
    * Login the user with the given email and password
@@ -30,9 +35,35 @@ export interface DatabaseClient {
    * @returns An error message if the login failed, null otherwise
    */
   login(email: email, password: password): Promise<errorMessage | null>
-  getUsername(uuid: string): Promise<string>
-  logout(): Promise<boolean>
-  getAllUsers(quantity?: number): Promise<any>
+
+  /**
+   * Logout the user
+   *
+   * @returns An error message if the logout failed, null otherwise
+   */
+  logout(): Promise<errorMessage | null>
+
+  /**
+   * SCHOOL PROGRAM SECTION
+   */
+
+  /**
+   * Get the school program in mathematics.
+   *
+   * @returns The school program
+   *
+   * It's recommended for the implementation to cache the program.
+   */
+  getProgram(): Promise<SchoolProgram>
+
+  /**
+   * Get the theme of the given uuid
+   *
+   * @param uuid The uuid of the theme
+   * @returns The theme or null if it doesn't exist
+   */
+  getThemeByUuid(uuid: string): Promise<Theme | null>
+
 
   // Deposits
   uploadFileToDeposit(

@@ -23,6 +23,7 @@
           bg-transparent
           focus:outline-none
           py-3 px-4 w-full
+          caret-primary
         '
         :placeholder='placeholder'
         :value='modelValue'

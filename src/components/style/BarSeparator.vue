@@ -1,3 +1,3 @@
 <template>
-  <div class="h-[2px] mx-8 bg-black/10  "></div>
+  <div class="mx-8 border border-b-black/10 "></div>
 </template>

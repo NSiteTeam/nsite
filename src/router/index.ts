@@ -20,14 +20,19 @@ const router = createRouter({
       component: () => import('../views/auth/LoginView.vue'),
     },
     {
-      path: '/logout',
-      name: 'logout',
-      component: () => import('../views/auth/LogoutView.vue'),
-    },
-    {
       path: '/register',
       name: 'register',
       component: () => import('../views/auth/RegisterView.vue'),
+    },
+    {
+      path: '/programme',
+      name: 'program',
+      component: () => import('../views/program/ProgramView.vue'),
+    },
+    {
+      path: '/themes/:themeUuid',
+      name: 'themes',
+      component: () => import('../views/theme/ThemeView.vue'),
     },
     {
       path: '/browse/:level?',

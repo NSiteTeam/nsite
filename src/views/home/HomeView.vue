@@ -5,33 +5,33 @@
       p-5
     "
   >
-    <ShadowBox class="lg:col-span-2 bg-white/10">
+    <ShadowBox class="lg:col-span-2 bg-white/10 h-min">
       <LargeTitle>
-        Un site dédié <KeywordTitle>
-        aux mathématiques</KeywordTitle>
+        Un site dédié <Keyword secondary>
+        aux mathématiques</Keyword>
       </LargeTitle>
 
       <Catchphrase smiley='🖋️'>
-        Les annales des précédents DS avec <KeywordText>
-        les corrigés</KeywordText>
+        Les annales des précédents DS avec <Keyword primary bold>
+        les corrigés</Keyword>
       </Catchphrase>
       <Catchphrase smiley='📃'>
-        Des <KeywordText>fiches d'exercices</KeywordText> pour
+        Des <Keyword primary bold>fiches d'exercices</Keyword> pour
         s'entraîner
       </Catchphrase>
       <Catchphrase smiley='🏅'>
-        Les concours <KeywordText> de mathématiques
-        </KeywordText> organisés par Saint Jean Hulst
+        Les concours <Keyword primary bold> de mathématiques
+        </Keyword> organisés par Saint Jean Hulst
       </Catchphrase>
       <Catchphrase smiley='🤓'>
-        De quoi <KeywordText>se préparer</KeywordText> pour
+        De quoi <Keyword primary bold>se préparer</Keyword> pour
         la rentrée
       </Catchphrase>
 
     </ShadowBox>
 
-    <ShadowBox class="bg-white/10">
-      <LargeTitle>Les <KeywordTitle>actualités</KeywordTitle> de Saint Jean</LargeTitle>
+    <ShadowBox class="bg-white/10 h-min">
+      <LargeTitle>Les <Keyword secondary>actualités</Keyword> de Saint Jean</LargeTitle>
       <div class="news-container max-h-[60vh] no-scrollbar overflow-y-scroll">
         <CenteredLoadingAnimation v-if='!newsFetched' animation-size='75%'/>
 
@@ -64,8 +64,7 @@
   import type { Ref } from 'vue'
   import { LongDate } from '@/utils/long_date'
   import Catchphrase from './Catchphrase.vue'
-  import KeywordText from './KeywordText.vue'
-  import KeywordTitle from './KeywordTitle.vue'
+  import Keyword from '@/components/style/Keyword.vue'
   import Footer from '@/components/Footer.vue'
   import CenteredLoadingAnimation from '@/components/style/CenteredLoadingAnimation.vue'
   import ShadowBox from '@/components/style/ShadowBox.vue'

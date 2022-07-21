@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient, errorMessage } from '../interface/database_client'
-import type { Level } from '../interface/level'
+import { Level } from '../interface/level'
 import type { News } from '../interface/news'
 import type { HistoryPoint } from '../interface/history_point'
 import { SupabaseNews } from './supabase_news'
@@ -20,6 +20,8 @@ import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
 import { databaseClient } from '../implementation'
+import { SchoolProgram } from '../interface/school_program'
+import type { Theme } from '../interface/theme'
 
 export class SupabaseClient implements DatabaseClient {
   constructor() {
@@ -88,6 +90,80 @@ export class SupabaseClient implements DatabaseClient {
     return null
   }
 
+  async logout(): Promise<errorMessage | null> {
+    console.log("Trying to sign out")
+
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.log(`Sign out failed with code ${error.status} and message ${error.message}`)
+
+      return error.message
+    }
+
+    console.log('Sign out request back without error')
+
+    this.updateConnectionStatus()
+
+    if (this.isConnected) {
+      console.log(`Despite there was no error, the user is still connected`)
+
+      return 'Une erreur est survenue, réessayez plus tard'
+    }
+
+    return null
+  }
+
+  /* Program */
+  fetchedProgram: SchoolProgram | null = null
+  async getProgram(): Promise<SchoolProgram> {
+    console.log('Fetching school program') // TODO: Should we store it in the local storage ?
+
+    if (this.fetchedProgram != null) {
+      console.log('School program already fetched, returning cached value')
+      return this.fetchedProgram
+    }
+
+    const { data, error } = await supabase
+      .from('themes')
+      .select()
+
+    if (error) {
+      console.log(`Fetching the school program failed with error ${error}`)
+
+      throw error.message
+    }
+
+    if (data == null) {
+      console.log('Despite there was no error, returned the school program is null')
+
+      throw 'Une erreur est survenue, réessayez plus tard'
+    }
+
+    let program = new SchoolProgram()
+    data.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, {
+      uuid: theme.uuid,
+      name: theme.name,
+      description: theme.description,
+      numberOfExercises: theme.resources_interrogations,
+      numberOfInterrogations: theme.resources_exercises,
+      numberOfCorrections: theme.ressources_with_correction
+    }))
+
+    console.log(`Built school program from the data, storing it into the cache`, program)
+    this.fetchedProgram = program
+
+    return program
+  }
+
+    async getThemeByUuid(uuid: string): Promise<Theme | null> {
+    if (this.fetchedProgram == null) {
+      await this.getProgram()
+    }
+
+    return this.fetchedProgram!!.find((theme) => theme.uuid == uuid)
+  }
+
   // The value of this ref is the fetched files
   files: Ref<CustomFile[]> = ref([])
 
@@ -133,26 +209,7 @@ export class SupabaseClient implements DatabaseClient {
   fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
 
-    /**
-     * Sign in the user with the given email and password
-     * @param email the email of the user
-     * @param password the password of the user
-     * @returns if the account was created or not. The return can be true even if the email is not yet verified
-     */
-    async logout(): Promise<any> {
-        console.log("Trying to sign out")
 
-        const { error } = await supabase.auth.signOut()
-        this.updateConnectionStatus()
-
-        return new Promise((resolve, reject) => {
-            if (!error) {
-                resolve("Vous êtes déconnecté")
-            } else {
-                reject(error)
-            }
-        })
-    }
 
   /**
    * Private method to update the data of the user. For the moment it updates :

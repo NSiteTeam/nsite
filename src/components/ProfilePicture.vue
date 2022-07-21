@@ -30,7 +30,6 @@
 import { databaseClient } from '@/database/implementation'
 import { computed, watch } from 'vue'
 
-console.log(databaseClient.user.value)
 const props = defineProps(['size'])
 const size = props.size
 
