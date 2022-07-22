@@ -1,5 +1,5 @@
 <template>
-  <div class="relative bottom-0 w-full">
+  <div class="relative w-full">
     <BarSeparator />
     <ul
       class="

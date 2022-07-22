@@ -1,6 +1,6 @@
 <template>
   <div
-    class='bg-slate-200 m-2 animate-pulse'
+    class='bg-slate-200 my-2 animate-pulse'
     :class="classes"
   ></div>
 </template>

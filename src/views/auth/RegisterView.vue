@@ -73,7 +73,7 @@
   import InputField from '@/components/style/InputField.vue'
   import AuthView from './AuthView.vue'
   import SubmitButton from '@/components/style/SubmitButton.vue'
-  import { MessageStack, MessageType } from '@/utils/message_stack'
+  import { MessageReplacer, MessageStack, MessageType } from '@/utils/message_stack'
   import type { Message } from '@/utils/message_stack'
   import { useRouter } from 'vue-router'
 
@@ -92,7 +92,7 @@
   const passwordStrength = ref(0)
   const passwordStrengthMessage = ref('')
 
-  let lastMessage: Message | null = null
+  let replacer = new MessageReplacer()
 
   if (databaseClient.isConnected.value) {
     goHome()
@@ -123,46 +123,38 @@
   async function tryRegister() {
     console.log("Try to register")
 
-    // We remove the last message
-    if (lastMessage) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-    }
-
-    lastMessage = {
+    replacer.replaceLastBy({
       type: MessageType.INFO,
       text: 'Inscription en cours...',
       timeout: 5000
-    }
-    MessageStack.getInstance().push(lastMessage)
+    })
+
     submitting.value = true
 
-    const error = await databaseClient.register(email.value, password.value)
+    await databaseClient.register(email.value, password.value)
+      .then(() => {
+        replacer.replaceLastBy({
+          type: MessageType.SUCCESS,
+          text: 'Inscription réussie, si l\'adresse email que vous avez fournie est valide, vous recevrez un email de confirmation pour activer votre compte.', // TODO see supabase.ts.register
+          timeout: 10000
+        })
 
-    submitting.value = false
+        email.value = ''
+        password.value = ''
+        confirmPassword.value = ''
 
-    if (error == null) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.SUCCESS,
-        text: 'Inscription réussie, si l\'adresse email que vous avez fournie est valide, vous recevrez un email de confirmation pour activer votre compte.', // TODO see supabase.ts.register
-        timeout: 10000
-      }
-      MessageStack.getInstance().push(lastMessage)
-
-      email.value = ''
-      password.value = ''
-      confirmPassword.value = ''
-
-      goHome()
-    } else {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.ERROR,
-        text: tryTranslate(error),
-        timeout: 5000
-      }
-      MessageStack.getInstance().push(lastMessage)
-    }
+        goHome()
+      })
+      .catch((error) => {
+        replacer.replaceLastBy({
+          type: MessageType.ERROR,
+          text: tryTranslate(error),
+          timeout: 5000
+        })
+      })
+      .finally(() => {
+        submitting.value = false
+      })
   }
 
   watch([confirmPassword, password], (values) => {

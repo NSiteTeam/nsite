@@ -1,5 +1,19 @@
 import { Level } from "./level"
 
+export enum ThemeResourceType {
+  EXERCISES = 0,
+  INTERROGATION = 1,
+  OTHER = 2
+}
+
+export type ThemeResource = {
+  name: string,
+  message?: string,
+  internalResource: boolean,
+  contentURL?: string,
+  type: ThemeResourceType,
+}
+
 export type Theme = {
   name: string
   description: string

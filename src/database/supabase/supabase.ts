@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import type { ApiError, PostgrestError } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient, errorMessage } from '../interface/database_client'
 import { Level } from '../interface/level'
@@ -20,10 +21,15 @@ import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
 import { databaseClient } from '../implementation'
-import { SchoolProgram } from '../interface/school_program'
-import type { Theme } from '../interface/theme'
+import { SchoolProgram, ThemeResourceType } from '../interface/school_program'
+import type { Theme, ThemeResource } from '../interface/school_program'
+import type { PreviewData } from '../interface/preview_data'
+
+
+const TRY_AGAIN_LATER = 'Une erreur est survenue, réessayez plus tard'
 
 export class SupabaseClient implements DatabaseClient {
+
   constructor() {
     // At initialization we try to restore the previous session
     this.updateConnectionStatus()
@@ -33,21 +39,17 @@ export class SupabaseClient implements DatabaseClient {
   isConnected: Ref<boolean> = ref(false)
   user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
 
-  async register(email: string, password: string): Promise<errorMessage | null> {
+  async register(email: string, password: string): Promise<void> {
     console.log(`Send registration request with email ${email}`)
 
-    let { user, error } = await supabase.auth.signUp({
+    let { error } = await supabase.auth.signUp({
       email: email,
       password: password,
     }, {
       redirectTo: window.location.host
     })
 
-    if (error) {
-      console.log(`Registration failed with code ${error.status} and message ${error.message}`)
-
-      return error.message
-    }
+    this.assertNoError(error, 'Registration request failed')
 
     console.log('Registration request back without error, waiting for email confirmation')
 
@@ -57,11 +59,9 @@ export class SupabaseClient implements DatabaseClient {
      * account creation in the API where the function createUser() is available and
      * return if an user with the same email already exists.
      */
-
-    return null
   }
 
-  async login(email: string, password: string): Promise<errorMessage | null> {
+  async login(email: string, password: string): Promise<void> {
     console.log(`Send login request with email ${email}`)
 
     const { error } = await supabase.auth.signIn({
@@ -69,49 +69,26 @@ export class SupabaseClient implements DatabaseClient {
       password: password
     })
 
-    if (error) {
-      console.log(`Connection failed with code ${error.status} and message ${error.message}`)
-
-      return error.message
-    }
-
+    this.assertNoError(error, 'Login request failed')
     console.log('Login request back without error')
 
     this.updateConnectionStatus()
 
-    if (!this.isConnected) {
-      console.log(`Despite there was no error, the user is not connected`)
-
-      return 'Une erreur est survenue, réessayez plus tard'
-    }
-
+    this.assertWorked(this.isConnected.value, TRY_AGAIN_LATER, 'Login')
     console.log('The user is now connected')
-
-    return null
   }
 
-  async logout(): Promise<errorMessage | null> {
+  async logout(): Promise<void> {
     console.log("Trying to sign out")
 
     const { error } = await supabase.auth.signOut()
 
-    if (error) {
-      console.log(`Sign out failed with code ${error.status} and message ${error.message}`)
-
-      return error.message
-    }
-
+    this.assertNoError(error, 'Sign out request failed')
     console.log('Sign out request back without error')
 
     this.updateConnectionStatus()
 
-    if (this.isConnected) {
-      console.log(`Despite there was no error, the user is still connected`)
-
-      return 'Une erreur est survenue, réessayez plus tard'
-    }
-
-    return null
+    this.assertWorked(!this.isConnected.value, TRY_AGAIN_LATER, 'Sign out')
   }
 
   /* Program */
@@ -128,26 +105,17 @@ export class SupabaseClient implements DatabaseClient {
       .from('themes')
       .select()
 
-    if (error) {
-      console.log(`Fetching the school program failed with error ${error}`)
-
-      throw error.message
-    }
-
-    if (data == null) {
-      console.log('Despite there was no error, returned the school program is null')
-
-      throw 'Une erreur est survenue, réessayez plus tard'
-    }
+    this.assertNoError(error, 'Fetching school program failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching school program')
 
     let program = new SchoolProgram()
-    data.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, {
+    data!!.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, {
       uuid: theme.uuid,
       name: theme.name,
       description: theme.description,
       numberOfExercises: theme.resources_interrogations,
       numberOfInterrogations: theme.resources_exercises,
-      numberOfCorrections: theme.ressources_with_correction
+      numberOfCorrections: theme.resources_with_correction
     }))
 
     console.log(`Built school program from the data, storing it into the cache`, program)
@@ -156,12 +124,59 @@ export class SupabaseClient implements DatabaseClient {
     return program
   }
 
-    async getThemeByUuid(uuid: string): Promise<Theme | null> {
+  async getThemeByUuid(uuid: string): Promise<Theme | null> {
     if (this.fetchedProgram == null) {
       await this.getProgram()
     }
 
     return this.fetchedProgram!!.find((theme) => theme.uuid == uuid)
+  }
+
+  fetchedResources = new Map<string, ThemeResource[]>()
+  async getThemeResources(uuid: string): Promise<ThemeResource[] | null> {
+    console.log(`Fetching resources of theme of uuid $uuid`)
+
+    if (this.fetchedResources.get(uuid)) {
+      console.log(`Resources of theme of uuid ${uuid} already fetched, returning cached value`)
+
+      return this.fetchedResources.get(uuid)!!
+    }
+
+    const { data, error } = await supabase
+      .from('themes_resources')
+      .select()
+      .eq('theme_uuid', uuid)
+
+    this.assertNoError(error, 'Fetching resources of theme failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching resources of theme')
+
+    console.log(`Fetched resources of theme of uuid ${uuid}`, data)
+
+    return data!!.map((resource: any) => ({
+      name: resource.name,
+      message: resource.message,
+      internalResource: resource.internal_resource,
+      contentURL: resource.content_url,
+      type: resource.type as ThemeResourceType,
+    }))
+  }
+
+  async getPreviewDataOfURL(url: string): Promise<PreviewData> {
+    console.log(`Computing server-side preview data of url ${url}`)
+
+    const { data, error } = await supabase.functions.invoke('preview-url', {
+      body: JSON.stringify({ url: url })
+    })
+
+    this.assertNoError(error, 'Fetching preview data failed')
+
+    console.log(`Computed server-side preview data of url ${url}`, data)
+
+    return {
+      title: data!!.title,
+      description: data!!.description,
+      image: data!!.image,
+    }
   }
 
   // The value of this ref is the fetched files
@@ -1102,5 +1117,19 @@ export class SupabaseClient implements DatabaseClient {
       }
       resolve(data)
     })
+  }
+
+  private assertNoError(error: Error | ApiError | PostgrestError | null, message: string): void {
+    if (error) {
+      console.error(message, error)
+      throw error.message
+    }
+  }
+
+  private assertWorked(condition: boolean, message: string, task: string): void {
+    if (!condition) {
+      console.error(`Task "${task}" failed: ${message}`)
+      throw message
+    }
   }
 }

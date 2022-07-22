@@ -42,7 +42,7 @@
   import InputField from '@/components/style/InputField.vue'
   import AuthView from './AuthView.vue'
   import SubmitButton from '@/components/style/SubmitButton.vue'
-  import { MessageStack, MessageType } from '@/utils/message_stack'
+  import { MessageReplacer, MessageStack, MessageType } from '@/utils/message_stack'
   import type { Message } from '@/utils/message_stack'
   import { useRouter } from 'vue-router'
 
@@ -56,7 +56,7 @@
 
   const submitting = ref(false)
 
-  let lastMessage: Message | null = null
+  const replacer = new MessageReplacer()
 
   if (databaseClient.isConnected.value) {
     goHome()
@@ -89,44 +89,37 @@
     console.log("Try to login")
 
     // We remove the last message
-    if (lastMessage) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-    }
-
-    lastMessage = {
+    replacer.replaceLastBy({
       type: MessageType.INFO,
       text: 'Connexion en cours...',
       timeout: 5000
-    }
-    MessageStack.getInstance().push(lastMessage)
+    })
+
     submitting.value = true
 
-    const error = await databaseClient.login(email.value, password.value)
+    await databaseClient.login(email.value, password.value)
+      .then(() => {
+        replacer.replaceLastBy({
+          type: MessageType.SUCCESS,
+          text: 'Connexion réussie',
+          timeout: 2000
+        })
 
-    submitting.value = false
+        email.value = ''
+        password.value = ''
 
-    if (error == null) {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.SUCCESS,
-        text: 'Connexion réussie',
-        timeout: 2000
-      }
-      MessageStack.getInstance().push(lastMessage)
-
-      email.value = ''
-      password.value = ''
-
-      goHome()
-    } else {
-      MessageStack.getInstance().closeMessage(lastMessage)
-      lastMessage = {
-        type: MessageType.ERROR,
-        text: tryTranslate(error),
-        timeout: 5000
-      }
-      MessageStack.getInstance().push(lastMessage)
-    }
+        goHome()
+      })
+      .catch((error) => {
+        replacer.replaceLastBy({
+          type: MessageType.ERROR,
+          text: tryTranslate(error),
+          timeout: 5000
+        })
+      })
+      .finally(() => {
+        submitting.value = false
+      })
   }
 
   // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript

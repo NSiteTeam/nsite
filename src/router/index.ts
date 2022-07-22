@@ -59,6 +59,16 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('@/views/admin/Dashboard.vue'),
     },
+    {
+      path: '/404',
+      name: '404',
+      component: () => import('@/views/404.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      component: () => import('@/views/404.vue'),
+    }
   ],
 })
 

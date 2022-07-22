@@ -58,3 +58,15 @@ export class MessageStack {
     this.messages.value.splice(index, 1)
   }
 }
+
+export class MessageReplacer {
+  lastMessage: Message | null = null
+
+  public replaceLastBy(message: Message): void {
+    if (this.lastMessage) {
+      MessageStack.getInstance().closeMessage(this.lastMessage)
+    }
+    this.lastMessage = message
+    MessageStack.getInstance().push(message)
+  }
+}

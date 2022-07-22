@@ -4,9 +4,7 @@
       <span class="profile-title">
         <ProfilePicture size="48px" />
         <span id="username"> {{ username }} </span>
-        <RouterLink id="disconnect-icon" to="/logout"
-          ><span class="material-icons">logout</span></RouterLink
-        >
+        <span class="material-icons" @click='databaseClient.logout()'>logout</span>
       </span>
       <div class="user-details">
         <div class="label">Adresse mail</div>

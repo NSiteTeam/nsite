@@ -69,52 +69,59 @@
 
           <BarSeparator class='flex-1'/>
         </div>
-        <div
-          class='flex flex-row items-stretch flex-nowrap overflow-x-scroll snap-x snap-proximity md:flex-wrap'
-          :class='{
-            "max-h-0": !section.expanded,
-            "max-h-full": section.expanded
-          }'
-        >
-          <template v-if='loaded'>
+        <div class='relative'>
+          <div
+            class='flex flex-row items-stretch flex-nowrap overflow-x-auto snap-x snap-mandatory md:flex-wrap'
+            :class='{
+              "hidden": !section.expanded
+            }'
+          >
+            <template v-if='loaded'>
 
-              <template v-if='section.content.length'>
-                <ShadowBox
-                  v-for='(theme, column_index) in section.content' :key='column_index'
-                  class='w-80 shrink-0 flex flex-col md:justify-between snap-start'
-                  reactOnHover
-                  @click='goToTheme(theme)'
-                >
-                  <div>
-                    <SmallTitle>{{ theme.name }}</SmallTitle>
-                    <p>{{ theme.description }}</p>
-                  </div>
-                  <div class="flex flex-wrap justify-around mt-4">
-                    <Badge primary><Keyword bold>{{ theme.numberOfExercises }}</Keyword> fiches d'exercices </Badge>
-                    <Badge tertiary><Keyword bold>{{ theme.numberOfInterrogations }}</Keyword> interrogations</Badge>
-                    <Badge secondary><Keyword bold>{{ theme.numberOfCorrections }}</Keyword> corrigés</Badge>
-                  </div>
-                </ShadowBox>
-              </template>
+                <template v-if='section.content.length'>
+                  <ShadowBox
+                    v-for='(theme, column_index) in section.content' :key='column_index'
+                    class='w-80 shrink-0 flex flex-col md:justify-between snap-start'
+                    reactOnHover
+                    @click='goToTheme(theme)'
+                  >
+                    <div>
+                      <SmallTitle>{{ theme.name }}</SmallTitle>
+                      <p>{{ theme.description }}</p>
+                    </div>
+                    <div class="flex flex-wrap justify-around mt-4">
+                      <Badge primary><Keyword bold>{{ theme.numberOfExercises }}</Keyword> fiches d'exercices </Badge>
+                      <Badge tertiary><Keyword bold>{{ theme.numberOfInterrogations }}</Keyword> interrogations</Badge>
+                      <Badge secondary><Keyword bold>{{ theme.numberOfCorrections }}</Keyword> corrigés</Badge>
+                    </div>
+                  </ShadowBox>
+                </template>
 
-          </template>
-          <template v-else>
+            </template>
+            <template v-else>
 
-            <ShadowBox class='w-80 shrink-0' v-for='index in numberOfCards()' :key='index' reactOnHover>
-              <SmallTitle skeleton class='w-32'/>
-              <SkeletonText class='w-full' />
-              <SkeletonText class='w-full' />
-              <SkeletonText class='w-full' />
-              <SkeletonText class='w-full' />
-              <SkeletonText class='w-2/3' />
-              <div class='mt-8'>
-                  <SkeletonText class='w-10 inline-block' />
-                  <SkeletonText class='w-10 inline-block' />
-                  <SkeletonText class='w-10 inline-block' />
-              </div>
-            </ShadowBox>
+              <ShadowBox class='w-80 shrink-0' v-for='index in numberOfCards()' :key='index' reactOnHover>
+                <SmallTitle skeleton class='w-32'/>
+                <SkeletonText class='w-full' />
+                <SkeletonText class='w-full' />
+                <SkeletonText class='w-full' />
+                <SkeletonText class='w-full' />
+                <SkeletonText class='w-2/3' />
+                <div class='mt-8'>
+                    <SkeletonText class='w-10 inline-block' />
+                    <SkeletonText class='w-10 inline-block' />
+                    <SkeletonText class='w-10 inline-block' />
+                </div>
+              </ShadowBox>
 
-          </template>
+            </template>
+          </div>
+          <!--On phone, we show some dot to indicate to the user that he can scroll-->
+          <div v-if='section.expanded' class='sm:hidden absolute h-min center w-full mt-2'>
+            <GreyDot v-for='index in min(section.content.length, 8)' :key='index' />
+            <GreyDot v-if='section.content.length > 8' xs />
+          </div>
+
         </div>
       </template>
     </template>
@@ -133,17 +140,19 @@
   /**
    * TODO: 1. Store the level of the user to be able to display it on top
    *       2. Suggest last themes consulted by the user
+   *       3. On phone, make that when the user click on a card and go back, the scroll position is restored
    */
 
   import { databaseClient } from "@/database/implementation"
   import type { SchoolProgram, Theme } from "@/database/interface/school_program"
   import { Level, School } from "@/database/interface/level"
-  import { computed, ref, watch } from "vue"
+  import { computed, onMounted, ref, watch } from "vue"
   import type { Ref } from 'vue'
   import SearchInput from './SearchInput.vue'
   import ShadowBox from "@/components/style/ShadowBox.vue"
   import Icon from "@/components/style/Icon.vue"
   import ActionIcon from "@/components/style/ActionIcon.vue"
+  import GreyDot from "@/components/style/GreyDot.vue"
   import SkeletonText from "@/components/style/SkeletonText.vue"
   import Keyword from "@/components/style/Keyword.vue"
   import LargeTitle from "@/components/style/LargeTitle.vue"
@@ -159,6 +168,7 @@
   import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router"
   import { useWindowSize } from "vue-window-size"
   import { getParameterOfRoute, getQueryParameterOfRoute } from "@/utils/route_utils"
+import { MessageStack, MessageType } from "@/utils/message_stack"
 
   const route = useRoute()
   const router = useRouter()
@@ -217,30 +227,37 @@
 
   const program: Ref<SchoolProgram | null> = ref(null)
   const loaded = ref(false)
-  databaseClient.getProgram().then(value => {
-    program.value = value
-    loaded.value = true
-  })
+  databaseClient.getProgram()
+    .then(value => {
+      program.value = value
+    })
+    .catch(() => {
+      MessageStack.getInstance().push({
+        type: MessageType.ERROR,
+        text: "Impossible de charger le programme scolaire",
+        timeout: 5000,
+      })
+    })
+    .finally(() => {
+      loaded.value = true
+    })
 
   /* SECTIONS */
 
-  const computeAllSections = () => {
-    return Level.LEVELS.map(level => {
+  const computeSections = () => {
+    /* First we compute all the sections */
+    const allSections = Level.LEVELS.map(level => {
       if (!level) {
         throw new Error(`Could not find level for filter ${filter.value}`)
       }
       return {
         level: level,
-        expanded: program.value?.get(level).length != 0 && (windowsWidth.value > 768 || filter.value != ALL_FILTER.name),
+        expanded: program.value?.get(level).length != 0 && (windowsWidth.value > 768 || search.value != '' || !SUPER_FILTERS.map(f => f.name).includes(filter.value)),
         content: program.value?.get(level) ?? []
       }
     })
-  }
-  const allSections = ref(computeAllSections())
-  watch([program, windowsWidth], () => allSections.value = computeAllSections())
 
-  const computeFiltered = () => {
-    /* First we make a filter function to keep only the sections that match the filter */
+    /* Then we make a filter function to keep only the sections that match the filter */
     let filterLevels: (level: Level) => boolean
     if (filter.value === ALL_FILTER.name) {
       filterLevels = (_: Level) => true
@@ -258,7 +275,7 @@
       filterSearch = (theme: Theme) => theme.name.toLowerCase().includes(search.value.toLowerCase())
     }
 
-    return allSections?.value
+    return allSections
       .filter(section => filterLevels(section.level))  // We keep only the sections that match the filter
       .map((section: Section) => ({ // We create a new section with the content that match the search
         ...section,
@@ -266,8 +283,8 @@
       }))
       .filter(section => !loaded.value || !search.value || section.content.length > 0) // If the program is loaded and there is a search, we keep the section with content found
   }
-  const sections = ref(computeFiltered())
-  watch([allSections, search, filter], () => sections.value = computeFiltered()) // We use this to make the sections collapsables
+  const sections = ref(computeSections())
+  watch([program, windowsWidth, filter, search], () => sections.value = computeSections())
 
   watch([filter, search], (values) => {
     const [newFilterName, newSearch] = values
@@ -317,4 +334,6 @@
   }
 
   const toStrings = (array: any[]) => array.map(filter => filter.name)
+
+  const min = (a: number, b: number) => a < b ? a : b
 </script>

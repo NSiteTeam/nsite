@@ -7,7 +7,8 @@ import type CustomFile from './file'
 import type Message from './message'
 import type { User, email, password, username } from './user'
 import type { Level } from './level'
-import type { SchoolProgram, Theme } from './school_program'
+import type { SchoolProgram, Theme, ThemeResource } from './school_program'
+import type { PreviewData } from './preview_data'
 
 export type errorMessage = string
 
@@ -24,24 +25,22 @@ export interface DatabaseClient {
    * Sign in the user with the given email and password
    * @param email the email of the user
    * @param password the password of the user
-   * @returns if the account was created or not. The return will be true even if the email is not yet verified
    */
-  register(email: email, password: password): Promise<errorMessage | null>
+  register(email: email, password: password): Promise<void>
 
   /**
    * Login the user with the given email and password
    * @param email The email of the user
    * @param password The password of the user
-   * @returns An error message if the login failed, null otherwise
    */
-  login(email: email, password: password): Promise<errorMessage | null>
+  login(email: email, password: password): Promise<void>
 
   /**
    * Logout the user
    *
    * @returns An error message if the logout failed, null otherwise
    */
-  logout(): Promise<errorMessage | null>
+  logout(): Promise<void>
 
   /**
    * SCHOOL PROGRAM SECTION
@@ -63,6 +62,22 @@ export interface DatabaseClient {
    * @returns The theme or null if it doesn't exist
    */
   getThemeByUuid(uuid: string): Promise<Theme | null>
+
+  /**
+   * Get all the resources linked to the given theme
+   *
+   * @param uuid The uuid of the theme
+   * @returns The resources of the theme or null if it doesn't exist
+   */
+  getThemeResources(uuid: string): Promise<ThemeResource[] | null>
+
+  /**
+   * Compute the preview of the given website on the server
+   *
+   * @param url The url of the website
+   * @returns The preview of the file
+   */
+  getPreviewDataOfURL(url: string): Promise<PreviewData>
 
 
   // Deposits
