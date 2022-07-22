@@ -4,10 +4,6 @@ import Nav from './components/Nav.vue'
 </script>
 
 <template>
-<!-- I'll activate loader as soon as possible !-->
-
-
-  <!-- <Loader /> -->
   <Nav />
   <main>
     <Suspense>

@@ -19,7 +19,7 @@ const loaderHTML = `
     <span class="letter">.</span>
   </div>
   <div class="img_container">
-    <img src="/workspace/nsite/src/assets/logo.svg">
+    <img src="/workspace/nsite/src/assets/sjh.png">
   </div>
 </div>`
 
