@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // @ts-ignore Bug de vue
 import Nav from './components/Nav.vue'
-import Loader from './components/Loader.vue'
 </script>
 
 <template>
