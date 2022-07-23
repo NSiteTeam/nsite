@@ -23,6 +23,7 @@
 @import 'pages/deposits/_files.scss';
 
 // Authentication stylesheets
+@import 'auth/_verifyOTP.scss';
 @import 'auth/_logout.scss';
 @import 'auth/_register.scss';
 @import 'auth/_login.scss';

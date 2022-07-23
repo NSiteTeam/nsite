@@ -49,6 +49,11 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('@/views/admin/Dashboard.vue'),
     },
+    {
+      path: '/verify-otp',
+      name: 'verify-otp',
+      component: () => import('@/views/VerifyOTP.vue'),
+    },
   ],
 })
 
