@@ -1,5 +1,5 @@
 const loaderHTML = `
-<div class="loader">
+<div class="loader" style="display: none">
   <div class="loader_ring"></div>
   <div class="loader_ring"></div>
   <div class="loader_ring"></div>
@@ -19,19 +19,21 @@ const loaderHTML = `
     <span class="letter">.</span>
   </div>
   <div class="img_container">
-    <img src="/workspace/nsite/src/assets/sjh.png">
+    <img src="src/assets/sjh.png">
   </div>
 </div>`
 
 document.getElementById('loader').innerHTML = loaderHTML
 
-const loader = document.querySelector('.loader');
+const loader = document.querySelector('.loader')
 
-function time(){
-    setTimeout(()=>{
-        if (loader != null) {
-          loader.classList.add('transition');
-        }
-    }, 3000)
+function time() {
+  setTimeout(() => {
+    if (loader != null) {
+      loader.classList.add('transition')
+      // When transition is complete, remove the elements
+      setTimeout(() => loader.classList.remove('loader'), 400)
+    }
+  }, 3000)
 }
 time()

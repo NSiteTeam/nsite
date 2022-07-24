@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from '@vue/reactivity'
-import useWindowSize from '@/utils/windowsWidth'
+import useWindowSize from '@/utils/windows_width'
 import { databaseClient } from '@/database/implementation'
 import { useRoute } from 'vue-router'
 import { computed } from '@vue/runtime-core'
