@@ -9,6 +9,7 @@
         v-model="inputedOtp[index]"
         @keypress="avoidNumbers($event)"
         @keyup="handleInput($event, index + 1)"
+        @paste="handlePaste($event)"
         class="otp-input"
         type="text"
       />
@@ -42,6 +43,14 @@ function handleInput(event: any, index: number) {
   } else {
     console.log('Code fini')
   }
+}
+
+function handlePaste(event: any) {
+  event.preventDefault()
+  const copiedCars = [...event.clipboardData.getData('text')]
+  copiedCars.forEach((char: string, index: number) => {
+    getElementByIndex(index).value = char
+  })
 }
 
 function avoidNumbers(event: any) {

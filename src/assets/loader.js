@@ -1,5 +1,5 @@
 const loaderHTML = `
-<div class="loader">
+<div class="loader" style="display: none">
   <div class="loader_ring"></div>
   <div class="loader_ring"></div>
   <div class="loader_ring"></div>
@@ -19,7 +19,7 @@ const loaderHTML = `
     <span class="letter">.</span>
   </div>
   <div class="img_container">
-    <img src="/workspace/nsite/src/assets/sjh.png">
+    <img src="src/assets/sjh.png">
   </div>
 </div>`
 
