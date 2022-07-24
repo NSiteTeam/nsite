@@ -52,7 +52,7 @@ const router = createRouter({
     {
       path: '/verify-otp',
       name: 'verify-otp',
-      component: () => import('@/views/VerifyOTP.vue'),
+      component: () => import('@/views/auth/OTPinput.vue'),
     },
   ],
 })
