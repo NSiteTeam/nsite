@@ -49,7 +49,9 @@ function handlePaste(event: any) {
   event.preventDefault()
   const copiedCars = [...event.clipboardData.getData('text')]
   copiedCars.forEach((char: string, index: number) => {
-    getElementByIndex(index).value = char
+    if (/[0-9]/g.test(char)) {
+      getElementByIndex(index).value = char
+    }
   })
 }
 

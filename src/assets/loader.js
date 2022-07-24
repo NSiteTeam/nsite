@@ -25,13 +25,15 @@ const loaderHTML = `
 
 document.getElementById('loader').innerHTML = loaderHTML
 
-const loader = document.querySelector('.loader');
+const loader = document.querySelector('.loader')
 
-function time(){
-    setTimeout(()=>{
-        if (loader != null) {
-          loader.classList.add('transition');
-        }
-    }, 3000)
+function time() {
+  setTimeout(() => {
+    if (loader != null) {
+      loader.classList.add('transition')
+      // When transition is complete, remove the elements
+      setTimeout(() => loader.classList.remove('loader'), 400)
+    }
+  }, 3000)
 }
 time()
