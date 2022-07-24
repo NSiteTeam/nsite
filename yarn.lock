@@ -87,9 +87,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rushstack/eslint-patch@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.1.3.tgz"
+"@rushstack/eslint-patch@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz#0c8b74c50f29ee44f423f7416829c0bf8bb5eb27"
+  integrity sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==
 
 "@supabase/functions-js@^1.3.3":
   version "1.3.3"
