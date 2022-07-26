@@ -1,67 +1,46 @@
 <template>
+  <div v-if="success" class="good">Code bon</div>
+  <div v-else-if="loading" class="indication">Vérification en cours</div>
+  <div v-else-if="failure" class="error">Mauvais code, réessayez</div>
   <div class="otp">
     <h1>Entrez le code de vérification reçu par mail</h1>
-    <span class="otp-inputs">
-      <input
-        v-for="(inputRef, index) in inputedOtp"
-        :key="index"
-        maxlength="1"
-        v-model="inputedOtp[index]"
-        @keypress="avoidNumbers($event)"
-        @keyup="handleInput($event, index + 1)"
-        @paste="handlePaste($event)"
-        class="otp-input"
-        type="text"
-      />
-    </span>
-    {{ digits }}
+    <Pincode
+      @finished="handleFinished"
+      :secure="false"
+      :material="true"
+      :length="6"
+      :white="true"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import type { Ref } from 'vue'
+// @ts-ignore
+import Pincode from '@/components/Pincode.vue'
+import { databaseClient } from '@/database/implementation'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const nbOfDigits = 6
-const inputedOtp: Ref<string[]> = ref(Array(nbOfDigits).map((_) => ''))
-const digits: Ref<string> = computed(() => inputedOtp.value.join(''))
+const route = useRoute()
+const router = useRouter()
 
-onMounted(() => getElementByIndex(0).focus())
+const { email } = route.params
 
-function handleInput(event: any, index: number) {
-  if (!/[0-9]/g.test(event.code) && event.code != 'Backspace') {
-    return
-  }
-  if (event.code == 'Backspace' && index > 1) {
-    getElementByIndex(index - 2).focus()
-    getElementByIndex(index - 2).value = ''
-    inputedOtp.value[index - 2] = ''
-    return
-  }
-  if (index < nbOfDigits) {
-    getElementByIndex(index).focus()
+const success = ref(false)
+const loading = ref(false)
+const failure = ref(false)
+
+function handleFinished(code: string) {
+  console.log(code, email)
+  loading.value = true
+  if (databaseClient.checkOTP(code, email as string)) {
+    loading.value = false
+    success.value = true
+    setTimeout(() => router.push({ path: '/profile' }), 1000)
   } else {
-    console.log('Code fini')
+    loading.value = false
+    failure.value = true
+    setTimeout(() => failure.value = false, 1000)
   }
-}
-
-function handlePaste(event: any) {
-  event.preventDefault()
-  const copiedCars = [...event.clipboardData.getData('text')]
-  copiedCars.forEach((char: string, index: number) => {
-    if (/[0-9]/g.test(char)) {
-      getElementByIndex(index).value = char
-    }
-  })
-}
-
-function avoidNumbers(event: any) {
-  if (!/[0-9]/g.test(event.code) && event.code != 'Backspace') {
-    event.preventDefault()
-  }
-}
-
-function getElementByIndex(index: number): HTMLInputElement {
-  return document.querySelectorAll('.otp-input')[index] as HTMLInputElement
 }
 </script>

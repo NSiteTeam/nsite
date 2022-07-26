@@ -50,7 +50,7 @@ const router = createRouter({
       component: () => import('@/views/admin/Dashboard.vue'),
     },
     {
-      path: '/verify-otp',
+      path: '/verify-otp/:email',
       name: 'verify-otp',
       component: () => import('@/views/auth/OTPinput.vue'),
     },

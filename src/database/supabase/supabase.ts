@@ -108,7 +108,7 @@ export class SupabaseClient implements DatabaseClient {
     const res = await supabase.from('profiles').insert({
       user: user?.id,
       username: username,
-      roles: [0]
+      permissions: [0]
     })
     error && res.error
       ? (error = {
@@ -122,9 +122,25 @@ export class SupabaseClient implements DatabaseClient {
     const accountCreated = !error && user != null
     console.log('Error :', error)
     console.log('Account created:', accountCreated)
+
     return {
       accountCreated: accountCreated,
       error: error,
+    }
+  }
+
+  async checkOTP(OTPcode: string, email: string) {
+    const { user, session, error: verifyError } = await supabase.auth.verifyOTP({
+      "email": email,
+      "token": OTPcode,
+      "type": "signup"
+    })
+
+    if (session) {
+      await this.updateUserInfos()
+      return true
+    } else {
+      return false
     }
   }
 
@@ -193,9 +209,11 @@ export class SupabaseClient implements DatabaseClient {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, roles')
+        .select('username, permissions')
         .eq('user', supabase.auth.user()?.id)
         .maybeSingle()
+      
+      console.log(data.permissions)
 
       if (error) {
         throw error
@@ -209,7 +227,7 @@ export class SupabaseClient implements DatabaseClient {
         supabase.auth.user()?.email!,
         data.username,
         supabase.auth.user()?.id!,
-        data.roles?.map(SupabasePermissionHelper.permissionFromId),
+        data.permissions?.map(SupabasePermissionHelper.permissionFromId),
       )
     } catch (error) {
       console.log('Error while updating user infos', error)

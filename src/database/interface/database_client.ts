@@ -16,6 +16,7 @@ export interface DatabaseClient {
   user: Ref<User | null>
 
   signIn(email: string, password: string, username: string): any
+  checkOTP(OTPcode: string, email: string): any
   login(email: string, password: string): any
   getUsername(uuid: string): Promise<string>
   logout(): Promise<boolean>

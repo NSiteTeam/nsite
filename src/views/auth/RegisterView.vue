@@ -5,7 +5,7 @@
         Vérifiez votre adresse email pour vous connecter
       </div>
       <div v-else-if="!loading && failure && !success" class="error">
-        {{ failure.message }}
+        {{ errorMessages[failure.message] }}
       </div>
       <div class="indication" v-else-if="loading">
         Tentative de connection ...
@@ -73,6 +73,9 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { databaseClient } from '@/database/implementation'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // Strength checks RegExp
 const strongPassword = new RegExp(
@@ -122,9 +125,10 @@ function togglePassword() {
 
 const errorMessages = {
   'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
-  'Password should be at least 6 characters': `Le mot de passe doit contenir au moins 6 caractères`,
+  'Mot de passe trop faible': `Mot de passe trop faible`,
   'User already registered': "L'utilisateur a déjà été inscrit",
   "Nom d'utilisateur trop court": "Nom d'utilisateur trop court",
+  'insert or update on table "profiles" violates foreign key constraint "profiles_user_fkey"' : 'Email déjà utlisé',
 }
 
 async function handleRegister() {
@@ -134,11 +138,15 @@ async function handleRegister() {
   }
   loading.value = true
   console.log(username.value)
+
   const { error, accountCreated } = await databaseClient.signIn(
     email.value,
     password.value,
     username.value,
   )
+  if (accountCreated) {
+    router.push({ path: `/verify-otp/${email.value}` })
+  }
   loading.value = false
   failure.value = error
   success.value = accountCreated

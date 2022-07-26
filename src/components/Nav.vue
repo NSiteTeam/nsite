@@ -69,10 +69,10 @@ function toggleMenuFunction() {
   toggleMenu.value = !toggleMenu.value
 }
 
-const hasEnoughPerms = computed(() =>
+const hasEnoughPerms = computed(() => {
   databaseClient.user.value?.permissions.some((role) => {
     return SupabasePermissionHelper.idFromPermission(role)
-  }),
+  })},
 )
 
 const hasAccessToDashboard = computed(
