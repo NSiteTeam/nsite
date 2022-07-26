@@ -21,41 +21,7 @@
       <span class="input-box">
         <input type="email" v-model="email" placeholder="Email" />
       </span>
-      <span class="input-box password">
-        <input
-          :type="displayPassword ? 'text' : 'password'"
-          v-model="password"
-          placeholder="Mot de passe"
-          @input="calculateStrength()"
-        />
-        <span class="material-icons" @click="togglePassword()">
-          visibility{{ displayPassword ? '' : '_off' }}
-        </span>
-        <div class="strength-bar">
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 0 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 1 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
-          <span
-            class="strength-bar-level"
-            :class="
-              passwordStrength > 2 ? 'active color' + passwordStrength : ''
-            "
-          ></span>
-        </div>
-        <span v-if="passwordStrength > 0">Mot de passe </span>
-        <span class="strength-message" :class="'text-color' + passwordStrength">
-          {{ strengthLevelsNames[passwordStrength] }}
-        </span>
-      </span>
+      <PasswordInput v-model="password" v-model:passwordStrength="passwordStrength" />
       <div class="password-strength-info">
         Le mot de passe doit contenir:
         <ul>
@@ -70,20 +36,12 @@
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
+import PasswordInput from '@/components/PasswordInput.vue'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-// Strength checks RegExp
-const strongPassword = new RegExp(
-  '^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z].*[a-z]).{8,}$',
-)
-const mediumPassword = new RegExp(
-  '((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))|((?=.*[a-z])(?=.*[A-Z])(?=.{10,}))',
-)
 
 enum strengthLevels {
   UNKNOWN,
@@ -92,44 +50,28 @@ enum strengthLevels {
   STRONG,
 }
 
+const router = useRouter()
 const strengthLevelsNames = ['', 'faible', 'correct', 'fort']
 
+const passwordStrength: Ref<strengthLevels> = ref(strengthLevels.UNKNOWN)
 const email: Ref<string> = ref('')
 const password: Ref<string> = ref('')
 const username: Ref<string> = ref('')
 const displayPassword = ref(false)
-const passwordStrength: Ref<strengthLevels> = ref(strengthLevels.UNKNOWN)
 const loading: Ref<boolean> = ref(false)
 const failure = ref()
 const success: Ref<boolean> = ref(false)
-
-function calculateStrength(): void {
-  // If the password validates the strong password regex, set the password strength to STRONG (=3)
-  if (strongPassword.test(password.value)) {
-    passwordStrength.value = strengthLevels.STRONG
-    // Else if the password validates the strong password regex, set the password strength to STRONG (=2)
-  } else if (mediumPassword.test(password.value)) {
-    passwordStrength.value = strengthLevels.MEDIUM
-    // Else if there is no password, set the password strength to UNKNOWN (=0)
-  } else if (password.value.length == 0) {
-    passwordStrength.value = strengthLevels.UNKNOWN
-  } else {
-    // If the password is neither inexistent, medium nor strong, set its strong to WEAK (=1)
-    passwordStrength.value = strengthLevels.WEAK
-  }
-}
-
-function togglePassword() {
-  displayPassword.value = !displayPassword.value
-}
 
 const errorMessages = {
   'Request Failed': `Impossible de joindre nos serveurs d'authentification. Vérifiez votre connection internet.`,
   'Mot de passe trop faible': `Mot de passe trop faible`,
   'User already registered': "L'utilisateur a déjà été inscrit",
   "Nom d'utilisateur trop court": "Nom d'utilisateur trop court",
-  'insert or update on table "profiles" violates foreign key constraint "profiles_user_fkey"' : 'Email déjà utlisé',
-  'duplicate key value violates unique constraint' : 'Email déjà utlisé',
+  'insert or update on table "profiles" violates foreign key constraint "profiles_user_fkey"':
+    'Email déjà utlisé',
+  'duplicate key value violates unique constraint "profiles_pkey':
+    "Nom d'utilisateur déjà utlisé",
+  'duplicate key value violates unique constraint': 'Email déjà utlisé',
 }
 
 async function handleRegister() {
@@ -146,7 +88,7 @@ async function handleRegister() {
     username.value,
   )
   if (accountCreated) {
-    router.push({ path: `/verify-otp/${email.value}` })
+    router.push({ path: '/verify-otp' })
   }
   loading.value = false
   failure.value = error

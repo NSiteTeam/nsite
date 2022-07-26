@@ -59,6 +59,8 @@ export class SupabaseClient implements DatabaseClient {
   // All the permissions of the user
   permissions: Ref<Array<Permission>> = ref(Array())
 
+  unverifiedEmail: Ref<string | undefined> = ref('')
+
   // The value of this ref is the fetched messages
   messages: Ref<Repository[]> = ref([])
 
@@ -103,12 +105,11 @@ export class SupabaseClient implements DatabaseClient {
       email: email,
       password: password,
     })
-    console.log(user)
 
     const res = await supabase.from('profiles').insert({
       user: user?.id,
       username: username,
-      permissions: [0]
+      permissions: [0],
     })
     error && res.error
       ? (error = {
@@ -120,6 +121,7 @@ export class SupabaseClient implements DatabaseClient {
 
     // Here the account exists, but the email is not verified yet
     const accountCreated = !error && user != null
+    if (accountCreated) this.unverifiedEmail.value = user?.email
     console.log('Error :', error)
     console.log('Account created:', accountCreated)
 
@@ -129,66 +131,76 @@ export class SupabaseClient implements DatabaseClient {
     }
   }
 
-  async checkOTP(OTPcode: string, email: string) {
+  async checkOTP(OTPcode: string): Promise<boolean> {
     const { user, session, error } = await supabase.auth.verifyOTP({
-      "email": email,
-      "token": OTPcode,
-      "type": "signup"
+      email: this.unverifiedEmail.value as string,
+      token: OTPcode,
+      type: 'signup',
     })
-    console.log("pas d'erreur :", !error)
+
+    if (!error) await this.updateUserInfos()
+
+    return !error
+  }
+
+  async changePassword(oldPassword: string, newPassword: string): Promise<any> {
+    const { data, error } = await supabase.rpc('change_user_password', {
+      current_plain_password: oldPassword,
+      new_plain_password: newPassword,
+    })
 
     if (!error) {
-      await this.updateUserInfos()
-      return true
+      return (data as any).data
     } else {
+      console.error(error.message)
       return false
     }
   }
 
-    /**
-     * Sign in the user with the given email and password
-     * @param email the email of the user
-     * @param password the password of the user
-     * @returns if the account was created or not. The return can be true even if the email is not yet verified
-     */
-    async logout(): Promise<any> {
-        console.log("Trying to sign out")
+  /**
+   * Sign in the user with the given email and password
+   * @param email the email of the user
+   * @param password the password of the user
+   * @returns if the account was created or not. The return can be true even if the email is not yet verified
+   */
+  async logout(): Promise<any> {
+    console.log('Trying to sign out')
 
-        const { error } = await supabase.auth.signOut()
-        this.updateUserInfos()
+    const { error } = await supabase.auth.signOut()
+    this.updateUserInfos()
 
-        return new Promise((resolve, reject) => {
-            if (!error) {
-                resolve("Vous êtes déconnecté")
-            } else {
-                reject(error)
-            }
-        })
-    }
-
-    /**
-     * Login the user with the given email and password
-     * @param email The email of the user
-     * @param password The password of the user
-     * @returns If the login was successful or not
-     */
-    async login(email: string, password: string): Promise<any> {
-      console.log("Try to login with email: ", email)
-
-      const { error } = await supabase.auth.signIn({
-          email: email,
-          password: password
-      })
-
-      await this.updateUserInfos()
-
-      console.log("Connection status:", this.isConnected.value)
-
-      return {
-          "connectionStatus": this.isConnected.value,
-          "error": error,
+    return new Promise((resolve, reject) => {
+      if (!error) {
+        resolve('Vous êtes déconnecté')
+      } else {
+        reject(error)
       }
+    })
+  }
+
+  /**
+   * Login the user with the given email and password
+   * @param email The email of the user
+   * @param password The password of the user
+   * @returns If the login was successful or not
+   */
+  async login(email: string, password: string): Promise<any> {
+    console.log('Try to login with email: ', email)
+
+    const { error } = await supabase.auth.signIn({
+      email: email,
+      password: password,
+    })
+
+    await this.updateUserInfos()
+
+    console.log('Connection status:', this.isConnected.value)
+
+    return {
+      connectionStatus: this.isConnected.value,
+      error: error,
     }
+  }
 
   /**
    * Private method to update the data of the user. For the moment it updates :
@@ -213,7 +225,7 @@ export class SupabaseClient implements DatabaseClient {
         .select('username, permissions')
         .eq('user', supabase.auth.user()?.id)
         .maybeSingle()
-      
+
       console.log(data.permissions)
 
       if (error) {
@@ -649,7 +661,7 @@ export class SupabaseClient implements DatabaseClient {
       .from('deposits_chat_messages')
       .delete()
       .match({ id: messageId })
-    
+
     if (error) {
       console.warn(error)
       return
@@ -669,7 +681,7 @@ export class SupabaseClient implements DatabaseClient {
         id: messageId,
       })
       .maybeSingle()
-    
+
     if (error) {
       console.warn(error)
       return
@@ -677,7 +689,7 @@ export class SupabaseClient implements DatabaseClient {
 
     console.log(`Successfully edited message ${messageId}
           from ${newContent} to ${data.content}`)
-      
+
     this.editMessageInTheCache(
       messageId,
       new SupabaseMessage(data.content, data.author, data.date, data.id),

@@ -24,16 +24,13 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-const { email } = route.params
-
 const success = ref(false)
 const loading = ref(false)
 const failure = ref(false)
 
 async function handleFinished(code: string) {
-  console.log(code, email)
   loading.value = true
-  const isOtpValid = await databaseClient.checkOTP(code, email as string)
+  const isOtpValid = await databaseClient.checkOTP(code)
   console.log("pas d'erreur:", isOtpValid)
 
   if (isOtpValid) {

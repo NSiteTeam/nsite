@@ -18,6 +18,7 @@
         </div>
         <div class="label">Nom d'utilisateur</div>
         <div class="value">{{ username }}</div>
+        <ChangePassword />
         <div class="label">Permissions</div>
         <ul class="value" v-if="permissions">
           <li
@@ -35,9 +36,13 @@
 </template>
 
 <script setup lang="ts">
-import { databaseClient } from '@/database/implementation'
+// @ts-ignore
 import ProfilePicture from '@/components/ProfilePicture.vue'
+// @ts-ignore
 import LoadingAnimation from '@/components/LoadingAnimation.vue'
+// @ts-ignore
+import ChangePassword from './auth/ChangePassword.vue'
+import { databaseClient } from '@/database/implementation'
 import { computed, ref } from 'vue'
 
 const uuid = computed(() => databaseClient.user.value?.uuid)

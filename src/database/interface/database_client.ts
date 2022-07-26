@@ -13,14 +13,16 @@ export type errorMessage = string
 export interface DatabaseClient {
   // USER
   isConnected: Ref<boolean>
+  unverifiedEmail: Ref<string | undefined>
   user: Ref<User | null>
 
+  changePassword(oldPassword: string, newPassword: string): Promise<any>
   signIn(email: string, password: string, username: string): any
-  checkOTP(OTPcode: string, email: string): any
+  checkOTP(OTPcode: string): Promise<boolean>
+  getAllUsers(quantity?: number): Promise<any>
   login(email: string, password: string): any
   getUsername(uuid: string): Promise<string>
   logout(): Promise<boolean>
-  getAllUsers(quantity?: number): Promise<any>
 
   // Deposits
   uploadFileToDeposit(

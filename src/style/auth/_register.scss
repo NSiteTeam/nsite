@@ -38,7 +38,7 @@
 
   .strength-bar {
     height: 5px;
-    width: 106%;
+    max-width: 106%;
     display: flex;
 
     &-level {
@@ -107,7 +107,7 @@
   }
 
   input:not([type='submit']) {
-    width: 100%;
+    width: 300px;
   }
 
   input[type='submit'] {
