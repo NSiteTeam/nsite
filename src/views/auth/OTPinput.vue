@@ -30,10 +30,13 @@ const success = ref(false)
 const loading = ref(false)
 const failure = ref(false)
 
-function handleFinished(code: string) {
+async function handleFinished(code: string) {
   console.log(code, email)
   loading.value = true
-  if (databaseClient.checkOTP(code, email as string)) {
+  const isOtpValid = await databaseClient.checkOTP(code, email as string)
+  console.log("pas d'erreur:", isOtpValid)
+
+  if (isOtpValid) {
     loading.value = false
     success.value = true
     setTimeout(() => router.push({ path: '/profile' }), 1000)

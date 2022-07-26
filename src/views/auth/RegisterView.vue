@@ -129,6 +129,7 @@ const errorMessages = {
   'User already registered': "L'utilisateur a déjà été inscrit",
   "Nom d'utilisateur trop court": "Nom d'utilisateur trop court",
   'insert or update on table "profiles" violates foreign key constraint "profiles_user_fkey"' : 'Email déjà utlisé',
+  'duplicate key value violates unique constraint' : 'Email déjà utlisé',
 }
 
 async function handleRegister() {

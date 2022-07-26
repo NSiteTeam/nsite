@@ -130,13 +130,14 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async checkOTP(OTPcode: string, email: string) {
-    const { user, session, error: verifyError } = await supabase.auth.verifyOTP({
+    const { user, session, error } = await supabase.auth.verifyOTP({
       "email": email,
       "token": OTPcode,
       "type": "signup"
     })
+    console.log("pas d'erreur :", !error)
 
-    if (session) {
+    if (!error) {
       await this.updateUserInfos()
       return true
     } else {
