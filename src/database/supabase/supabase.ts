@@ -18,6 +18,7 @@ import { SupabaseUser } from './supabase_user'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
+import { DataSection } from '@/utils/data_section'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -143,6 +144,31 @@ export class SupabaseClient implements DatabaseClient {
     return !error
   }
 
+  async recoverPassword(email: string): Promise<boolean> {
+    const { data, error } = await supabase.auth.api.resetPasswordForEmail(email,
+    {
+      redirectTo: "http://localhost:3000/reset-password-form", 
+    })
+
+    if (error) {
+      console.error(error.message)
+    }
+
+    return !error
+  }
+
+
+  async changePasswordUsingToken(token: string, newPassword: string): Promise<boolean> {
+    const { error } = await supabase.auth.api.updateUser(token, { password : newPassword })
+
+    if (error) {
+      console.error(error.message, error.status)
+      this.updateUserInfos()
+    }
+
+    return !error
+  }
+
   async changePassword(oldPassword: string, newPassword: string): Promise<any> {
     const { data, error } = await supabase.rpc('change_user_password', {
       current_plain_password: oldPassword,
@@ -226,7 +252,7 @@ export class SupabaseClient implements DatabaseClient {
         .eq('user', supabase.auth.user()?.id)
         .maybeSingle()
 
-      console.log(data.permissions)
+      console.log('Permissions of the user :', data.permissions.join(', '))
 
       if (error) {
         throw error

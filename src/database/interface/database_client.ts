@@ -1,6 +1,5 @@
 import type { Ref } from 'vue'
 import type { News } from './news'
-import type { Permission } from './permissions'
 import type { HistoryPoint } from './history_point'
 import type { Repository } from './repositories'
 import type CustomFile from './file'
@@ -16,8 +15,10 @@ export interface DatabaseClient {
   unverifiedEmail: Ref<string | undefined>
   user: Ref<User | null>
 
+  changePasswordUsingToken(token: string, newPassword: string): Promise<boolean>
   changePassword(oldPassword: string, newPassword: string): Promise<any>
   signIn(email: string, password: string, username: string): any
+  recoverPassword(email: string): Promise<boolean>
   checkOTP(OTPcode: string): Promise<boolean>
   getAllUsers(quantity?: number): Promise<any>
   login(email: string, password: string): any

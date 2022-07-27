@@ -51,10 +51,6 @@
     border-radius: 40px;
     width: 200px;
 
-    h2 {
-      color: $cream-white;
-    }
-
     input {
       border: 0;
       color: $cream-white;
@@ -67,16 +63,27 @@
         color: $cream-white;
       }
 
-      .forgotten-password {
-        text-align: left;
-        margin: 0;
-      }
-
+      
       &[type='submit']:hover {
         @include shadow1();
       }
     }
 
+    .forgotten-password {
+      text-align: left;
+      margin: 0;
+      font-style: italic;
+      color: $cerulean-frost;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &:active {
+        font-weight: bold;
+      }
+    }
+    
     .login-form {
       display: flex;
       flex-direction: column;
