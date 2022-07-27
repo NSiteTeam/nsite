@@ -20,6 +20,7 @@
         <h2>Se connecter</h2>
         <input type="email" v-model="email" placeholder="Email" />
         <input type="password" v-model="password" placeholder="Mot de passe" />
+        <RouterLink class="forgotten-password" to="/forgotten-password">Mot de passe oublié ?</RouterLink>
         <input type="submit" value="Se connecter" :disabled="loading" />
       </div>
     </form>

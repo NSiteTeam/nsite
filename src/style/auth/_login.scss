@@ -3,45 +3,45 @@
 // ###########################################################################
 
 .login-container {
-    margin-top: 100px;
+  margin-top: 100px;
 
-    #login {
-      display: flex;
-      flex-direction: column;
-      background-color: $space-cadet;
-      padding: 4% 6% 4% 6%;
-      border-radius: 20px;
-      @include shadow1();
-      width: 200px;
+  #login {
+    display: flex;
+    flex-direction: column;
+    background-color: $space-cadet;
+    padding: 4% 6% 4% 6%;
+    border-radius: 20px;
+    @include shadow1();
+    width: 200px;
 
-      h2 {
-          color: $cream-white;
+    h2 {
+      margin: 0 0 5px 0;
+    }
+
+    input {
+      border: 0;
+      color: $cream-white;
+      margin-top: 5px;
+      padding: 3%;
+      border-radius: 5px;
+      background-color: $space-cadet-light;
+
+      &::placeholder {
+        color: $cream-white;
       }
 
-      input {
-          border: 0;
-          color: $cream-white;
-          margin-bottom: 20px;
-          padding: 3%;
-          border-radius: 5px;
-          background-color: $space-cadet-light;
-
-          &::placeholder {
-              color: $cream-white;
-          }
-
-          &[type="submit"]:hover {
-              @include shadow1()
-          }
-      }
-
-      .login-form {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+      &[type='submit']:hover {
+        @include shadow1();
       }
     }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 
   #login {
     display: flex;
@@ -58,13 +58,18 @@
     input {
       border: 0;
       color: $cream-white;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
       padding: 3%;
       border-radius: 5px;
       background-color: $space-cadet-light;
 
       &::placeholder {
         color: $cream-white;
+      }
+
+      .forgotten-password {
+        text-align: left;
+        margin: 0;
       }
 
       &[type='submit']:hover {

@@ -54,6 +54,11 @@ const router = createRouter({
       name: 'verify-otp',
       component: () => import('@/views/auth/OTPinput.vue'),
     },
+    {
+      path: '/forgotten-password',
+      name: 'forgotten-password',
+      component: () => import('@/views/auth/ForgottenPassword.vue'),
+    },
   ],
 })
 
