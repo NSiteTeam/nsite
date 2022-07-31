@@ -1,7 +1,7 @@
 <template>
   <div
+    class='h-full center relative'
     :class="{
-      'h-full center relative': true,
       'after:content-[\'\'] after:absolute': isActive,
       'after:from-primary after:to-transparent': isActive,
       'pl-6': minify,
@@ -11,8 +11,8 @@
   >
     <RouterLink :to='to'>
       <span
+        class='hover:text-accent transition-all text-lg leading-loose inline-block hover:text-primary'
         :class="{
-          'hover:text-accent transition-all text-lg leading-loose inline-block': true,
           'mx-4': !minify,
           'translate-x-2': minify && isActive,
         }"

@@ -1,5 +1,5 @@
 <template>
-  <span class="material-icons select-none" :class='size'>{{ icon }}</span>
+  <span class="material-icons select-none align-middle" :class='size'>{{ icon }}</span>
 </template>
 
 <script setup lang='ts'>

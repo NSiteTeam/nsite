@@ -50,26 +50,17 @@ export class Level {
   ]
 
   static levelFromIndex(index: number) {
-    for (let level of this.LEVELS) {
-      if (level.index == index) {
-        return level
-      }
-    }
-
-    console.log('No level of index', index)
-    return null
+    return this.LEVELS.find(level => level.index == index)
   }
 
   static levelFromNameInURL(nameInURL: string) {
-    for (let level of this.LEVELS) {
-      if (level.nameInURL == nameInURL) {
-        return level
-      }
-    }
-
-    console.log('No level of name in URL', nameInURL)
-    return null
+    return this.LEVELS.find(level => level.nameInURL == nameInURL)
   }
+
+  static levelFromName(name: string) {
+    return this.LEVELS.find(level => level.fullName == name)
+  }
+
 
   constructor(
     public readonly fullName: string,

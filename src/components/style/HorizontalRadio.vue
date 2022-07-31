@@ -1,12 +1,19 @@
 <template>
-  <div class="flex flex-row w-min rounded-lg px-2 bg-gray-100 my-2 h-min">
+  <div
+    class="flex flex-row rounded-lg px-2 bg-gray-100 my-2 h-min"
+    :class='{
+      "w-min": !spaced,
+      "w-full justify-between":spaced
+    }'
+  >
     <template v-for='(value, index) in values' :key='index'>
       <div
         @click="selectValue(value)"
-        class='bold mx-1 p-2 rounded-lg cursor-pointer select-none transition-all'
+        class='bold mx-1 p-2 rounded-lg cursor-pointer select-none transition-all whitespace-nowrap'
         :class='{
           "bg-primary text-white -translate-y-1": value === modelValue,
           "text-gray-700": value !== modelValue,
+          " flex-1 text-center": spaced,
         }'
       >
         {{ value }}
@@ -23,6 +30,10 @@
     values: {
       type: Array,
       default: () => []
+    },
+    spaced: {
+      type: Boolean,
+      default: false
     }
   })
 

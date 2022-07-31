@@ -8,5 +8,3 @@ export enum Side {
   BOTTOM_LEFT ='bottom-0 left-0',
   BOTTOM_RIGHT ='bottom-0 right-0'
 }
-
-

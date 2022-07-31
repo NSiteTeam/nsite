@@ -108,8 +108,8 @@
   import { onMounted, ref, watch } from 'vue'
   import type { Ref } from 'vue'
   import type { Theme, ThemeResource } from '@/database/interface/school_program'
-  import { ThemeResourceType } from '@/database/interface/school_program'
-import { supabase } from '@/database/supabase/supabase_client'
+  import { supabase } from '@/database/supabase/supabase_client'
+  import { MessageStack } from '@/views/messages/message_stack'
 
   const route = useRoute()
 
@@ -119,9 +119,11 @@ import { supabase } from '@/database/supabase/supabase_client'
   const resourcesLoaded = ref(false)
 
   const themeUUID = getParameterOfRoute(route.params.themeUuid)
-  databaseClient.getThemeByUuid(themeUUID).then(value => {
+  databaseClient.getThemeByUuid(themeUUID)
+    .then(value => {
       theme.value = value
     })
+    .catch(MessageStack.logError)
     .finally(() => {
       themeLoaded.value = true
     })
@@ -190,6 +192,7 @@ import { supabase } from '@/database/supabase/supabase_client'
 
               updatedResource.previewData = true
             })
+            .catch(MessageStack.logError)
         }
 
         return updatedResource
@@ -199,6 +202,7 @@ import { supabase } from '@/database/supabase/supabase_client'
       columns.value[1].items = updatedResources.filter(item => item.type == ThemeResourceType.INTERROGATION)
       columns.value[2].items = updatedResources.filter(item => item.type == ThemeResourceType.OTHER)
     })
+    .catch(MessageStack.logError)
     .finally(() => {
       resourcesLoaded.value = true
     })

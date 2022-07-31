@@ -81,7 +81,7 @@
                 <template v-if='section.content.length'>
                   <ShadowBox
                     v-for='(theme, column_index) in section.content' :key='column_index'
-                    class='w-80 shrink-0 flex flex-col md:justify-between snap-start'
+                    class='w-80 shrink-0 flex flex-col md:justify-between snap-start p-4 md:p-8'
                     reactOnHover
                     @click='goToTheme(theme)'
                   >
@@ -89,18 +89,13 @@
                       <SmallTitle>{{ theme.name }}</SmallTitle>
                       <p>{{ theme.description }}</p>
                     </div>
-                    <div class="flex flex-wrap justify-around mt-4">
-                      <Badge primary><Keyword bold>{{ theme.numberOfExercises }}</Keyword> fiches d'exercices </Badge>
-                      <Badge tertiary><Keyword bold>{{ theme.numberOfInterrogations }}</Keyword> interrogations</Badge>
-                      <Badge secondary><Keyword bold>{{ theme.numberOfCorrections }}</Keyword> corrigés</Badge>
-                    </div>
                   </ShadowBox>
                 </template>
 
             </template>
             <template v-else>
 
-              <ShadowBox class='w-80 shrink-0' v-for='index in numberOfCards()' :key='index' reactOnHover>
+              <ShadowBox class='w-80 shrink-0 p-4' v-for='index in numberOfCards()' :key='index' reactOnHover>
                 <SmallTitle skeleton class='w-32'/>
                 <SkeletonText class='w-full' />
                 <SkeletonText class='w-full' />
@@ -116,7 +111,7 @@
 
             </template>
           </div>
-          <!--On phone, we show some dot to indicate to the user that he can scroll-->
+          <!--On phone, we show some dots to indicate to the user that he can scroll-->
           <div v-if='section.expanded' class='sm:hidden absolute h-min center w-full mt-2'>
             <GreyDot v-for='index in min(section.content.length, 8)' :key='index' />
             <GreyDot v-if='section.content.length > 8' xs />
@@ -168,7 +163,7 @@
   import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router"
   import { useWindowSize } from "vue-window-size"
   import { getParameterOfRoute, getQueryParameterOfRoute } from "@/utils/route_utils"
-import { MessageStack, MessageType } from "@/utils/message_stack"
+  import { MessageStack, MessageType } from "@/views/messages/message_stack"
 
   const route = useRoute()
   const router = useRouter()
@@ -231,13 +226,7 @@ import { MessageStack, MessageType } from "@/utils/message_stack"
     .then(value => {
       program.value = value
     })
-    .catch(() => {
-      MessageStack.getInstance().push({
-        type: MessageType.ERROR,
-        text: "Impossible de charger le programme scolaire",
-        timeout: 5000,
-      })
-    })
+    .catch(MessageStack.logError)
     .finally(() => {
       loaded.value = true
     })

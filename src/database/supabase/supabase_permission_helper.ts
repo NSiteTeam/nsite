@@ -3,8 +3,6 @@ import { Permission } from '../interface/permissions'
 export class SupabasePermissionHelper {
   static permissionFromId(id: number): Permission {
     switch (id) {
-      case 0:
-        return Permission.STUDENT
       case 1:
         return Permission.TEACHER
       case 2:
@@ -20,8 +18,6 @@ export class SupabasePermissionHelper {
 
   static idFromPermission(permission: Permission): number {
     switch (permission) {
-      case Permission.STUDENT:
-        return 0
       case Permission.TEACHER:
         return 1
       case Permission.HISTORY_ADMIN:

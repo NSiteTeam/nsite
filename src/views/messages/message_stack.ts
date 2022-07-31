@@ -57,6 +57,13 @@ export class MessageStack {
   public closeMessageAt(index: number): void {
     this.messages.value.splice(index, 1)
   }
+
+  public static logError(error: Error): void {
+    MessageStack.getInstance().push({
+      type: MessageType.ERROR,
+      text: error.message ?? error.toString(),
+    })
+  }
 }
 
 export class MessageReplacer {

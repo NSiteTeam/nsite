@@ -73,8 +73,8 @@
   import InputField from '@/components/style/InputField.vue'
   import AuthView from './AuthView.vue'
   import SubmitButton from '@/components/style/SubmitButton.vue'
-  import { MessageReplacer, MessageStack, MessageType } from '@/utils/message_stack'
-  import type { Message } from '@/utils/message_stack'
+  import { MessageReplacer, MessageStack, MessageType } from '@/views/messages/message_stack'
+  import type { Message } from '@/views/messages/message_stack'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()

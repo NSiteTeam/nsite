@@ -1,5 +1,5 @@
 <template>
-  <div class='fixed bottom-0 right-0 mr-8 mb-8'>
+  <div class='fixed bottom-0 right-0 mr-8 mb-8 z-10'>
     <div
       class='
         rounded-full bg-secondary text-white  cursor-pointer

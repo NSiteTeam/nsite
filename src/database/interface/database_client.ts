@@ -7,7 +7,7 @@ import type CustomFile from './file'
 import type Message from './message'
 import type { User, email, password, username } from './user'
 import type { Level } from './level'
-import type { SchoolProgram, Theme, ThemeResource } from './school_program'
+import type { SchoolProgram, Theme, ThemeResource, ThemeResourceFile, ThemeResourceType } from './school_program'
 import type { PreviewData } from './preview_data'
 
 export type errorMessage = string
@@ -20,6 +20,24 @@ export interface DatabaseClient {
 
   isConnected: Ref<boolean>
   user: Ref<User | null>
+
+  /**
+   * Fetch on the server the permissions of the current user.
+   * They are also always verified server-side.
+   * We consider that an unauthenticated user has no permissions (empty array).
+   *
+   * It's recommended to the implementation to fetch the permissions on the login and cache them.
+   *
+   * @return the permissions of the current user.
+   */
+  getPermissions(): Promise<Permission []>
+
+  /**
+   * Return the levels that user can edit ONLY if he has the TEACHER permission
+   *
+   * @return an array of levels
+   */
+  getTeachingLevels(): Promise<Level []>
 
   /**
    * Sign in the user with the given email and password
@@ -47,13 +65,17 @@ export interface DatabaseClient {
    */
 
   /**
-   * Get the school program in mathematics.
+   * Get the school program in mathematics that is visible by the students.
    *
    * @returns The school program
-   *
-   * It's recommended for the implementation to cache the program.
    */
   getProgram(): Promise<SchoolProgram>
+
+  /**
+   * Get all the school program, including invisible themes which are in the
+   * teachers teaching levels.
+   */
+  getAllProgram(): Promise<SchoolProgram>
 
   /**
    * Get the theme of the given uuid
@@ -79,6 +101,80 @@ export interface DatabaseClient {
    */
   getPreviewDataOfURL(url: string): Promise<PreviewData>
 
+  // MANAGE PROGRAM
+
+  /**
+   * Create a new, invisible theme
+   *
+   * @param name The name of the theme
+   * @param description The description of the theme
+   * @param level The level of which the theme is related
+   */
+  createTheme(name: string, description: string, level: Level): Promise<Theme>
+
+  /**
+   * Update the given theme
+   *
+   * @param uuid The uuid of the theme to update
+   * @param newTheme The new data of the theme
+   *
+   * @returns The updated theme
+   */
+  updateTheme(uuid: string, newTheme: Theme): Promise<Theme>
+
+  /**
+   * Delete the given theme
+   *
+   * @param uuid The uuid of the theme to delete
+   * @returns The deleted theme
+   */
+  deleteTheme(uuid: string): Promise<void>
+
+  /**
+   * Get all the type of resources in the database
+   *
+   * @returns The types of resources
+   */
+  getThemeResourceTypes(): Promise<ThemeResourceType[]>
+
+  /**
+   * Create a new, visible resource linked to the given theme
+   *
+   * @param uuid The uuid of the theme
+   * @param name The name of the resource
+   * @param message The message of the resource
+   * @param type The type of the resource
+   * @param corected If the resource come with a correction
+   * @param files The files or url of resources. Url are not uploaded to the server, they are just stored in the database.
+   */
+  createThemeResource(theme_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource>
+
+  /**
+   * Update the given resource
+   *
+   * @param uuid The uuid of the resource to update
+   * @param newResource The new data of the resource
+   * @param files The files or url of resources. The client send and remove only the files that have changed.
+   *
+   * @returns The updated resource
+   */
+  updateThemeResource(theme_uuid: string, resource_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource>
+
+  /**
+   * Change the visibility of the given resource.
+   *
+   * @param uuid The uuid of the resource to change
+   * @param visible If the resource will be visible or not
+   */
+  changeThemeResourceVisibility(theme_uuid: string, resource_uuid: string, visible: boolean): Promise<void>
+
+  /**
+   * Delete the given resource
+   *
+   * @param uuid The uuid of the resource to delete
+   * @returns The deleted resource
+   */
+  deleteThemeResource(theme_uuid: string, resource_uuid: string): Promise<void>
 
   // Deposits
   uploadFileToDeposit(

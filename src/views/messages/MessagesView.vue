@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-0 right-0 w-full sm:w-min z-20">
+  <div class="fixed bottom-0 right-0 w-full sm:w-min z-40">
     <template v-for='(message, index) in messages' :key='index'>
       <div
         class="
@@ -60,7 +60,7 @@
    * Maybe should we handle the timeout here in the view ? (solve 1.)
    */
 
-  import { MessageStack, MessageType } from '@/utils/message_stack'
+  import { MessageStack, MessageType } from '@/views/messages/message_stack'
   import { Side } from '@/utils/sides'
   import CloseButton from '@/components/style/CloseButton.vue'
 

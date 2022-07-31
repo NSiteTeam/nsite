@@ -3,7 +3,9 @@
     @click='closeOverlay'
     :class="{
       'hidden': !on,
-      'fixed top-0 left-0 w-screen h-screen bg-black/20 z-40': on
+      'fixed top-0 left-0 w-screen h-screen bg-black/20': on,
+      'z-30': !subnavbar,
+      'z-10': subnavbar,
     }"
   ></div>
 </template>
@@ -13,7 +15,11 @@
     on: {
       type: Boolean,
       default: false
-    }
+    },
+    subnavbar: {
+      type: Boolean,
+      default: false
+    },
   })
 
   const emit = defineEmits(['close'])

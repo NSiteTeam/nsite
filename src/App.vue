@@ -1,16 +1,18 @@
 <template>
   <Nav />
   <main>
-    <MessagesView />
     <Suspense>
       <RouterView />
     </Suspense>
+    <MessagesView />
+    <PopupView />
   </main>
 </template>
 
 <script setup lang="ts">
   import Nav from '@/components/NavBar/NavBar.vue'
-  import MessagesView from '@/components/MessagesView.vue'
+  import MessagesView from '@/views/messages/MessagesView.vue'
+  import PopupView from '@/views/popup/PopupView.vue'
 </script>
 
 <style lang="scss">

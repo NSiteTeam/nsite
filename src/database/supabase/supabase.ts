@@ -10,7 +10,7 @@ import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistoryPoint } from './supabase_history'
 import type { Repository } from '../interface/repositories'
-import type { Permission } from '@/database/interface/permissions'
+import { Permission } from '@/database/interface/permissions'
 import SupabaseFile from '../supabase/supabase_file'
 import type CustomFile from './../interface/file'
 import type Message from '../interface/message'
@@ -21,9 +21,11 @@ import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
 import { databaseClient } from '../implementation'
-import { SchoolProgram, ThemeResourceType } from '../interface/school_program'
-import type { Theme, ThemeResource } from '../interface/school_program'
+import { SchoolProgram } from '../interface/school_program'
+import type { Theme, ThemeResource, ThemeResourceType, ThemeResourceFile, InternalThemeResourceFile } from '../interface/school_program'
 import type { PreviewData } from '../interface/preview_data'
+import { Cacheable } from './cacheable'
+import { timestampToFrenchDate } from '@/utils/date'
 
 
 const TRY_AGAIN_LATER = 'Une erreur est survenue, réessayez plus tard'
@@ -38,6 +40,62 @@ export class SupabaseClient implements DatabaseClient {
   /* User */
   isConnected: Ref<boolean> = ref(false)
   user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
+
+  userPermissionsCache: Cacheable<Permission[]> = new Cacheable(
+    'permissions',
+    async () => {
+      if (!this.isConnected.value) {
+        return []
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select()
+        .eq('user', this.user.value?.uuid)
+        .maybeSingle()
+
+      this.assertNoError(error, 'Fetching permissions failed')
+
+      return data?.permissions?.map(SupabasePermissionHelper.permissionFromId) ?? []
+    }
+  )
+
+  getPermissions(): Promise<Permission[]> {
+    return this.userPermissionsCache.get()
+  }
+
+  teachingLevelsCache: Cacheable<Level[]> = new Cacheable(
+    'teaching_levels',
+    async () => {
+      const permissions = await this.getPermissions()
+
+      if (permissions.includes(Permission.GLOBAL_ADMIN)) {
+        console.log('User is a global admin, returning all levels')
+
+        return Level.LEVELS
+      }
+
+      if (!permissions.includes(Permission.TEACHER)) {
+        console.log('User is not a teacher, returning empty array')
+
+        return []
+      }
+
+      const { data, error } = await supabase
+        .from('teachers')
+        .select()
+        .eq('user', this.user.value?.uuid)
+        .maybeSingle()
+
+      this.assertNoError(error, 'Fetching teaching levels failed')
+
+      return data?.editable_levels?.map(SupabaseLevelHelper.getLevelById) ?? []
+    }
+  )
+
+  getTeachingLevels(): Promise<Level[]> {
+    return this.teachingLevelsCache.get()
+  }
 
   async register(email: string, password: string): Promise<void> {
     console.log(`Send registration request with email ${email}`)
@@ -92,73 +150,589 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   /* Program */
-  fetchedProgram: SchoolProgram | null = null
-  async getProgram(): Promise<SchoolProgram> {
-    console.log('Fetching school program') // TODO: Should we store it in the local storage ?
+  programCache: Cacheable<SchoolProgram> = new Cacheable(
+    'program',
+    async () => {
+      const { data, error } = await supabase
+        .from('themes')
+        .select()
+        .eq('visible', true)
 
-    if (this.fetchedProgram != null) {
-      console.log('School program already fetched, returning cached value')
-      return this.fetchedProgram
+      this.assertNoError(error, 'Fetching school program failed')
+      this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching school program')
+
+      const program: SchoolProgram = new SchoolProgram()
+
+      data!!.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, SupabaseClient.themeFromData(theme)))
+
+      return program
     }
+  )
 
-    const { data, error } = await supabase
-      .from('themes')
-      .select()
+  getProgram(): Promise<SchoolProgram> {
+    return this.programCache.get()
+  }
 
-    this.assertNoError(error, 'Fetching school program failed')
-    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching school program')
+  fullProgramCache: Cacheable<SchoolProgram> = new Cacheable(
+    'full_program',
+    async () => {
+      const teachingLevels = await this.getTeachingLevels()
 
-    let program = new SchoolProgram()
-    data!!.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, {
-      uuid: theme.uuid,
-      name: theme.name,
-      description: theme.description,
-      numberOfExercises: theme.resources_interrogations,
-      numberOfInterrogations: theme.resources_exercises,
-      numberOfCorrections: theme.resources_with_correction
-    }))
+      if (teachingLevels.length === 0) {
+        console.warn('User asked for full program but he have not teaching levels')
+        return this.getProgram()
+      }
 
-    console.log(`Built school program from the data, storing it into the cache`, program)
-    this.fetchedProgram = program
+      const { data, error } = await supabase
+        .from('themes')
+        .select()
+        .in('level', teachingLevels.map(SupabaseLevelHelper.getIdByLevel).map(String))
 
-    return program
+      this.assertNoError(error, 'Fetching school full program failed')
+      this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching full school program')
+
+      const program: SchoolProgram = new SchoolProgram()
+
+      data!!.forEach((theme) => program.add(Level.levelFromIndex(theme.level) !!, SupabaseClient.themeFromData(theme)))
+
+      return program
+    }
+  )
+
+  getAllProgram(): Promise<SchoolProgram> {
+    return this.fullProgramCache.get()
   }
 
   async getThemeByUuid(uuid: string): Promise<Theme | null> {
-    if (this.fetchedProgram == null) {
-      await this.getProgram()
-    }
+    const program = await this.getProgram()
 
-    return this.fetchedProgram!!.find((theme) => theme.uuid == uuid)
+    return program.find((theme) => theme.uuid == uuid)
   }
 
-  fetchedResources = new Map<string, ThemeResource[]>()
+  themeResourcesCache: Map<string, Cacheable<ThemeResource[]>> = new Map()
   async getThemeResources(uuid: string): Promise<ThemeResource[] | null> {
-    console.log(`Fetching resources of theme of uuid $uuid`)
-
-    if (this.fetchedResources.get(uuid)) {
-      console.log(`Resources of theme of uuid ${uuid} already fetched, returning cached value`)
-
-      return this.fetchedResources.get(uuid)!!
+    if (!this.themeResourcesCache.has(uuid) && (await this.fullProgramCache.get()).contains(uuid)) {
+      this.themeResourcesCache.set(uuid, new Cacheable(
+        `theme_${uuid}`,
+        async () =>  (await this.fetchThemeResources(uuid))!!
+      ))
     }
+    return this.themeResourcesCache.get(uuid)!!.get()
+  }
 
+  private async fetchThemeResources(uuid: string): Promise<ThemeResource[] | null> {
+    // First we fetch the theme data
     const { data, error } = await supabase
       .from('themes_resources')
-      .select()
+      .select(`
+        uuid,
+        date,
+        name,
+        message,
+        correction,
+        themes_resources_types (
+          id,
+          name
+        ),
+        visible
+      `)
       .eq('theme_uuid', uuid)
 
     this.assertNoError(error, 'Fetching resources of theme failed')
     this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching resources of theme')
 
-    console.log(`Fetched resources of theme of uuid ${uuid}`, data)
-
-    return data!!.map((resource: any) => ({
+    const resources = data!!.map((resource: any) => ({
+      uuid: resource.uuid,
+      date: timestampToFrenchDate(resource.date),
       name: resource.name,
       message: resource.message,
-      internalResource: resource.internal_resource,
-      contentURL: resource.content_url,
-      type: resource.type as ThemeResourceType,
+      correction: resource.correction,
+      type: resource.themes_resources_types.name,
+      visible: resource.visible,
     }))
+
+    const resourcesIds = resources.map((resource) => resource.uuid)
+
+    const { data: content, error: contentError } = await supabase
+      .from('themes_resources_links')
+      .select()
+      .in('resource', resourcesIds)
+
+    this.assertNoError(contentError, 'Fetching content of resources of theme failed')
+    this.assertWorked(content != null, TRY_AGAIN_LATER, 'Fetching content of resources of theme')
+
+    return resources.map((resource) => ({
+      ...resource,
+      content: content!!
+        .filter((linkData) => linkData.resource === resource.uuid)
+        .map((linkData) => {
+          if (linkData.is_internal) {
+            return {
+              name: linkData.name,
+              path: linkData.path,
+              url: linkData.link
+            }
+          } else {
+            return {
+              url: linkData.link
+            }
+          }
+        })
+    }))
+  }
+
+  themeResourcesTypesCache: Cacheable<ThemeResourceType[]> = new Cacheable(
+    'theme_resources_types',
+    async () => {
+      const { data, error } = await supabase
+        .from('themes_resources_types')
+        .select()
+
+      this.assertNoError(error, 'Fetching theme resources types failed')
+      this.assertWorked(data != null, TRY_AGAIN_LATER, 'Fetching theme resources types')
+
+      return data as ThemeResourceType[]
+    }
+  )
+  async getThemeResourceTypes(): Promise<ThemeResourceType[]> {
+    return this.themeResourcesTypesCache.get()
+  }
+
+  async createThemeResource(theme_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource> {
+    // First we check if the provided type exists, if not we insert it
+    const resourcesTypes = await this.getThemeResourceTypes()
+    let typeObject = resourcesTypes.find((existingType) => existingType.name === type)
+    if (typeObject) {
+      console.log(`Type ${type} already exists, increasing its usage`)
+
+      const { error } = await supabase
+        .from('themes_resources_types')
+        .update({
+          utilisations: typeObject.utilisations + 1 ?? 1
+        })
+        .eq('id', typeObject.id)
+
+      this.assertNoError(error, 'Increasing usage of theme resource type failed')
+
+      typeObject = {
+        ...typeObject,
+        utilisations: typeObject.utilisations + 1 ?? 1
+      }
+
+      this.themeResourcesTypesCache.localUpdate((types) => types.map((existingType) => existingType.name === type ? typeObject!! : existingType))
+    } else {
+      console.log(`Type ${type} does not exist, we create it`)
+
+      const { data, error } = await supabase
+        .from('themes_resources_types')
+        .insert({
+          name: type,
+          utilisations: 1
+        })
+        .maybeSingle()
+
+      this.assertNoError(error, 'Creating theme resource type failed')
+      console.log('Creating theme resource type back without error')
+
+      typeObject = data
+
+      this.themeResourcesTypesCache.localUpdate((types) => [...types, { id: typeObject!!.id, name: type, utilisations: 1 }])
+    }
+
+    // Then we insert the resource
+    const { data, error } = await supabase
+      .from('themes_resources')
+      .insert({
+        theme_uuid: theme_uuid,
+        name: name,
+        message: message,
+        type: typeObject!!.id,
+        correction: corrected,
+        visible: true
+      })
+      .maybeSingle()
+
+    this.assertNoError(error, 'Creating theme resource failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Creating theme resource')
+
+    const resourceWithoutLinks = {
+      ...data,
+      date: timestampToFrenchDate(data.date),
+      type: type
+    }
+    const resourceContent = []
+
+    // Then we upload the file and insert the link one by one
+    for (const file of files) {
+      const fileToUpload = (file as any).file
+      let link = file.url
+
+      // We upload the file if needed
+      if (fileToUpload) {
+        const { data, error } = await supabase
+          .storage
+          .from('themes-resources')
+          .upload(`${theme_uuid}/${resourceWithoutLinks.uuid}/${fileToUpload.name}`, fileToUpload, {
+            cacheControl: '3600'
+          })
+
+        this.assertNoError(error, 'Uploading theme resource file failed')
+        this.assertWorked(data != null, TRY_AGAIN_LATER, 'Uploading theme resource file')
+
+        const { publicURL, error: errorOnUrl } = await supabase
+          .storage
+          .from('themes-resources')
+          .getPublicUrl(`${theme_uuid}/${resourceWithoutLinks.uuid}/${fileToUpload.name}`)
+
+        this.assertNoError(errorOnUrl, 'Getting public url of theme resource file failed')
+        this.assertWorked(publicURL != null, TRY_AGAIN_LATER, 'Getting public url of theme resource file')
+
+        link = publicURL as string
+      }
+
+      const fileName = fileToUpload?.name ?? null
+      const filePath = fileName ? `${theme_uuid}/${resourceWithoutLinks.uuid}/${fileName}` : null
+
+      // And we add the link to the table
+      const { data, error } = await supabase
+        .from('themes_resources_links')
+        .insert({
+          link: link,
+          is_internal: fileToUpload != null,
+          name: fileName,
+          path: filePath,
+          resource: resourceWithoutLinks.uuid
+        })
+        .maybeSingle()
+
+      this.assertNoError(error, 'Creating theme resource link failed')
+      this.assertWorked(data != null, TRY_AGAIN_LATER, 'Creating theme resource link')
+
+      if (fileToUpload) {
+        resourceContent.push({
+          name: fileName,
+          path: filePath,
+          url: link
+        })
+      } else {
+        resourceContent.push({
+          url: link
+        })
+      }
+    }
+
+    const newResource = {
+      ...resourceWithoutLinks,
+      content: resourceContent
+    }
+
+    this.themeResourcesCache.get(theme_uuid)!!.localUpdate((resources) => [...resources, newResource])
+
+    return newResource
+  }
+
+  async changeThemeResourceVisibility(theme_uuid: string, resource_uuid: string, visible: boolean): Promise<void> {
+    const { data, error } = await supabase
+      .from('themes_resources')
+      .update({
+        visible: visible
+      })
+      .eq('uuid', resource_uuid)
+      .maybeSingle()
+
+    this.assertNoError(error, 'Changing theme resource visibility failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Changing theme resource visibility')
+
+    const cache = this.themeResourcesCache.get(theme_uuid)
+    const resource = (await cache?.get())?.find((resource) => resource.uuid === resource_uuid)
+    if (resource) {
+      cache?.localUpdate((resources) => [...resources.filter((resource) => resource.uuid !== resource_uuid), { ...resource, visible: visible }])
+    }
+  }
+
+  async deleteThemeResource(theme_uuid: string, resource_uuid: string): Promise<void> {
+    // First we delete the linked files in the storage
+    const links = (await this.themeResourcesCache.get(theme_uuid)!!.get())!!
+      .find((resource) => resource.uuid === resource_uuid)!!.content
+    let promises = []
+    for (const link of links) {
+      if ((link as any).path) {
+        promises.push(supabase
+          .storage
+          .from('themes-resources')
+          .remove([(link as any).path!!])
+          .then(({error}) => this.assertNoError(error, 'Deleting theme resource file failed'))
+        )
+      }
+
+      // Then we delete the link in the table
+      promises.push(supabase
+        .from('themes_resources_links')
+        .delete()
+        .eq('resource', resource_uuid)
+        .maybeSingle()
+        .then(({error}) => this.assertNoError(error, 'Deleting theme resource link failed'))
+      )
+    }
+
+    await Promise.all(promises).catch((error) => this.assertNoError(error, 'Deleting theme resource files and links failed'))
+
+    // Finally we delete the resource
+    const { data, error } = await supabase
+      .from('themes_resources')
+      .delete()
+      .eq('uuid', resource_uuid)
+      .maybeSingle()
+
+    this.assertNoError(error, 'Deleting theme resource failed')
+
+    // We decrease the utilisations counter of the resource type
+    let utilisations = undefined
+    let typeId = undefined
+    this.themeResourcesTypesCache.localUpdate((types) => types.map((type) => {
+      if (type.id === data!!.type) {
+        utilisations = type.utilisations - 1
+        typeId = type.id
+        return { ...type, utilisations: utilisations }
+      }
+      return type
+      })
+      .filter((type) => type.utilisations > 0)
+    )
+
+    if (utilisations === 0) {
+      // We delete the resource type if there is no more utilisation
+      const { data, error } = await supabase
+        .from('themes_resources_types')
+        .delete()
+        .eq('id', typeId)
+        .maybeSingle()
+
+      this.assertNoError(error, 'Deleting theme resource type failed')
+    } else {
+      // We update the resource type if there is still utilisation
+      const { data, error } = await supabase
+        .from('themes_resources_types')
+        .update({
+          utilisations: utilisations
+        })
+        .eq('id', typeId)
+        .maybeSingle()
+
+      this.assertNoError(error, 'Updating theme resource type failed')
+    }
+
+    const cache = this.themeResourcesCache.get(theme_uuid)
+    const resource = (await cache?.get())?.find((resource) => resource.uuid === resource_uuid)
+    if (resource) {
+      cache?.localUpdate((resources) => [...resources.filter((resource) => resource.uuid !== resource_uuid)])
+    }
+  }
+
+  async updateThemeResource(theme_uuid: string, resource_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource> {
+    // First we get the previous version of the resource
+    const previous = (await this.themeResourcesCache.get(theme_uuid)?.get())?.find((resource) => resource.uuid === resource_uuid)
+
+    // We update the type utilisations counter if needed
+    if (previous?.type !== type) {
+
+      // First we increase the utilisations counter of the new type
+      const usedType = (await this.themeResourcesTypesCache.get())?.find((existingType) => existingType.name === type)
+      let newTypeId = undefined
+      if (usedType) {
+        // We increase the utilisations counter of the new type
+        const { data, error } = await supabase
+          .from('themes_resources_types')
+          .update({
+            utilisations: usedType.utilisations + 1
+          })
+          .eq('id', usedType.id)
+          .maybeSingle()
+
+        this.assertNoError(error, 'Updating theme resource type failed')
+
+        this.themeResourcesTypesCache.localUpdate((types) => [...types.filter((type) => type.id !== usedType.id), { ...usedType, utilisations: usedType.utilisations + 1 }])
+      } else {
+        // We create the new type if it doesn't exist
+        const { data, error } = await supabase
+          .from('themes_resources_types')
+          .insert({
+            name: type,
+            utilisations: 1
+          })
+          .maybeSingle()
+
+        this.assertNoError(error, 'Creating theme resource type failed')
+
+        this.themeResourcesTypesCache.localUpdate((types) => [...types, data ])
+
+        newTypeId = data!!.id
+      }
+      // We update the type of the resource NOW to avoid foreign key constraint error
+      if (newTypeId) {
+        const { data, error } = await supabase
+          .from('themes_resources')
+          .update({
+            type: newTypeId
+          })
+          .eq('uuid', resource_uuid)
+          .maybeSingle()
+      }
+
+      // Then we decrease the utilisations counter of the previous type
+      let utilisations = undefined
+      let typeId = undefined
+
+      this.themeResourcesTypesCache.localUpdate((types) => types.map((type) => {
+          if (type.name === previous!!.type) {
+            utilisations = type.utilisations - 1
+            typeId = type.id
+            return { ...type, utilisations: utilisations }
+          }
+          return type
+        })
+        .filter((type) => type.utilisations > 0)
+      )
+
+      const { error } = await supabase
+        .from('themes_resources_types')
+        .update({
+          utilisations: utilisations
+        })
+        .eq('id', typeId)
+        .maybeSingle()
+
+      this.assertNoError(error, 'Updating theme resource type failed')
+
+      // We delete the resource type if there is no more utilisation
+      if (utilisations === 0) {
+        // We delete the resource type if there is no more utilisation
+        const { data, error } = await supabase
+          .from('themes_resources_types')
+          .delete()
+          .eq('id', typeId)
+          .maybeSingle()
+
+        this.assertNoError(error, 'Deleting theme resource type failed')
+      }
+    }
+
+    // Then we delete the deleted links/files
+    const deletedLinks = previous?.content
+      .filter((link) =>
+        !files.find((file) => {
+          const sameURL = (file.url && (file.url == link.url))
+          const sameName = ((file as any).name && ((file as any).name == (link as any).name))
+          return sameURL || sameName
+        })
+      )!!
+
+    let promises = []
+    for (const link of deletedLinks) {
+      if ((link as any).path) {
+        promises.push(supabase
+          .storage
+          .from('themes-resources')
+          .remove([(link as any).path!!])
+          .then(({error}) => this.assertNoError(error, 'Deleting theme resource file failed'))
+        )
+      }
+
+      // And we delete the link in the table
+      promises.push(supabase
+        .from('themes_resources_links')
+        .delete()
+        .eq('link', link.url!!)
+        .eq('resource', resource_uuid)
+        .maybeSingle()
+        .then(({error}) => this.assertNoError(error, 'Deleting theme resource link failed'))
+      )
+    }
+
+    // In parallel we create the new links/files
+    const newLinks = files
+      .filter((link) =>
+        !previous?.content.find((file) => {
+          const sameURL = (file.url && (file.url == link.url))
+          const sameName = ((file as any).name && ((file as any).name == (link as any).name))
+          return sameURL || sameName
+        })
+      )!!
+    // Then we upload the file and insert the link one by one
+    for (const file of newLinks) {
+      const fileToUpload = (file as any).file
+      let link = file.url
+
+      // We upload the file if needed
+      if (fileToUpload) {
+        const { data, error } = await supabase
+          .storage
+          .from('themes-resources')
+          .upload(`${theme_uuid}/${resource_uuid}/${fileToUpload.name}`, fileToUpload, {
+            cacheControl: '3600'
+          })
+
+        file.url = supabase.storage.from('themes-resources').getPublicUrl(`${theme_uuid}/${resource_uuid}/${fileToUpload.name}`).publicURL!!
+        { (file as InternalThemeResourceFile).path = `${theme_uuid}/${resource_uuid}/${fileToUpload.name}` }
+
+        this.assertNoError(error, 'Uploading theme resource file failed')
+        this.assertWorked(data != null, TRY_AGAIN_LATER, 'Uploading theme resource file')
+
+        const { publicURL, error: errorOnUrl } = await supabase
+          .storage
+          .from('themes-resources')
+          .getPublicUrl(`${theme_uuid}/${resource_uuid}/${fileToUpload.name}`)
+
+        this.assertNoError(errorOnUrl, 'Getting public url of theme resource file failed')
+        this.assertWorked(publicURL != null, TRY_AGAIN_LATER, 'Getting public url of theme resource file')
+
+        link = publicURL as string
+      }
+
+      const fileName = fileToUpload?.name ?? null
+      const filePath = fileName ? `${theme_uuid}/${resource_uuid}/${fileName}` : null
+
+      // And we add the link to the table
+      promises.push(supabase
+        .from('themes_resources_links')
+        .insert({
+          link: link,
+          is_internal: fileToUpload != null,
+          name: fileName,
+          path: filePath,
+          resource: resource_uuid
+        })
+        .maybeSingle()
+        .then(({error}) => this.assertNoError(error, 'Inserting theme resource link failed'))
+      )
+    }
+
+    // Then we update the resource
+    const { data, error } = await supabase
+      .from('themes_resources')
+      .update({
+        name: name,
+        message: message,
+        correction: corrected,
+      })
+      .eq('uuid', resource_uuid)
+      .maybeSingle()
+
+    this.assertNoError(error, 'Updating theme resource failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Updating theme resource')
+
+    let updated: ThemeResource
+    // And its cache
+    this.themeResourcesCache.get(theme_uuid)?.localUpdate((resources) => resources.map((resource) => {
+      if (resource.uuid === resource_uuid) {
+        updated = { ...resource, name, message, correction: corrected, type, content: files }
+        return updated
+      }
+      return resource
+    }
+    ))
+
+    return updated!!
   }
 
   async getPreviewDataOfURL(url: string): Promise<PreviewData> {
@@ -177,6 +751,105 @@ export class SupabaseClient implements DatabaseClient {
       description: data!!.description,
       image: data!!.image,
     }
+  }
+
+  async createTheme(name: string, description: string, level: Level): Promise<Theme> {
+    console.log(`Creating theme ${name}`)
+
+    const { data, error } = await supabase
+      .from('themes')
+      .insert({
+        name: name,
+        description: description,
+        level: SupabaseLevelHelper.getIdByLevel(level),
+        visible: false,
+        resources_interrogations: 0,
+        resources_exercises: 0,
+        resources_with_correction: 0,
+      })
+      .maybeSingle()
+
+    this.assertNoError(error, 'Creating theme failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Creating theme')
+
+    const createdTheme = SupabaseClient.themeFromData(data)
+
+    console.log(`Created theme ${createdTheme}`)
+
+    const updateProgram = (previous: SchoolProgram) => {
+      const newProgram = previous.clone()
+      newProgram.add(level, createdTheme)
+      return newProgram
+    }
+
+    this.programCache.localUpdate(updateProgram)
+    this.fullProgramCache.localUpdate(updateProgram)
+
+    return createdTheme
+  }
+
+  async updateTheme(uuid: string, theme: Theme): Promise<Theme> {
+    console.log(`Updating theme of uuid ${uuid}`)
+
+    const { data, error } = await supabase
+      .from('themes')
+      .update({
+        name: theme.name,
+        description: theme.description,
+        level: SupabaseLevelHelper.getIdByLevel(theme.level),
+        visible: theme.visible,
+        resources_with_correction: theme.numberOfCorrections
+      })
+      .eq('uuid', theme.uuid)
+      .maybeSingle()
+
+    this.assertNoError(error, 'Updating theme failed')
+    this.assertWorked(data != null, TRY_AGAIN_LATER, 'Updating theme')
+
+    const updatedTheme = SupabaseClient.themeFromData(data)
+
+    console.log(`Updated theme ${updatedTheme.uuid}`)
+
+    const updateProgram = (previous: SchoolProgram) => {
+      const newProgram = previous.clone()
+      newProgram.updateTheme(uuid, updatedTheme)
+      return newProgram
+    }
+
+    this.programCache.localUpdate(updateProgram)
+    this.fullProgramCache.localUpdate(updateProgram)
+
+    return updatedTheme
+  }
+
+  async deleteTheme(uuid: string): Promise<void> {
+    console.log(`Deleting theme of uuid ${uuid}`)
+
+    const promises = []
+
+    // We delete all the resources of the theme
+    for (const resource of (await this.getThemeResources(uuid))!!) {
+      promises.push(this.deleteThemeResource(uuid, resource.uuid))
+    }
+
+    await Promise.all(promises)
+
+    const { error } = await supabase
+      .from('themes')
+      .delete()
+      .eq('uuid', uuid)
+      .maybeSingle()
+
+    this.assertNoError(error, 'Deleting theme failed')
+
+    const updateProgram = (previous: SchoolProgram) => {
+      const newProgram = previous.clone()
+      newProgram.deleteTheme(uuid)
+      return newProgram
+    }
+
+    this.programCache.localUpdate(updateProgram)
+    this.fullProgramCache.localUpdate(updateProgram)
   }
 
   // The value of this ref is the fetched files
@@ -205,9 +878,6 @@ export class SupabaseClient implements DatabaseClient {
   // The last connection date of the connected user or null if the user is not connected
   last_date: Ref<string | null> = ref(null)
 
-  // All the permissions of the user
-  permissions: Ref<Array<Permission>> = ref(Array())
-
   // The value of this ref is the fetched messages
   messages: Ref<Repository[]> = ref([])
 
@@ -224,18 +894,20 @@ export class SupabaseClient implements DatabaseClient {
   fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
 
-
-
   /**
    * Private method to update the data of the user. For the moment it updates :
    *  - Connection status
    *  - User email
+   *  - Permissions
    */
-  private updateConnectionStatus() {
+  private async updateConnectionStatus() {
     console.log('Updating connection status')
 
     const isConnected = supabase.auth.session() != null
     this.isConnected.value = isConnected
+
+    this.userPermissionsCache.invalidate()
+    this.teachingLevelsCache.invalidate()
 
     if (!isConnected) {
       console.log("User isn't connected")
@@ -1118,6 +1790,18 @@ export class SupabaseClient implements DatabaseClient {
       resolve(data)
     })
   }
+
+  private static themeFromData(data: any): Theme {
+    return {
+      uuid: data.uuid,
+      name: data.name,
+      description: data.description,
+      level: SupabaseLevelHelper.getLevelById(data.level),
+      visible: data.visible,
+      numberOfCorrections: data.resources_with_correction
+    }
+  }
+
 
   private assertNoError(error: Error | ApiError | PostgrestError | null, message: string): void {
     if (error) {

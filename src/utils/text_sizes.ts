@@ -52,7 +52,7 @@ export const TextSizes = {
 }
 
 export function isBase(props: any) {
-  return !(props.xs || props.sm || props.lg || props['2xl'] || props['3xl'] || props['4xl'] || props['5xl'] || props['6xl'] || props['7xl'] || props['8xl'] || props['9xl'])
+  return !(props.xs || props.sm || props.lg || props.xl || props['2xl'] || props['3xl'] || props['4xl'] || props['5xl'] || props['6xl'] || props['7xl'] || props['8xl'] || props['9xl'])
 }
 
 export function textSize(props: any, base: boolean) {

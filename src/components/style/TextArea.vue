@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class='flex flex-col'>
     <label
       v-if='label'
       class="block text-sm mb-0.5 ml-1"
@@ -9,21 +9,19 @@
     </label>
     <div
       class='
-        flex flex-row items-center
+        flex flex-row items-center flex-1
         bg-gray-500/20 rounded-lg overflow-clip transition-colors
         focus-within:bg-transparent
         border-4 focus-within:border-primary
       '
       :class='{ "border-red-500": error.length != 0 }'
     >
-      <input
+      <textarea
         :id='id'
-        ref='input'
-        :type='updatedType'
         class='
-          bg-transparent
+          bg-transparent resize-none
           focus:outline-none
-          w-full
+          w-full h-full
           caret-primary
         '
         :class='{
@@ -33,14 +31,7 @@
         :placeholder='placeholder'
         :value='modelValue'
         @input='updateValue'
-        @keydown.enter='$emit("enter")'
-      />
-      <ActionIcon
-        v-if='isPasswordField'
-        :icon='isPasswordVisible ? "visibility" : "visibility_off"'
-        class='m-2'
-        @click.prevent='togglePasswordVisibility'
-      />
+      ></textarea>
     </div>
     <p
       class='text-red-500 text-xs italic'
@@ -55,15 +46,11 @@
 
 <script setup lang="ts">
   import { uuid } from '@/utils/uuid'
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref } from 'vue'
   import ActionIcon from '@/components/style/ActionIcon.vue'
 
   const props = defineProps({
     modelValue: String,
-    type: {
-      type: String,
-      default: 'text',
-    },
     label: {
       type: String,
       default: '',
@@ -80,47 +67,12 @@
       type: Boolean,
       default: false,
     },
-    focusonappear: {
-      type: Boolean,
-      default: false,
-    },
   })
 
   const id = uuid()
-  const emit = defineEmits(['update:modelValue', 'enter'])
-  const input = ref<HTMLInputElement>()
-
-  watch(input, (newInput) => {
-    if (props.focusonappear && newInput) {
-      newInput.focus()
-    }
-  })
+  const emit = defineEmits(['update:modelValue'])
 
   const updateValue = (event: any) => {
     emit('update:modelValue', event.target.value)
   }
-
-  /* PASSWORD */
-  const togglePasswordVisibility = () => {
-    if (!isPasswordField) {
-      throw new Error('togglePasswordVisibility can only be called on password fields')
-    }
-
-    isPasswordVisible.value = !isPasswordVisible.value
-  }
-
-  const isPasswordField = computed(() => {
-    return props.type == 'password'
-  })
-  const isPasswordVisible = ref(false)
-
-  const updatedType = computed(() => {
-    if (!isPasswordField.value) {
-      return props.type
-    } else if (isPasswordVisible.value) {
-      return 'text'
-    } else {
-      return 'password'
-    }
-  })
 </script>

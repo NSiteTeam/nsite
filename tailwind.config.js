@@ -19,7 +19,6 @@ module.exports = {
         "secondary": "#42e2b8",
         "tertiary": "#ff8c42",
         "dark": "#12130f",
-        "light": "#fafafa",
       },
       animation: {
         'pop-out': 'pop-out 0.125s ease-in-out',

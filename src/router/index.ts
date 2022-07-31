@@ -1,3 +1,4 @@
+import { databaseClient } from '@/database/implementation'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
 
@@ -50,24 +51,14 @@ const router = createRouter({
       component: () => import('../views/TimelineView.vue'),
     },
     {
-      path: '/profile',
-      name: 'account',
-      component: () => import('../views/ProfileView.vue'),
-    },
-    {
-      path: '/dashboard/:view?/:action?/:depo?',
+      path: '/dashboard/:view?',
       name: 'dashboard',
-      component: () => import('@/views/admin/Dashboard.vue'),
-    },
-    {
-      path: '/404',
-      name: '404',
-      component: () => import('@/views/404.vue'),
+      component: () => import('@/views/dashboard/Dashboard.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
       name: '404',
-      component: () => import('@/views/404.vue'),
+      component: () => import('@/views/40x/40x.vue'),
     }
   ],
 })
