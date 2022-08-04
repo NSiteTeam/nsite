@@ -49,16 +49,36 @@
               <template v-if='resourcesLoaded && column.items.length > 0'>
                 <template v-for='(item, index) in column.items' :key="index">
                   <ShadowBox class='bg-white/10 h-min'>
-                    <SmallTitle>{{ item.name }}</SmallTitle>
-
-                    <div v-if='item.previewData' class=''>
-                      <p class='text-primary bold'>{{ item.previewTitle }}</p>
-                      <img v-if='item.previewURL' :src='item.previewURL' class='w-full aspect-video object-cover' />
-                    </div>
-
+                    <SmallTitle>
+                      {{ item.name }}
+                      <span class='italic text-gray-600 text-xs'>
+                        {{ item.date }}
+                      </span>
+                    </SmallTitle>
                     <p class="text-gray-600 font-semibold">
                       {{ item.message }}
                     </p>
+                    <div class='mt-4'>
+                      <div
+                        v-for='(link, linkIndex) in item.content'
+                        :key='linkIndex'
+
+                      >
+                        <a
+                          download
+                          :href='link.url'
+                          class='underline'
+                          :class='{
+                            "text-blue-500": !link.name,
+                            "text-gray-600 bold": link.name
+                          }'
+                        >
+                          <Icon :icon='link.name ? "file_download" : "link"' />
+                          {{ link.name ?? link.url }}
+                        </a>
+                      </div>
+                    </div>
+
                   </ShadowBox>
                 </template>
               </template>
@@ -102,12 +122,13 @@
   import HorizontalRadio from '@/components/style/HorizontalRadio.vue'
   import ShadowBox from '@/components/style/ShadowBox.vue'
   import Footer from '@/components/Footer.vue'
+  import Icon from '@/components/style/Icon.vue'
   import { useRoute } from 'vue-router'
   import { databaseClient } from '@/database/implementation'
   import { getParameterOfRoute } from '@/utils/route_utils'
   import { onMounted, ref, watch } from 'vue'
   import type { Ref } from 'vue'
-  import type { Theme, ThemeResource } from '@/database/interface/school_program'
+  import type { Theme, ThemeResource, ThemeResourceFile } from '@/database/interface/school_program'
   import { supabase } from '@/database/supabase/supabase_client'
   import { MessageStack } from '@/views/messages/message_stack'
 
@@ -128,79 +149,27 @@
       themeLoaded.value = true
     })
 
-  type ColumnItem = {
-    name: string,
-    message?: string,
-    internal_resource: boolean
-    type: ThemeResourceType,
-    contentURL?: string,
-    previewData: boolean,
-    previewURL?: string
-    previewTitle?: string
-    previewDescription?: string
-  }
-
   type Column = {
     title: string,
-    items: ColumnItem[]
+    items: ThemeResourceFile[]
   }
 
-  const columns: Ref<Column[]> = ref([
-    {
-      title: 'Exercices',
-      items: []
-    },
-    {
-      title: 'Interrogations',
-      items: []
-    },
-    {
-      title: 'Autres',
-      items: []
-    }
-  ])
+  const columns: Ref<Column[]> = ref([])
 
   databaseClient.getThemeResources(themeUUID)
     .then(resources => {
-      if (!resources) return
-
-      let updatedResources = resources.map(resource => {
-        const updatedResource: ColumnItem = {
-          name: resource.name,
-          message: resource.message,
-          internal_resource: resource.internalResource,
-          contentURL: resource.contentURL,
-          type: resource.type,
-          previewData: false,
-          previewURL: undefined,
-          previewTitle: undefined,
-          previewDescription: undefined
+      resources?.reduce((acc, resource) => {
+        const column = acc.find(c => c.title === resource.type)
+        if (column) {
+          column.items.push(resource)
+        } else {
+          acc.push({
+            title: resource.type,
+            items: [resource]
+          })
         }
-
-        if (!resource.internalResource && resource.contentURL) { // We try to get a preview
-          databaseClient.getPreviewDataOfURL(resource.contentURL)
-            .then((previewData) => {
-              if (previewData.title) {
-                updatedResource.previewTitle = previewData.title
-              }
-              if (previewData.description) {
-                updatedResource.previewDescription = previewData.description
-              }
-              if (previewData.image) {
-                updatedResource.previewURL = previewData.image
-              }
-
-              updatedResource.previewData = true
-            })
-            .catch(MessageStack.logError)
-        }
-
-        return updatedResource
-      })
-
-      columns.value[0].items = updatedResources.filter(item => item.type == ThemeResourceType.EXERCISES)
-      columns.value[1].items = updatedResources.filter(item => item.type == ThemeResourceType.INTERROGATION)
-      columns.value[2].items = updatedResources.filter(item => item.type == ThemeResourceType.OTHER)
+        return acc
+      }, columns.value)
     })
     .catch(MessageStack.logError)
     .finally(() => {
