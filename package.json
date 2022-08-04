@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.35.4",
-    "sass": "^1.54.0",
+    "sass": "^1.54.2",
     "vue": "^3.2.33",
     "vue-router": "^4.1.3"
   },
