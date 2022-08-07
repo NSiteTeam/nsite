@@ -47,9 +47,9 @@
 
   const subtitle = computed(() => {
     if (!props.forbidden) {
-      return 'Tout comme les figure que vous voyez, cette page n\'existe pas.'
+      return 'Tout comme les figures que vous voyez, cette page n\'existe pas.'
     } else {
-      return 'Tout comme les figure que vous voyez, cette page est impossible d\'accès.'
+      return 'Tout comme les figures que vous voyez, cette page est impossible d\'accès.'
     }
   })
 </script>

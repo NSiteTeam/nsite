@@ -5,6 +5,7 @@ import type { News } from '../interface/news'
 export class SupabaseNews implements News {
   id: number
   title: string
+  subtitle: string
   content: string
   date: LongDate
   concerned: Array<Level>
@@ -13,6 +14,7 @@ export class SupabaseNews implements News {
   constructor(
     id: number,
     title: string,
+    subtitle: string,
     content: string,
     date: LongDate,
     concerned: Array<Level>,
@@ -20,6 +22,7 @@ export class SupabaseNews implements News {
   ) {
     this.id = id
     this.title = title
+    this.subtitle = subtitle
     this.content = content
     this.date = date
     this.concerned = concerned

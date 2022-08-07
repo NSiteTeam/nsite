@@ -4,6 +4,7 @@ import type { HistoryPoint } from '../interface/history_point'
 export class SupabaseHistoryPoint implements HistoryPoint {
   id: number
   title: string
+  subtitle: string
   date: LongDate
   content: string
   visible: boolean
@@ -11,12 +12,14 @@ export class SupabaseHistoryPoint implements HistoryPoint {
   constructor(
     id: number,
     title: string,
+    subtitle: string,
     content: string,
     date: LongDate,
     visible: boolean,
   ) {
     this.id = id
     this.title = title
+    this.subtitle = subtitle
     this.content = content
     this.date = date
     this.visible = visible

@@ -7,13 +7,18 @@ import type CustomFile from './file'
 import type Message from './message'
 import type { User, email, password, username } from './user'
 import type { Level } from './level'
-import type { SchoolProgram, Theme, ThemeResource, ThemeResourceFile, ThemeResourceType } from './school_program'
+import type {
+  SchoolProgram,
+  Theme,
+  ThemeResource,
+  ThemeResourceFile,
+  ThemeResourceType,
+} from './school_program'
 import type { PreviewData } from './preview_data'
 
 export type errorMessage = string
 
 export interface DatabaseClient {
-
   /**
    * USER SECTION
    */
@@ -30,14 +35,14 @@ export interface DatabaseClient {
    *
    * @return the permissions of the current user.
    */
-  getPermissions(): Promise<Permission []>
+  getPermissions(): Promise<Permission[]>
 
   /**
    * Return the levels that user can edit ONLY if he has the TEACHER permission
    *
    * @return an array of levels
    */
-  getTeachingLevels(): Promise<Level []>
+  getTeachingLevels(): Promise<Level[]>
 
   /**
    * Sign in the user with the given email and password
@@ -147,7 +152,14 @@ export interface DatabaseClient {
    * @param corected If the resource come with a correction
    * @param files The files or url of resources. Url are not uploaded to the server, they are just stored in the database.
    */
-  createThemeResource(theme_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource>
+  createThemeResource(
+    theme_uuid: string,
+    name: string,
+    message: string,
+    type: string,
+    corrected: boolean,
+    files: ThemeResourceFile[],
+  ): Promise<ThemeResource>
 
   /**
    * Update the given resource
@@ -158,7 +170,15 @@ export interface DatabaseClient {
    *
    * @returns The updated resource
    */
-  updateThemeResource(theme_uuid: string, resource_uuid: string, name: string, message: string, type: string, corrected: boolean, files: ThemeResourceFile[]): Promise<ThemeResource>
+  updateThemeResource(
+    theme_uuid: string,
+    resource_uuid: string,
+    name: string,
+    message: string,
+    type: string,
+    corrected: boolean,
+    files: ThemeResourceFile[],
+  ): Promise<ThemeResource>
 
   /**
    * Change the visibility of the given resource.
@@ -166,7 +186,11 @@ export interface DatabaseClient {
    * @param uuid The uuid of the resource to change
    * @param visible If the resource will be visible or not
    */
-  changeThemeResourceVisibility(theme_uuid: string, resource_uuid: string, visible: boolean): Promise<void>
+  changeThemeResourceVisibility(
+    theme_uuid: string,
+    resource_uuid: string,
+    visible: boolean,
+  ): Promise<void>
 
   /**
    * Delete the given resource
@@ -214,7 +238,7 @@ export interface DatabaseClient {
   // NEWS
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
-  fetchNews(quantity: number, visibility?: boolean): Promise<number>
+  fetchNews(quantity: number, onlyVisible: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>
   switchVisibilityOfHistoryPoint(news: News): Promise<errorMessage | null>
@@ -228,5 +252,6 @@ export interface DatabaseClient {
   ): Promise<errorMessage | null>
   deleteHistoryPoint(news: HistoryPoint): Promise<errorMessage | null>
   fetchHistoryPoints(): Promise<void>
+  fetchOneHistoryPoint(id: number): Promise<HistoryPoint | undefined>
   fetchedHistoryPoints: Ref<HistoryPoint[]>
 }

@@ -7,12 +7,12 @@
   >
     <ShadowBox class="lg:col-span-2 bg-white/10 h-min">
       <LargeTitle>
-        Un site dédié <Keyword secondary>
+        Un site dédié <Keyword big secondary>
         aux mathématiques</Keyword>
       </LargeTitle>
 
       <Catchphrase smiley='🖋️'>
-        Les annales des précédents DS avec <Keyword primary bold>
+        Les annales des précédents DS avec <Keyword big primary bold>
         les corrigés</Keyword>
       </Catchphrase>
       <Catchphrase smiley='📃'>
@@ -31,7 +31,7 @@
     </ShadowBox>
 
     <ShadowBox class="bg-white/10 h-min">
-      <LargeTitle>Les <Keyword secondary>actualités</Keyword> de Saint Jean</LargeTitle>
+      <LargeTitle>Les <Keyword big secondary>actualités</Keyword> de Saint Jean</LargeTitle>
       <div class="news-container max-h-[60vh] no-scrollbar overflow-y-scroll">
         <CenteredLoadingAnimation v-if='!newsFetched' animation-size='75%'/>
 

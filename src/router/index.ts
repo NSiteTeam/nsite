@@ -46,9 +46,14 @@ const router = createRouter({
       component: () => import('../views/RepositoryView.vue'),
     },
     {
-      path: '/timeline',
+      path: '/timeline/',
       name: 'timeline',
       component: () => import('../views/TimelineView.vue'),
+    },
+    {
+      path: '/history-article/:id',
+      name: 'history-article',
+      component: () => import('../views/HistoryArticle.vue'),
     },
     {
       path: '/dashboard/:view?',

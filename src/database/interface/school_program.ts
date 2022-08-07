@@ -36,6 +36,7 @@ export type Theme = {
   uuid: string
   level: Level
   visible: boolean
+  numberOfCorrections: any
 }
 
 export class SchoolProgram {

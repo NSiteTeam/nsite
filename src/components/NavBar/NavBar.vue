@@ -53,7 +53,7 @@
 <script setup lang="ts">
   import { watch } from 'vue'
   import { ref } from '@vue/reactivity'
-  import { useWindowSize } from 'vue-window-size'
+  import useWindowSize from '@/utils/windows_size'
   import { databaseClient } from '@/database/implementation'
   import { useRoute, useRouter } from 'vue-router'
   import { computed, onMounted } from '@vue/runtime-core'
