@@ -9,7 +9,7 @@
       <MediumTitle class="mt-8">Peut-on voir le code de ce site ?</MediumTitle>
       <p>
         Oui ! Le code source du site est disponible sur <a :href='GITHUB_LINK'>GitHub</a>. Il
-        est fourni sous licence <a class='text-marked' :href='LICENSE_LINK'>{{ LICENSE_NAME }}</a>.
+        est fourni sous licence <a class='text-marked text-blue-500 underline' :href='LICENSE_LINK'>{{ LICENSE_NAME }}</a>.
       </p>
       <MediumTitle class="mt-8">Peut-on contribuer à ce site</MediumTitle>
       <p>

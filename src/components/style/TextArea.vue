@@ -45,9 +45,10 @@
 </template>
 
 <script setup lang="ts">
+  // @ts-ignore
+  import ActionIcon from '@/components/style/ActionIcon.vue'
   import { uuid } from '@/utils/uuid'
   import { computed, ref } from 'vue'
-  import ActionIcon from '@/components/style/ActionIcon.vue'
 
   const props = defineProps({
     modelValue: String,

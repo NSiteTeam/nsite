@@ -183,34 +183,45 @@
 </template>
 
 <script setup lang="ts">
-/**
- * TODO: 1. Store the level of the user to be able to display it on top
- *       2. Suggest last themes consulted by the user
- *       3. On phone, make that when the user click on a card and go back, the scroll position is restored
- */
-
+// @ts-ignore
+import SearchInput from './SearchInput.vue'
+// @ts-ignore
+import ShadowBox from '@/components/style/ShadowBox.vue'
+// @ts-ignore
+import Icon from '@/components/style/Icon.vue'
+// @ts-ignore
+import ActionIcon from '@/components/style/ActionIcon.vue'
+// @ts-ignore
+import GreyDot from '@/components/style/GreyDot.vue'
+// @ts-ignore
+import SkeletonText from '@/components/style/SkeletonText.vue'
+// @ts-ignore
+import Keyword from '@/components/style/Keyword.vue'
+// @ts-ignore
+import LargeTitle from '@/components/style/LargeTitle.vue'
+// @ts-ignore
+import MediumTitle from '@/components/style/MediumTitle.vue'
+// @ts-ignore
+import SmallTitle from '@/components/style/SmallTitle.vue'
+// @ts-ignore
+import BarSeparator from '@/components/style/BarSeparator.vue'
+// @ts-ignore
+import Badge from '@/components/style/Badge.vue'
+// @ts-ignore
+import CollapseIcon from '@/components/style/CollapseIcon.vue'
+// @ts-ignore
+import GoToTop from '@/components/style/GoToTop.vue'
+// @ts-ignore
+import InputField from '@/components/style/InputField.vue'
+// @ts-ignore
+import HorizontalRadio from '@/components/style/HorizontalRadio.vue'
+// @ts-ignore
+import Footer from '@/components/Footer.vue'
 import { databaseClient } from '@/database/implementation'
 import type { SchoolProgram, Theme } from '@/database/interface/school_program'
 import { Level, School } from '@/database/interface/level'
 import { computed, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import SearchInput from './SearchInput.vue'
-import ShadowBox from '@/components/style/ShadowBox.vue'
-import Icon from '@/components/style/Icon.vue'
-import ActionIcon from '@/components/style/ActionIcon.vue'
-import GreyDot from '@/components/style/GreyDot.vue'
-import SkeletonText from '@/components/style/SkeletonText.vue'
-import Keyword from '@/components/style/Keyword.vue'
-import LargeTitle from '@/components/style/LargeTitle.vue'
-import MediumTitle from '@/components/style/MediumTitle.vue'
-import SmallTitle from '@/components/style/SmallTitle.vue'
-import BarSeparator from '@/components/style/BarSeparator.vue'
-import Badge from '@/components/style/Badge.vue'
-import CollapseIcon from '@/components/style/CollapseIcon.vue'
-import GoToTop from '@/components/style/GoToTop.vue'
-import InputField from '@/components/style/InputField.vue'
-import HorizontalRadio from '@/components/style/HorizontalRadio.vue'
-import Footer from '@/components/Footer.vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useWindowSize } from 'vue-window-size'
 import {

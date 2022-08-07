@@ -238,6 +238,7 @@ export interface DatabaseClient {
   // NEWS
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
+  historyPointsFetched: boolean
   fetchNews(quantity: number, onlyVisible: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>

@@ -8,9 +8,9 @@
         <h2 class="text-xl font-bold">Niveaux :</h2>
         <li
           class="shadow-xl shadow-black/10"
-          v-bind:class="{ 'border-2 border-primary': level == selectedLevel }"
+          v-bind:class="{ 'border-2 border-primary': null == selectedLevel }"
           @click="selectLevel(null)"
-        >
+        > 
           <RouterLink class="font-bold" to="/browse/"> Tout </RouterLink>
         </li>
         <li
@@ -108,7 +108,6 @@ function changeSort(newKey: Sort) {
 }
 
 function selectLevel(newLevel: Level) {
-  console.log('Selected level', newLevel)
   selectedLevel.value = newLevel
 }
 

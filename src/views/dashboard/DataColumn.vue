@@ -1,6 +1,6 @@
 <template>
   <div
-    class='h-main overflow-x-hidden transition-all border-r-2 border-gray-100 whitespace-nowrap'
+    class='h-main overflow-x-hidden transition-all border-r-2 w-64 border-gray-100 whitespace-nowrap'
     :class="{
       'w-full md:w-80': expanded,
       'w-12 overflow-y-clip': !expanded

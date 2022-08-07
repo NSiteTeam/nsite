@@ -1,9 +1,10 @@
-import ManageProgram from './ManageProgram.vue';
+import ManageProgram from './ManageProgram.vue'
+import ManageHistoryPoints from '@/views/dashboard/ManageHistoryPoints.vue'
 
 export type DashboardView = {
   name: string
   nameInUrl: string
-  icon: string,
+  icon: string
   view: any
 }
 
@@ -11,7 +12,7 @@ export const PROGRAM_VIEW = {
   name: 'Program',
   nameInUrl: 'themes',
   icon: 'topic',
-  view: ManageProgram
+  view: ManageProgram,
 }
 export const NEWS_VIEW = {
   name: 'Actualités',
@@ -22,6 +23,7 @@ export const HISTORY_VIEW = {
   name: 'Histoire',
   nameInUrl: 'histoire',
   icon: 'timeline',
+  view: ManageHistoryPoints,
 }
 export const USERS_VIEW = {
   name: 'Utilisateurs',
