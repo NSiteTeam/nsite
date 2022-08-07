@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// @ts-ignore
+import Files from '../components/Files.vue'
 import type { Repository } from '@/database/interface/repositories'
 import { databaseClient } from '@/database/implementation'
 import { useRoute } from 'vue-router'
@@ -7,7 +9,6 @@ import type { Ref } from 'vue'
 import type CustomFile from '@/database/interface/file'
 import SupabaseMessage from '@/database/supabase/supabase_message'
 import { LongDate } from '@/utils/long_date'
-import Files from '../components/Files.vue'
 
 const id = Number(useRoute().params.id)
 const files: Ref<CustomFile[]> = databaseClient.files
@@ -19,9 +20,9 @@ await databaseClient.getDeposit(id).then((res) => {
 
 <template>
   <!-- ensemble -->
-  <div id="repo">
-    <h3 id="repo-title">
-      {{ repoData.title }}
+  <div class="p-4">
+    <h3 class="font-bold">
+      <div class="text-4xl text-primary">{{ repoData.title }}</div>
       <i>
         <div>
           Niveau : {{ repoData.level.fullName }},
@@ -34,17 +35,11 @@ await databaseClient.getDeposit(id).then((res) => {
       </i>
     </h3>
     <div id="repo-body" v-if="useRoute().params.content == 'content'">
-      <Files :fileIds="repoData.content" />
-      <div class="repo-descr">
-        <h4>Description</h4>
+      <div class="h-64 rounded-2xl p-8 m-8 text-lg shadow-2xl shadow-black/70">
+        <h4 class="text-2xl font-bold">Description</h4>
         {{ repoData.description }}
       </div>
+      <Files :fileIds="repoData.content" />
     </div>
-    <!-- CHAT -->
-    <Chat
-      id="repo-chat"
-      :depoId="repoData.id"
-      v-if="useRoute().params.content == 'chat'"
-    />
   </div>
 </template>
