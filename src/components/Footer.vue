@@ -8,9 +8,10 @@
         p-12
       "
     >
-      <li>
+      <!-- <li>
         <a href="mailto:laurian.fournier@gmail.com">Nous contacter</a>
-      </li>
+      </li> -->
+      <li><RouterLink to="/contact-us">Nous contacter</RouterLink></li>
       <li><RouterLink to="/about">À propos de ce site</RouterLink></li>
       <li>
         <a href="https://www.saint-jean-hulst.com/">Saint Jean Hulst</a>

@@ -56,6 +56,11 @@ const router = createRouter({
       component: () => import('../views/HistoryArticle.vue'),
     },
     {
+      path: '/news-article/:id',
+      name: 'news-article',
+      component: () => import('../views/NewsView.vue'),
+    },
+    {
       path: '/dashboard/:view?',
       name: 'dashboard',
       component: () => import('@/views/dashboard/Dashboard.vue'),
@@ -64,7 +69,17 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: '404',
       component: () => import('@/views/40x/40x.vue'),
-    }
+    },
+    {
+      path: '/news',
+      name: 'news',
+      component: () => import('../components/News.vue'),
+    },
+    {
+      path: '/contact-us',
+      name: '/contact-us',
+      component: () => import('../components/ContactUs.vue')
+    },
   ],
 })
 

@@ -1233,6 +1233,20 @@ export class SupabaseClient implements DatabaseClient {
     else return data
   }
 
+  async fetchOneNew(id: number): Promise<News | undefined> {
+    const {data, error } = await supabase
+    .from('news')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+    if (error) {
+      console.error(error.message)
+    } else{
+      return data
+    }
+  }
+
+
   async getDeposits(id?: number): Promise<Repository[]> {
     console.log('Trying to fetch deposits in the database')
 

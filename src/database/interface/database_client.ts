@@ -253,5 +253,6 @@ export interface DatabaseClient {
   deleteHistoryPoint(news: HistoryPoint): Promise<errorMessage | null>
   fetchHistoryPoints(): Promise<void>
   fetchOneHistoryPoint(id: number): Promise<HistoryPoint | undefined>
+  fetchOneNew(id: number): Promise<News | undefined>
   fetchedHistoryPoints: Ref<HistoryPoint[]>
 }
