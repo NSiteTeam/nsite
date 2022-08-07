@@ -18,7 +18,7 @@
 
 .filters {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -66,20 +66,12 @@ ul.level-buttons {
   padding-left: 0;
   flex-wrap: wrap;
 
-  .active {
-    @include shadow2;
-  }
-
   li {
     margin-left: 10px;
     font-size: 18px;
     background-color: rgba(255, 255, 255, 0.1);
     padding: 10px;
     border-radius: 10px;
-
-    &:active {
-      @include shadow2;
-    }
   }
 }
 
@@ -94,26 +86,13 @@ ul.level-buttons {
     margin-right: 10px;
   }
 
-  .active {
-    border: 1px solid #fff;
-  }
-
   li {
-    @include shadow1;
-    padding: 10px;
-    color: $cream-white;
-    border-radius: 15px;
-    background-color: $space-cadet-light;
     margin-right: 15px;
     list-style: none;
     display: flex;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
-
-    .sort-keys {
-      min-width: 40px;
-    }
   }
 
   .level-button {

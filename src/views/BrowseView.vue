@@ -1,44 +1,37 @@
-
 <template>
-    <div class="p-8">
-    <div class="search">
-      <input
-        type="text"
-        v-model="searchbarContent"
-        autocomplete="off"
-        name="search-input"
-        class="search-input"
-        placeholder="Rechercher"
-        @input="toggleSB()"
-      />
-      <button class="material-icons white">search</button>
-    </div>
-    <div class="filters">
-      <ul class="level-buttons">
-        <h2>Niveaux :</h2>
+  <div class="p-8">
+    <div class="filters flex flex-col justify-center">
+      <div class="flex w-full justify-center">
+        <SearchInput type="text" v-model="searchbarContent" />
+      </div>
+      <ul class="level-buttons justify-center">
+        <h2 class="text-xl font-bold">Niveaux :</h2>
         <li
-          :class="selectedLevel == null ? 'active' : ''"
-          class="level-button-all"
+          class="shadow-xl shadow-black/10"
+          v-bind:class="{ 'border-2 border-primary': level == selectedLevel }"
           @click="selectLevel(null)"
         >
-          <RouterLink to="/browse/"> Tout </RouterLink>
+          <RouterLink class="font-bold" to="/browse/"> Tout </RouterLink>
         </li>
         <li
-          v-bind:class="{ active: level == selectedLevel }"
-          class="level-button"
+          v-bind:class="{ 'border-2 border-primary': level == selectedLevel }"
+          class="level-button shadow-xl shadow-black/10"
           @click="selectLevel(level)"
           v-for="level in levels"
           :key="level"
         >
-          <RouterLink :to="'/browse/' + level.nameInURL">
+          <RouterLink class="font-bold" :to="'/browse/' + level.nameInURL">
             {{ level.abbreviated }}
           </RouterLink>
         </li>
       </ul>
 
-      <ul class="sort-keys">
-        <h2>Type de tri :</h2>
-        <button id="change-order-button" @click="changeOrder()">
+      <ul class="sort-keys justify-center">
+        <h2 class="text-xl font-bold">Type de tri :</h2>
+        <button
+          class="mx-8 rounded-xl items-center flex p-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
+          @click="changeOrder()"
+        >
           <span v-if="reversed" class="material-icons"> arrow_drop_up </span>
           <span v-else class="material-icons"> arrow_drop_down </span>
           Ordre {{ reversed ? 'Croissant' : 'Décroissant' }}
@@ -46,7 +39,8 @@
 
         <li
           @click="changeSort(sortType)"
-          v-bind:class="{ active: sort == sortType }"
+          v-bind:class="{ 'border-2 border-primary': sort == sortType }"
+          class="rounded-xl p-4 my-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
           v-for="sortType in Sort"
           :key="sortType"
         >
@@ -54,7 +48,7 @@
         </li>
       </ul>
     </div>
-    <h2>Résultats :</h2>
+    <h2 class="text-3xl font-bold text-primary">Résultats :</h2>
     <div v-if="loading" class="loading-container">
       <LoadingAnimation size="25%" />
     </div>
@@ -80,6 +74,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { LongDate } from '@/utils/long_date'
 import { Level } from '@/database/interface/level'
 import { getParameterOfRoute } from '@/utils/route_utils'
+import SearchInput from './program/SearchInput.vue'
 
 const router = useRouter()
 
@@ -115,32 +110,6 @@ function changeSort(newKey: Sort) {
 function selectLevel(newLevel: Level) {
   console.log('Selected level', newLevel)
   selectedLevel.value = newLevel
-}
-
-function toggleSB() {
-  if (searchbarContent.value == 'sebastien patoche') {
-    window.location.href = 'https://www.youtube.com/watch?v=jw5d_W-JPP4#t=1m26s'
-  } else if (searchbarContent.value == 'jjba') {
-    window.location.href = 'https://youtu.be/AQx_KMoCgJU'
-  } else if (searchbarContent.value == 'piou') {
-    window.location.href = 'https://www.youtube.com/watch?v=u3dmwXDL-90'
-  } else if (searchbarContent.value == 'thune') {
-    window.location.href = 'https://www.youtube.com/watch?v=aIVsz5Pj0eE'
-  } else if (searchbarContent.value == 'sylvain') {
-    window.location.href = 'https://www.youtube.com/watch?v=rFycMFHuZKQ'
-  } else if (searchbarContent.value == 'asterix') {
-    window.location.href = 'https://www.youtube.com/watch?v=BT5MAtVK474#t=0m14s'
-  } else if (searchbarContent.value == 'car') {
-    window.location.href = 'https://www.youtube.com/watch?v=Yd_U0cvT4sI'
-  } else if (searchbarContent.value == 'malou') {
-    window.location.href = 'https://youtu.be/Y9tFBc1yU9E'
-  } else if (searchbarContent.value == 'dio') {
-    window.location.href = 'https://youtu.be/i5inOAXURVw'
-  } else if (searchbarContent.value == 'rickroll') {
-    window.location.href = 'https://youtu.be/dQw4w9WgXcQ'
-  } else if (searchbarContent.value == 'jojo') {
-    window.location.href = 'https://www.youtube.com/watch?v=bHboqSB06X4'
-  }
 }
 
 const output = computed(() => {

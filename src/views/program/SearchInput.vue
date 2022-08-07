@@ -10,7 +10,7 @@
     <input
       ref='field'
       type='text'
-      class='flex-grow p-2 text-base outline-none lg:w-40'
+      class='flex-grow p-2 text-base text-dark outline-none lg:w-40'
       placeholder='Géométrie repérée..'
       @input='updateValue'
       :value='modelValue'
