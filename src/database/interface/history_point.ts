@@ -4,7 +4,7 @@ export interface HistoryPoint {
   id: number
   title: string
   subtitle: string
-  date: LongDate
+  date: number
   content: string
   visible: boolean
 }

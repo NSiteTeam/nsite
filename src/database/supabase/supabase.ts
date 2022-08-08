@@ -1208,14 +1208,14 @@ export class SupabaseClient implements DatabaseClient {
             historyPoint['title'],
             historyPoint['subtitle'],
             historyPoint['content'],
-            LongDate.fromForm(historyPoint['date']),
+            historyPoint['date'],
             historyPoint['visible'],
           ),
         )
       })
 
       this.fetchedHistoryPoints.value.sort(
-        (a, b) => -1 * LongDate.compare(a.date, b.date),
+        (a, b) => b.date - a.date,
       )
     } catch (error) {
       console.log(`Error while fetching history points`, error)
@@ -1228,24 +1228,23 @@ export class SupabaseClient implements DatabaseClient {
       .select('*')
       .eq('id', id)
       .maybeSingle()
-    
+
     if (error) console.error(error.message)
     else return data
   }
 
   async fetchOneNew(id: number): Promise<News | undefined> {
-    const {data, error } = await supabase
-    .from('news')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle()
+    const { data, error } = await supabase
+      .from('news')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
     if (error) {
       console.error(error.message)
-    } else{
+    } else {
       return data
     }
   }
-
 
   async getDeposits(id?: number): Promise<Repository[]> {
     console.log('Trying to fetch deposits in the database')
@@ -1725,16 +1724,16 @@ export class SupabaseClient implements DatabaseClient {
       data[0]['title'],
       data[0]['subtitle'],
       data[0]['content'],
-      LongDate.fromForm(data[0]['date']),
+      data[0]['date'],
       data[0]['visible'],
     )
 
     console.log('Added one news in the database', addedHistoryPoint)
 
     this.fetchedHistoryPoints.value.push(addedHistoryPoint)
-    this.fetchedHistoryPoints.value.sort(
-      (a, b) => -1 * LongDate.compare(a.date, b.date),
-    )
+    this.fetchedHistoryPoints.value.sort((a, b) => {
+      return b.date - a.date
+    })
 
     return addedHistoryPoint
   }
@@ -1942,8 +1941,9 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase
       .from('history_points')
       .update({
-        date: historyPoint.date.toForm(),
+        date: historyPoint.date,
         title: historyPoint.title,
+        subtitle: historyPoint.subtitle,
         visible: historyPoint.visible,
         content: historyPoint.content,
       })

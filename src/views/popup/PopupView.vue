@@ -75,9 +75,13 @@
 </template>
 
 <script setup lang='ts'>
+  // @ts-ignore
   import Overlay from '@/components/style/Overlay.vue'
+  // @ts-ignore
   import MediumTitle from '@/components/style/MediumTitle.vue'
+  // @ts-ignore
   import InputField from '@/components/style/InputField.vue'
+  // @ts-ignore
   import ActionButton from '@/components/style/ActionButton.vue'
   import type { PromptPopup, ConfirmPopup, Popup, ChoosePopup } from './popup_manager'
   import { PopupManager, PopupType } from './popup_manager'

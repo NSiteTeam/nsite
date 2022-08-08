@@ -311,21 +311,37 @@
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import DataColumn from './DataColumn.vue'
+// @ts-ignore
 import ActionButton from '@/components/style/ActionButton.vue'
+// @ts-ignore
 import ActionIcon from '@/components/style/ActionIcon.vue'
+// @ts-ignore
 import SubmitButton from '@/components/style/SubmitButton.vue'
+// @ts-ignore
 import Dropdown from '@/components/style/Dropdown.vue'
+// @ts-ignore
 import InputField from '@/components/style/InputField.vue'
+// @ts-ignore
 import TextArea from '@/components/style/TextArea.vue'
+// @ts-ignore
 import Icon from '@/components/style/Icon.vue'
+// @ts-ignore
 import RightPanel from './RightPanel.vue'
+// @ts-ignore
 import SkeletonText from '@/components/style/SkeletonText.vue'
+// @ts-ignore
 import SmallTitle from '@/components/style/SmallTitle.vue'
+// @ts-ignore
 import LargeTitle from '@/components/style/LargeTitle.vue'
+// @ts-ignore
 import DataTable from './DataTable.vue'
+// @ts-ignore
 import InputDropdown from '@/components/style/InputDropdown.vue'
+// @ts-ignore
 import HorizontalRadio from '@/components/style/HorizontalRadio.vue'
+// @ts-ignore
 import FileList from './FileList.vue'
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'

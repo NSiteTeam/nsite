@@ -5,7 +5,7 @@ export class SupabaseHistoryPoint implements HistoryPoint {
   id: number
   title: string
   subtitle: string
-  date: LongDate
+  date: number
   content: string
   visible: boolean
 
@@ -14,7 +14,7 @@ export class SupabaseHistoryPoint implements HistoryPoint {
     title: string,
     subtitle: string,
     content: string,
-    date: LongDate,
+    date: number,
     visible: boolean,
   ) {
     this.id = id

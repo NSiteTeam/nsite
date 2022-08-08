@@ -42,6 +42,7 @@ const searchbarContent: Ref<string> = ref('')
         :key="index"
       >
         <SmallTitle white>{{ history.title }}</SmallTitle>
+        <i>{{ history.date.beautify() }}</i>
       </RouterLink>
     </ul>
   </div>

@@ -242,7 +242,6 @@ export interface DatabaseClient {
   fetchNews(quantity: number, onlyVisible: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>
-  switchVisibilityOfHistoryPoint(news: News): Promise<errorMessage | null>
   deleteNews(news: News): Promise<errorMessage | null>
 
   // TIMELINE
