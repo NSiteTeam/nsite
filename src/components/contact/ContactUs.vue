@@ -124,10 +124,6 @@
 
   let replacer = new MessageReplacer()
 
-  if (databaseClient.isConnected.value) {
-    goHome()
-  }
-
   watch(email, (value) => {
     if (value && !isEmail(value)) {
       emailError.value = 'Cette adresse email n\'est pas valide'
