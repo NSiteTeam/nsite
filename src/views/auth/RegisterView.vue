@@ -77,9 +77,9 @@
   import type { Message } from '@/views/messages/message_stack'
   import { useRouter } from 'vue-router'
 
-  const router = useRouter()
+ const router = useRouter()
 
-  const email = ref('')
+  const email = ref('') 
   const password = ref('')
   const confirmPassword = ref('')
 

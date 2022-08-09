@@ -1,5 +1,5 @@
 <template>
-  <div class='flex flex-col'>
+  <div class='flex flex-col shouldMove'>
     <label
       v-if='label'
       class="block text-sm mb-0.5 ml-1"

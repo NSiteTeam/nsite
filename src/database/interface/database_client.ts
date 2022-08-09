@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 import type { News } from './news'
 import type { Permission } from './permissions'
 import type { HistoryPoint } from './history_point'
+import type { UserMessage } from './user_message'
 import type { Repository } from './repositories'
 import type CustomFile from './file'
 import type Message from './message'
@@ -255,4 +256,8 @@ export interface DatabaseClient {
   fetchOneHistoryPoint(id: number): Promise<HistoryPoint | undefined>
   fetchOneNew(id: number): Promise<News | undefined>
   fetchedHistoryPoints: Ref<HistoryPoint[]>
+
+  //CONTACTS
+  RecieveMessage(name:string, email:string, message: string): Promise<UserMessage>
+  fetchedUserMessages: Ref<UserMessage[]>
 }

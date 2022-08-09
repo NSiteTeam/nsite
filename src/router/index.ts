@@ -77,9 +77,14 @@ const router = createRouter({
     },
     {
       path: '/contact-us',
-      name: '/contact-us',
-      component: () => import('../components/ContactUs.vue')
+      name: 'contact-us',
+      component: () => import('../components/contact/ContactUs.vue')
     },
+    // {
+    //   path: '/contact-us/success',
+    //   name: 'success',
+    //   component: () => import('../components/contact/success.html')
+    // }
   ],
 })
 

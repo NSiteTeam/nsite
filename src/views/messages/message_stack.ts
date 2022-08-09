@@ -6,6 +6,8 @@ export enum MessageType {
   SUCCESS = 'Succès',
   WARNING = 'Attention',
   ERROR = 'Erreur',
+  WELLSEND = 'Envoi réussi',
+  BADSEND = 'Echec de l\envoi'
 }
 
 export type Message = {

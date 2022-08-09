@@ -5,7 +5,9 @@ import type { DatabaseClient, errorMessage } from '../interface/database_client'
 import { Level } from '../interface/level'
 import type { News } from '../interface/news'
 import type { HistoryPoint } from '../interface/history_point'
+import type { UserMessage } from '../interface/user_message'
 import { SupabaseNews } from './supabase_news'
+import { SupabaseUserMessage } from './supabase_messages_user'
 import { SupabaseRepository } from './supabase_repositories'
 import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistoryPoint } from './supabase_history'
@@ -1087,6 +1089,10 @@ export class SupabaseClient implements DatabaseClient {
   // A list of history points fetched from the database
   fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
+  //A list of messages from users fetched from the database
+  
+  fetchedUserMessages: Ref<UserMessage[]> = ref([])
+
   /**
    * Private method to update the data of the user. For the moment it updates :
    *  - Connection status
@@ -1705,6 +1711,41 @@ export class SupabaseClient implements DatabaseClient {
     return addedNews
   }
 
+  async RecieveMessage(name:string, email:string, message: string): Promise<UserMessage> {
+    console.log('Trying to add message in the database')
+
+    const { data, error } = await supabase.from('messages_user').insert([
+      {
+        date: new Date(),
+        message: message,
+        email: email,
+        name: name,
+        HasBeenRead: false
+      }
+    ])
+
+    if (error) {
+      throw error.message
+    }
+    
+    const recievedMessage = new SupabaseUserMessage(
+      LongDate.fromForm(data[0]['date']),
+      data[0]['message'],
+      data[0]['email'],
+      data[0]['name'],
+      data[0]['HasBeenRead'],
+    )
+
+    console.log('Recieved one message in the database', recievedMessage)
+
+    this.fetchedUserMessages.value.push(recievedMessage)
+    this.fetchedUserMessages.value.sort(
+      (a, b) => -1 * LongDate.compare(a.date, b.date),
+    )
+
+    return recievedMessage
+  }
+
   async createEmptyHistoryPoint(title: string): Promise<HistoryPoint> {
     console.log('Trying to create an empty history point in the database')
 
@@ -1728,7 +1769,7 @@ export class SupabaseClient implements DatabaseClient {
       data[0]['visible'],
     )
 
-    console.log('Added one news in the database', addedHistoryPoint)
+    console.log('Added one history point in the database', addedHistoryPoint)
 
     this.fetchedHistoryPoints.value.push(addedHistoryPoint)
     this.fetchedHistoryPoints.value.sort((a, b) => {
