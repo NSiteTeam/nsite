@@ -1,16 +1,17 @@
 <template>
   <div class="flex h-full w-full">
+
     <DataColumn title="Actualités">
       <div
-        v-for="(HistoryPointArticle, index) in historypoint"
+        v-for="(newsArticle, index) in News"
         :key="index"
-        @click="selectHistoryPoint(HistoryPointArticle)"
+        @click="selectNews(newsArticle)"
         class="my-4 cursor-pointer whitespace-normal text-lg font-bold text-gray-500"
       >
-        {{ HistoryPointArticle.title }}
+        {{ newsArticle.title }}
       </div>
       <ActionButton
-        @click="addHistoryPoint"
+        @click="addNews"
         primary
         class="flex items-center p-4"
       >
@@ -19,10 +20,9 @@
       </ActionButton>
     </DataColumn>
 
-    <!-- Contains the body of the page -->
     <div class="h-full w-full min-w-0 flex-1" v-if="selectedPoint">
       <div class="flex w-full flex-row justify-between p-4">
-        <LargeTitle>Modifier le point d'histoire</LargeTitle>
+        <LargeTitle>Modifier l'actualité'</LargeTitle>
         <div class="flex">
           <span
             @click="handleDelete"
@@ -46,7 +46,7 @@
         <div class="flex flex-wrap items-center justify-between">
           <div class="">
             <label for="content" class="block text-2xl font-bold text-gray-800"
-              >Titre du point d'histoire</label
+              >Titre de l'actualité</label
             >
             <InputField
               class="block w-[500px] text-2xl font-bold"
@@ -66,7 +66,7 @@
           </div>
         </div>
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Sous-titre du point d'histoire</label
+          >Sous-titre de l'actualité</label
         >
         <InputField
           class="block text-xl font-bold"
@@ -74,7 +74,7 @@
           id="subtitle"
         />
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Contenu du point d'histoire</label
+          >Contenu de l'actualité</label
         >
         <TextArea
           class="block h-64 w-full"
@@ -92,7 +92,7 @@
     <!-- If the user hasn't selected anything, display this -->
     <div class="flex h-full w-full items-center justify-center" v-else>
       <MediumTitle class="w-96 rounded-xl bg-primary p-4 text-white"
-        >Choisissez un point d'histoire à modifier</MediumTitle
+        >Choisissez une actualité</MediumTitle
       >
     </div>
   </div>
@@ -111,20 +111,20 @@ import TextArea from '../../components/style/TextArea.vue'
 import InputField from '../../components/style/InputField.vue'
 // @ts-ignore
 import ActionButton from '../../components/style/ActionButton.vue'
-import type { HistoryPoint } from '@/database/interface/history_point'
+import type { News } from '@/database/interface/news'
 import type { ShallowRef } from 'vue'
 import { shallowRef } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
 
-function selectHistoryPoint(HistoryPoint?: HistoryPoint) {
-  selectedPoint.value = HistoryPoint
+function selectNews(News?: News) {
+  selectedPoint.value = News
 }
 
 function handleUpdate() {
   databaseClient
-    .updateHistoryPoint(selectedPoint.value as HistoryPoint)
+    .updateNews(selectedPoint.value as News)
     .then(() => {
       MessageStack.getInstance().push({
         text: "Le point d'histoire a bien été modifié",
@@ -140,7 +140,7 @@ function handleUpdate() {
 function handleDelete() {
   const deletePoint = () => {
     databaseClient
-      .deleteHistoryPoint(selectedPoint.value as HistoryPoint)
+      .deleteNews(selectedPoint.value as News)
       .then(() => {
         MessageStack.getInstance().push({
           text: "Le point d'histoire a bien été supprimé",
@@ -153,7 +153,7 @@ function handleDelete() {
           type: MessageType.ERROR,
         }),
       )
-    selectHistoryPoint()
+    selectNews()
   }
 
   PopupManager.getInstance().confirm({
@@ -172,10 +172,10 @@ function displayErrorMessage(text: string) {
   })
 }
 
-function addHistoryPoint() {
-  const createHistoryPoint = (value: string) => {
+function addNews() {
+  const createNews = (value: string) => {
     databaseClient
-      .createEmptyHistoryPoint(value)
+      .createEmptyNews(value)
       .then(() =>
         MessageStack.getInstance().push({
           text: "Le point d'histoire a bien été créé",
@@ -195,7 +195,7 @@ function addHistoryPoint() {
     placeholder: "Ex: L'histoire des vecteurs",
     okMessage: 'Créer',
     cancelMessage: 'Annuler',
-    onConfirm: createHistoryPoint,
+    onConfirm: createNews,
     computeError: (value: string) => {
       return !value || value ? '' : 'Un titre est requis'
     },
@@ -207,9 +207,9 @@ function toggleVisibility() {
     selectedPoint.value.visible = !selectedPoint.value.visible as boolean
 }
 
-await databaseClient.fetchHistoryPoints()
-const selectedPoint: ShallowRef<HistoryPoint | undefined> = shallowRef()
+await databaseClient.fetchNews(300, true)
+const selectedPoint: ShallowRef<News | undefined> = shallowRef()
 
-const historypoint = databaseClient.fetchedHistoryPoints
-  .value as HistoryPoint[]
+const News = databaseClient.fetchedNews
+  .value as News[]
 </script>
