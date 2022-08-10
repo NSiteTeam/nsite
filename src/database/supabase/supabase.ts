@@ -1962,7 +1962,6 @@ export class SupabaseClient implements DatabaseClient {
         visible: news.visible,
         concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
         content: news.content,
-        subtitle: news.subtitle,
       })
       .match({ id: news.id })
 
