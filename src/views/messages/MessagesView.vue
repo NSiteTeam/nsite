@@ -15,8 +15,10 @@
           :class='{
             "from-blue-500/20": message.type == MessageType.INFO,
             "from-green-500/20": message.type == MessageType.SUCCESS,
+            "from-green-500/20": message.type == MessageType.WELLSEND,
             "from-orange-500/20": message.type == MessageType.WARNING,
             "from-red-500/20  ": message.type == MessageType.ERROR,
+            "from-red-500/20  ": message.type == MessageType.BADSEND,
           }'
         >
           <span
@@ -24,8 +26,10 @@
             :class='{
               "text-blue-700": message.type == MessageType.INFO,
               "text-green-700": message.type == MessageType.SUCCESS,
+              "text-green-700": message.type == MessageType.WELLSEND,
               "text-orange-700": message.type == MessageType.WARNING,
-              "text-red-700": message.type == MessageType.ERROR
+              "text-red-700": message.type == MessageType.ERROR,
+              "text-red-700": message.type == MessageType.BADSEND,
             }'
           >
             {{ iconForMessageType(message.type) }}
@@ -36,8 +40,10 @@
               :class='{
                 "text-blue-700": message.type == MessageType.INFO,
                 "text-green-700": message.type == MessageType.SUCCESS,
+                "text-green-700": message.type == MessageType.WELLSEND,
                 "text-orange-700": message.type == MessageType.WARNING,
                 "text-red-700": message.type == MessageType.ERROR,
+                "text-red-700": message.type == MessageType.BADSEND,
               }'
             >
               {{ message.type }}
@@ -73,9 +79,13 @@
         return 'info'
       case MessageType.SUCCESS:
         return 'check_circle'
+      case MessageType.WELLSEND:
+        return 'check_circle'
       case MessageType.WARNING:
         return 'warning'
       case MessageType.ERROR:
+        return 'error'
+      case MessageType.BADSEND:
         return 'error'
     }
   }

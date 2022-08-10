@@ -1,13 +1,14 @@
 <template>
   <div class="flex h-full w-full">
-    <DataColumn title="Actualités">
+    <!-- Contains the sidebar of the history points -->
+    <DataColumn title="Points d'histoire">
       <div
-        v-for="(HistoryPointArticle, index) in historypoint"
+        v-for="(newsArticle, index) in historyPoints"
         :key="index"
-        @click="selectHistoryPoint(HistoryPointArticle)"
+        @click="selectNews(newsArticle)"
         class="my-4 cursor-pointer whitespace-normal text-lg font-bold text-gray-500"
       >
-        {{ HistoryPointArticle.title }}
+        {{ newsArticle.title }}
       </div>
       <ActionButton
         @click="addHistoryPoint"
@@ -118,8 +119,8 @@ import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
 
-function selectHistoryPoint(HistoryPoint?: HistoryPoint) {
-  selectedPoint.value = HistoryPoint
+function selectNews(historyPoint?: HistoryPoint) {
+  selectedPoint.value = historyPoint
 }
 
 function handleUpdate() {
@@ -153,7 +154,7 @@ function handleDelete() {
           type: MessageType.ERROR,
         }),
       )
-    selectHistoryPoint()
+    selectNews()
   }
 
   PopupManager.getInstance().confirm({
@@ -210,6 +211,6 @@ function toggleVisibility() {
 await databaseClient.fetchHistoryPoints()
 const selectedPoint: ShallowRef<HistoryPoint | undefined> = shallowRef()
 
-const historypoint = databaseClient.fetchedHistoryPoints
+const historyPoints = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]
 </script>

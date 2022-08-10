@@ -1,5 +1,5 @@
 <template>
-  <button data-tooltip-target="tooltip-animation" data-tooltip-placement="rigth" class="material-icons select-none align-middle" :class='size'>{{ icon }}</button>
+  <span class="material-icons select-none align-middle" :class='size'>{{ icon }}</span>
 </template>
 
 <script setup lang='ts'>

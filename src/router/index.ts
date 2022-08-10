@@ -80,6 +80,11 @@ const router = createRouter({
       name: 'contact-us',
       component: () => import('../components/contact/ContactUs.vue')
     },
+    // {
+    //   path: '/contact-us/success',
+    //   name: 'success',
+    //   component: () => import('../components/contact/success.html')
+    // }
   ],
 })
 

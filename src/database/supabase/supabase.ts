@@ -1686,7 +1686,6 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('news').insert([
       {
         title: title,
-        date: new Date()
       },
     ])
 
@@ -1699,7 +1698,7 @@ export class SupabaseClient implements DatabaseClient {
       data[0]['title'],
       data[0]['subtitle'],
       data[0]['content'],
-      LongDate.fromForm(data[0]['date']),
+      LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['concerned'],
       data[0]['visible'],
     )
