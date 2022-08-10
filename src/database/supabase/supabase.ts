@@ -1699,7 +1699,7 @@ export class SupabaseClient implements DatabaseClient {
       data[0]['title'],
       data[0]['subtitle'],
       data[0]['content'],
-      LongDate.fromForm(data[0]['date']),
+      LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['concerned'],
       data[0]['visible'],
     )
@@ -1730,7 +1730,7 @@ export class SupabaseClient implements DatabaseClient {
     }
     
     const recievedMessage = new SupabaseUserMessage(
-      LongDate.fromForm(data[0]['date']),
+      LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['message'],
       data[0]['email'],
       data[0]['name'],
@@ -1957,7 +1957,7 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase
       .from('news')
       .update({
-        date: news.date.toForm(),
+        date: new Date(),
         title: news.title,
         visible: news.visible,
         concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
