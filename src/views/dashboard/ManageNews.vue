@@ -117,7 +117,7 @@ function handleUpdate() {
     .updateNews(selectedPoint.value as News)
     .then(() => {
       MessageStack.getInstance().push({
-        text: "Le point d'histoire a bien été modifié",
+        text: "L'actualité a bien été modifiée",
         type: MessageType.SUCCESS,
       })
     })
