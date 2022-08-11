@@ -282,6 +282,7 @@
           />
         </div>
         <FileList
+          label="Fichiers"
           class="mt-4"
           :files="editedResourceFiles"
           @files-added="addResourceFiles"

@@ -2,12 +2,15 @@
   <div class="flex h-full w-full">
     <DataColumn title="Actualités">
       <div
-        v-for="(HistoryPointArticle, index) in historypoint"
+        v-for="(historyPoint, index) in historyPoints"
         :key="index"
-        @click="selectHistoryPoint(HistoryPointArticle)"
-        class="my-4 cursor-pointer whitespace-normal text-lg font-bold text-gray-500"
+        @click="selectNews(historyPoint)"
+        class="my-4 cursor-pointer whitespace-normal p-2 text-lg font-bold text-gray-500"
+        :class="{
+          'rounded-lg bg-gray-200': historyPoint == selectedPoint,
+        }"
       >
-        {{ HistoryPointArticle.title }}
+        {{ historyPoint.title }}
       </div>
       <ActionButton
         @click="addHistoryPoint"
@@ -25,20 +28,20 @@
         <LargeTitle>Modifier le point d'histoire</LargeTitle>
         <div class="flex">
           <span
-            @click="handleDelete"
-            class="flex cursor-pointer items-center font-bold text-red-600"
-          >
-            Supprimer :
-            <span class="material-icons mx-2 cursor-pointer"> delete </span>
-          </span>
-          <span
             @click="toggleVisibility"
             class="flex cursor-pointer items-center font-bold"
           >
-            Visibilité :
+            Visibilité
             <span class="material-icons ml-2 cursor-pointer">
               visibility{{ selectedPoint.visible ? '_on' : '_off' }}
             </span>
+          </span>
+          <span
+            @click="handleDelete"
+            class="flex cursor-pointer items-center font-bold text-red-600"
+          >
+            Supprimer
+            <span class="material-icons mx-2 cursor-pointer"> delete </span>
           </span>
         </div>
       </div>
@@ -66,22 +69,40 @@
           </div>
         </div>
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Sous-titre du point d'histoire</label
+          >Sous-titre</label
         >
         <InputField
-          class="block text-xl font-bold"
+          class="block w-full text-xl font-bold md:w-2/3"
           v-model="selectedPoint.subtitle"
           id="subtitle"
         />
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Contenu du point d'histoire</label
+          >Contenu</label
         >
         <TextArea
           class="block h-64 w-full"
           v-model="selectedPoint.content"
           id="content"
         />
-        <div class="flex w-full flex-row-reverse">
+        <FileList
+          label="Images"
+          boldLabel
+          class="mt-4 w-full md:w-2/3"
+          @files-added="uploadFile"
+        />
+        <div class="mb-16 flex flex-wrap">
+          <div
+            v-for="(imageUrl, index) in selectedPoint.imageUrls"
+            :key="index"
+            class="relative my-4 mr-4 h-64 w-auto rounded-xl bg-gray-200 p-4"
+          >
+            <ImageActions :url="imageUrl" @delete="deleteImage" />
+            <img height="100" :src="imageUrl" alt="Image ajoutée" />
+          </div>
+        </div>
+        <div
+          class="fixed bottom-0 right-0 m-4 flex w-full flex-row-reverse bg-transparent"
+        >
           <ActionButton @click="handleUpdate" class="mt-8 mr-8" primary
             >Sauvegarder</ActionButton
           >
@@ -111,15 +132,78 @@ import TextArea from '../../components/style/TextArea.vue'
 import InputField from '../../components/style/InputField.vue'
 // @ts-ignore
 import ActionButton from '../../components/style/ActionButton.vue'
+// @ts-ignore
+import FileList from './FileList.vue'
+// @ts-ignore
+import ImageActions from '@/components/style/ImageActions.vue'
 import type { HistoryPoint } from '@/database/interface/history_point'
 import type { ShallowRef } from 'vue'
 import { shallowRef } from 'vue'
+import { deleteElementInArray } from '@/utils/string_utils'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
 
-function selectHistoryPoint(HistoryPoint?: HistoryPoint) {
-  selectedPoint.value = HistoryPoint
+function displayErrorMessage(text: string) {
+  MessageStack.getInstance().push({
+    text: text,
+    type: MessageType.ERROR,
+  })
+}
+
+function displayInfo(message: string): void {
+  MessageStack.getInstance().push({
+    text: message,
+    type: MessageType.INFO,
+  })
+}
+
+async function uploadFile(file: File[]) {
+  displayInfo("L'image est en cours d'acheminement")
+
+  console.log('Trying to upload image', file)
+  const { data, error } = await databaseClient.uploadImage(
+    file[0],
+    'history_points',
+    selectedPoint.value?.title!!,
+  )
+
+  MessageStack.getInstance().push({
+    text: "L'image a bien été ajoutée",
+    type: MessageType.SUCCESS,
+  })
+
+  if (data) selectedPoint.value?.imageUrls.push(data)
+  if (
+    error == 'duplicate key value violates unique constraint "bucketid_objname"'
+  ) {
+    displayErrorMessage('Fichier déjà envoyé')
+  } else if (error) {
+    displayErrorMessage(error)
+  }
+}
+
+async function deleteImage(url: string) {
+  if (!selectedPoint.value) return
+  displayInfo("L'image est en cours de suppression")
+
+  const { error } = await databaseClient.deleteImage(url)
+  if (error) return displayErrorMessage(error)
+
+  console.log(url)
+  selectedPoint.value.imageUrls = deleteElementInArray(
+    selectedPoint.value.imageUrls,
+    url,
+  )
+
+  MessageStack.getInstance().push({
+    text: "L'image a bien été supprimé",
+    type: MessageType.SUCCESS,
+  })
+}
+
+function selectNews(historyPoint: HistoryPoint | null) {
+  selectedPoint.value = historyPoint
 }
 
 function handleUpdate() {
@@ -153,7 +237,7 @@ function handleDelete() {
           type: MessageType.ERROR,
         }),
       )
-    selectHistoryPoint()
+    selectNews(null)
   }
 
   PopupManager.getInstance().confirm({
@@ -162,13 +246,6 @@ function handleDelete() {
     cancelMessage: 'Annuler',
     okMessage: 'Supprimer',
     okCallback: deletePoint,
-  })
-}
-
-function displayErrorMessage(text: string) {
-  MessageStack.getInstance().push({
-    text: text,
-    type: MessageType.ERROR,
   })
 }
 
@@ -190,7 +267,7 @@ function addHistoryPoint() {
 
   PopupManager.getInstance().prompt({
     title: "Ajoutez un point d'histoire",
-    message: 'Entrez un titre pour',
+    message: 'Entrez un titre',
     default: "Point d'histoire sans titre",
     placeholder: "Ex: L'histoire des vecteurs",
     okMessage: 'Créer',
@@ -208,7 +285,7 @@ function toggleVisibility() {
 }
 
 await databaseClient.fetchHistoryPoints()
-const selectedPoint: ShallowRef<HistoryPoint | undefined> = shallowRef()
+const selectedPoint: ShallowRef<HistoryPoint | null> = shallowRef(null)
 
 const historypoint = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]

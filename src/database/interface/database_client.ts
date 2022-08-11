@@ -245,6 +245,9 @@ export interface DatabaseClient {
   updateNews(news: News): Promise<errorMessage | null>
   deleteNews(news: News): Promise<errorMessage | null>
 
+  uploadImage(file: File, ... folder: string[]): Promise<any>
+  deleteImage(url: string, ...folders: string[]): Promise<any>
+
   // TIMELINE
   createEmptyHistoryPoint(title: string): Promise<HistoryPoint>
   updateHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null>

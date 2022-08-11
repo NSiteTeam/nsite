@@ -1,4 +1,3 @@
-import type { LongDate } from '@/utils/long_date'
 import type { HistoryPoint } from '../interface/history_point'
 
 export class SupabaseHistoryPoint implements HistoryPoint {
@@ -7,6 +6,7 @@ export class SupabaseHistoryPoint implements HistoryPoint {
   subtitle: string
   date: number
   content: string
+  imageUrls: string[]
   visible: boolean
 
   constructor(
@@ -16,11 +16,13 @@ export class SupabaseHistoryPoint implements HistoryPoint {
     content: string,
     date: number,
     visible: boolean,
+    imageUrls: string[],
   ) {
     this.id = id
     this.title = title
     this.subtitle = subtitle
     this.content = content
+    this.imageUrls = imageUrls
     this.date = date
     this.visible = visible
   }

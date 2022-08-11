@@ -1,6 +1,6 @@
 <template>
   <template v-if="hasAccessToDashboard">
-    <div class="flex h-main w-screen flex-row overflow-y-clip">
+    <div class="flex h-main w-screen flex-row overflow-y-scroll">
       <!--Icons column-->
       <div class="h-main w-min border-r-2 border-gray-100 p-2">
         <template v-for="view in views" :key="view.nameInURL">

@@ -22,7 +22,7 @@ import { supabase } from './supabase_client'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
-import { databaseClient } from '../implementation'
+import { removeBadChars } from '@/utils/string_utils'
 import { SchoolProgram } from '../interface/school_program'
 import type {
   Theme,
@@ -67,6 +67,9 @@ export class SupabaseClient implements DatabaseClient {
       )
     },
   )
+
+  baseUrl: string =
+  'https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/'
 
   getPermissions(): Promise<Permission[]> {
     return this.userPermissionsCache.get()
@@ -1216,13 +1219,12 @@ export class SupabaseClient implements DatabaseClient {
             historyPoint['content'],
             historyPoint['date'],
             historyPoint['visible'],
+            historyPoint['imageUrls'],
           ),
         )
       })
 
-      this.fetchedHistoryPoints.value.sort(
-        (a, b) => b.date - a.date,
-      )
+      this.fetchedHistoryPoints.value.sort((a, b) => b.date - a.date)
     } catch (error) {
       console.log(`Error while fetching history points`, error)
     }
@@ -1753,6 +1755,7 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('history_points').insert([
       {
         title: title,
+        imageUrls: [],
       },
     ])
 
@@ -1768,6 +1771,7 @@ export class SupabaseClient implements DatabaseClient {
       data[0]['content'],
       data[0]['date'],
       data[0]['visible'],
+      data[0]['imageUrls'],
     )
 
     console.log('Added one history point in the database', addedHistoryPoint)
@@ -1873,6 +1877,55 @@ export class SupabaseClient implements DatabaseClient {
     return null
   }
 
+  /**
+   * Uploads an image to a storage bucket
+   * @param file The file in the native JS format
+   * @param folders The folders to go
+   * @returns The URL of the uploaded image
+   */
+  async uploadImage(file: File, ...folders: string[]): Promise<any> {
+    // Removes the bad caracters from the file name
+    const newName = removeBadChars(file.name).replaceAll(' ', '_')
+    // Renames the folders and replaces whitespaces with underscores
+    const escapedFolderName = folders
+      .map((folder) => {
+        return removeBadChars(folder).replaceAll(' ', '_')
+      })
+      .join('/')
+
+    // Recreate the file with the clean name
+    const escapedFile = new File([file], newName, { type: file.type })
+
+    // Uploads data to the storage bucket
+    const { data, error } = await supabase.storage
+      .from('images')
+      .upload(escapedFolderName + '/' + newName, escapedFile, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (data) return { data: this.baseUrl + data.Key, error: null }
+    if (error) return { data: null, error: error.message }
+  }
+
+  /**
+   * Removes an image to a storage bucket
+   * @param url The url of the ressource
+   * @param folders The folders to go
+   * @returns The URL of the uploaded image
+   */
+  async deleteImage(url: string, ...folders: string[]): Promise<any> {
+    // Removes the bad caracters from the path
+    const path = removeBadChars(url.replaceAll(this.baseUrl, '')).replaceAll(' ', '_')
+
+    const { error } = await supabase.storage
+      .from('images')
+      .remove([path])
+
+    if (!error) return { error: null }
+    return { error: error.message }
+  }
+
   /* What it does :
         1: uploads the file to a storage bucket
         2: registers the file object in the dB
@@ -1885,15 +1938,10 @@ export class SupabaseClient implements DatabaseClient {
     fileName?: string,
   ): Promise<string> {
     // Removes the bad caracters from the file name
-    const newName = (fileName || file.name)
-      .replace(/[<>{}%`\[\]~#^:'’"/\\|?*]/g, ' ')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+    const newName = removeBadChars(fileName || file.name)
+
     // Removes the bad caracters from the deposit name
-    const cleanDepositName = deposit
-      .replace(/[<>{}%`\[\]~#^:'’"/\\|?*]/g, ' ')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+    const cleanDepositName = removeBadChars(deposit)
 
     // Uploads data to the storage bucket
     const escapedFile = new File([file], newName, { type: file.type })

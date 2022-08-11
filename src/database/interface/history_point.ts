@@ -6,5 +6,6 @@ export interface HistoryPoint {
   subtitle: string
   date: number
   content: string
+  imageUrls: string[]
   visible: boolean
 }

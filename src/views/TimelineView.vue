@@ -37,12 +37,13 @@ const searchbarContent: Ref<string> = ref('')
     <ul class="mx-8 flex list-none flex-wrap">
       <RouterLink
         :to="'/history-article/' + history.id"
-        class="m-4 h-32 w-64 cursor-pointer overflow-hidden rounded-lg bg-primary p-4 text-white shadow-lg shadow-primary/70"
+        class="m-4 h-40 w-64 cursor-pointer overflow-hidden rounded-lg bg-primary p-4 text-white shadow-lg shadow-primary/70"
         v-for="(history, index) in historyPoints"
         :key="index"
       >
         <SmallTitle white>{{ history.title }}</SmallTitle>
-        <i>{{ history.date }}</i>
+        <i class="block">{{ history.date }}</i>
+        <b>{{ history.subtitle }}</b>
       </RouterLink>
     </ul>
   </div>
