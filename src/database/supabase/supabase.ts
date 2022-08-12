@@ -1896,10 +1896,10 @@ export class SupabaseClient implements DatabaseClient {
     // Recreate the file with the clean name
     const escapedFile = new File([file], newName, { type: file.type })
 
-    // Uploads data to the storage bucket
+    // Uploads data to the storage bucket and adds a 3 digits number ahead the name 
     const { data, error } = await supabase.storage
       .from('images')
-      .upload(escapedFolderName + '/' + newName, escapedFile, {
+      .upload(escapedFolderName + '/' + newName + '_' + Math.random() * 1000, escapedFile, {
         cacheControl: '3600',
         upsert: false,
       })
@@ -1909,7 +1909,7 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   /**
-   * Removes an image to a storage bucket
+   * Removes an image of a storage bucket
    * @param url The url of the ressource
    * @param folders The folders to go
    * @returns The URL of the uploaded image
@@ -2035,6 +2035,7 @@ export class SupabaseClient implements DatabaseClient {
         date: historyPoint.date,
         title: historyPoint.title,
         subtitle: historyPoint.subtitle,
+        imageUrls: historyPoint.imageUrls,
         visible: historyPoint.visible,
         content: historyPoint.content,
       })

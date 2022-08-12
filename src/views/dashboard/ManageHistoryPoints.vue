@@ -97,15 +97,8 @@
             class="relative my-4 mr-4 h-64 w-auto rounded-xl bg-gray-200 p-4"
           >
             <ImageActions :url="imageUrl" @delete="deleteImage" />
-            <img height="100" :src="imageUrl" alt="Image ajoutée" />
+            <img class="h-64" :src="imageUrl" alt="Image ajoutée" />
           </div>
-        </div>
-        <div
-          class="fixed bottom-0 right-0 m-4 flex w-full flex-row-reverse bg-transparent"
-        >
-          <ActionButton @click="handleUpdate" class="mt-8 mr-8" primary
-            >Sauvegarder</ActionButton
-          >
         </div>
       </div>
     </div>
@@ -138,11 +131,13 @@ import FileList from './FileList.vue'
 import ImageActions from '@/components/style/ImageActions.vue'
 import type { HistoryPoint } from '@/database/interface/history_point'
 import type { ShallowRef } from 'vue'
-import { shallowRef } from 'vue'
+import { onUnmounted, shallowRef } from 'vue'
 import { deleteElementInArray } from '@/utils/string_utils'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
+
+onUnmounted(handleUpdate)
 
 function displayErrorMessage(text: string) {
   MessageStack.getInstance().push({
@@ -204,9 +199,11 @@ async function deleteImage(url: string) {
 
 function selectNews(historyPoint: HistoryPoint | null) {
   selectedPoint.value = historyPoint
+  handleUpdate()
 }
 
 function handleUpdate() {
+  console.log(selectedPoint.value?.imageUrls)
   databaseClient
     .updateHistoryPoint(selectedPoint.value as HistoryPoint)
     .then(() => {
@@ -287,6 +284,6 @@ function toggleVisibility() {
 await databaseClient.fetchHistoryPoints()
 const selectedPoint: ShallowRef<HistoryPoint | null> = shallowRef(null)
 
-const historypoint = databaseClient.fetchedHistoryPoints
+const historyPoints = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]
 </script>
