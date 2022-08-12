@@ -46,7 +46,7 @@
         <div class="flex flex-wrap items-center justify-between">
           <div class="">
             <label for="content" class="block text-2xl font-bold text-gray-800"
-              >Titre de l'actualité</label
+              >Titre: </label
             >
             <InputField
               class="block w-[500px] text-2xl font-bold"
@@ -56,7 +56,7 @@
           </div>
         </div>
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Sous-titre de l'actualité</label
+          >Sous-titre:</label
         >
         <InputField
           class="block text-xl font-bold"
@@ -64,7 +64,7 @@
           id="subtitle"
         />
         <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Contenu de l'actualité</label
+          >Contenu: </label
         >
         <TextArea
           class="block h-64 w-full"
