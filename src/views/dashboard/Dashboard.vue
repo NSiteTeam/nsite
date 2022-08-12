@@ -59,19 +59,19 @@ const route = useRoute()
 const router = useRouter()
 
 const hasAccessToDashboard = ref(
-  databaseClient.isConnected && permissions.length > 0,
+  databaseClient.isConnected && permissions!!.length > 0,
 )
 
 const views = computed(() => {
-  if (permissions.includes(Permission.GLOBAL_ADMIN)) {
+  if (permissions!!.includes(Permission.GLOBAL_ADMIN)) {
     return [PROGRAM_VIEW, NEWS_VIEW, HISTORY_VIEW, USERS_VIEW]
   }
 
   const result = []
 
-  if (permissions.includes(Permission.TEACHER)) result.push(PROGRAM_VIEW)
-  if (permissions.includes(Permission.NEWS_ADMIN)) result.push(NEWS_VIEW)
-  if (permissions.includes(Permission.HISTORY_ADMIN)) result.push(HISTORY_VIEW)
+  if (permissions!!.includes(Permission.TEACHER)) result.push(PROGRAM_VIEW)
+  if (permissions!!.includes(Permission.NEWS_ADMIN)) result.push(NEWS_VIEW)
+  if (permissions!!.includes(Permission.HISTORY_ADMIN)) result.push(HISTORY_VIEW)
 
   return result
 })

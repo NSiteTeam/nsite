@@ -1,6 +1,7 @@
 import ManageProgram from './ManageProgram.vue'
 import ManageHistoryPoints from '@/views/dashboard/ManageHistoryPoints.vue'
 import ManageNews from '@/views/dashboard/ManageNews.vue'
+import ManageUsers from './ManageUsers.vue'
 // import ManageNews from '@/views/dashboard/ManageNews.vue'
 
 export type DashboardView = {
@@ -36,5 +37,6 @@ export const USERS_VIEW = {
   name: 'Utilisateurs',
   nameInUrl: 'utilisateurs',
   icon: 'manage_accounts',
+  view: ManageUsers,
   tooltip: 'Gérer les utilisateurs'
 }

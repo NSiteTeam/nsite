@@ -293,6 +293,8 @@ export class SupabaseClient implements DatabaseClient {
       TRY_AGAIN_LATER,
       'Fetching resources of theme',
     )
+    
+
 
     const resources = data!!.map((resource: any) => ({
       uuid: resource.uuid,

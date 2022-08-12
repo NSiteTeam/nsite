@@ -225,6 +225,8 @@ export interface DatabaseClient {
   repositories: Ref<Repository[]>
   files: Ref<CustomFile[]>
 
+  getAllUsers(quantity?: number): Promise<any>
+
   // Messages
   fetchMessages(repoId: number): Promise<Message[]>
   postMessage(content: string, depoId: number): Promise<Message[]>
