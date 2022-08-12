@@ -43,7 +43,7 @@
     </form>
     <p class="center mt-8 text-sm italic text-gray-500">Ou alors:</p>
     <a
-      href="https://discord.com/channels/1007042941140861078/1007042941140861081"
+      href="https://discord.gg/4GK7rK4UTC"
       type="button"
       class="ml-16 mt-4 mr-2 mb-2 inline-flex items-center rounded-lg bg-[#050708] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#050708]/90 focus:outline-none focus:ring-4 focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 dark:focus:ring-[#050708]/50"
     >
