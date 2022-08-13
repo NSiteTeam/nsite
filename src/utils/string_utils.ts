@@ -30,3 +30,7 @@ export function deleteElementInArray(array: Array<any>, elToRemove: any) {
 
   return arrayCopy
 }
+
+export function checkInclusion(array: Array<any>, subSet: Array<any>): boolean {
+  return array.some((letter) => subSet.includes(letter))
+}
