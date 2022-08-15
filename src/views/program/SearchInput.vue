@@ -11,7 +11,7 @@
       ref='field'
       type='text'
       class='flex-grow p-2 text-base text-dark outline-none lg:w-40'
-      placeholder='Géométrie repérée..'
+      :placeholder="placeholder"
       @input='updateValue'
       :value='modelValue'
     />
@@ -25,7 +25,8 @@
   import { ref } from "vue"
 
   defineProps({
-    modelValue: String
+    modelValue: String,
+    placeholder: String
   })
 
   const field = ref<HTMLInputElement>()

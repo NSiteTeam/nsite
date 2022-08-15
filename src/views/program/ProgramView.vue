@@ -22,7 +22,7 @@
     <div class="px-4">
       <MediumTitle>Filtrer votre recherche</MediumTitle>
       <div class="block sm:hidden">
-        <SearchInput class="mt-4" v-model="search" />
+        <SearchInput class="mt-4" v-model="search" placeholder="Géométrie repérée ..." />
         <div class="flex overflow-x-scroll">
           <HorizontalRadio
             class="mr-2"
@@ -45,7 +45,7 @@
       <div class="hidden sm:block xl:hidden">
         <div class="flex flex-col max-w-min">
           <div class="flex flex-row">
-            <SearchInput class="flex-1" v-model="search" />
+            <SearchInput class="flex-1" v-model="search" placeholder="Géométrie repérée" />
             <HorizontalRadio
               class="mx-2"
               :values="toStrings(SUPER_FILTERS)"
@@ -71,7 +71,7 @@
 
       <div class="hidden xl:block">
         <div class="flex flex-row">
-          <SearchInput class="flex-1 basis-1" v-model="search" />
+          <SearchInput class="flex-1 basis-1" v-model="search" placeholder="Géométrie repérée ;;;" />
           <HorizontalRadio
             class="mx-2"
             :values="toStrings(SUPER_FILTERS)"

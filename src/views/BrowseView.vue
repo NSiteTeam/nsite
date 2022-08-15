@@ -2,7 +2,7 @@
   <div class="p-8">
     <div class="filters flex flex-col justify-center">
       <div class="flex w-full justify-center">
-        <SearchInput type="text" v-model="searchbarContent" />
+        <SearchInput type="text" v-model="searchbarContent" placeholder="Géométrie repérée" />
       </div>
       <ul class="level-buttons justify-center">
         <h2 class="text-xl font-bold">Niveaux :</h2>

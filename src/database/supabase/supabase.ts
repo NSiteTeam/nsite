@@ -9,7 +9,6 @@ import type { UserMessage } from '../interface/user_message'
 import { SupabaseNews } from './supabase_news'
 import { SupabaseUserMessage } from './supabase_messages_user'
 import { SupabaseRepository } from './supabase_repositories'
-import { SupabaseUsername } from './supabase_username'
 import { SupabaseHistoryPoint } from './supabase_history'
 import type { Repository } from '../interface/repositories'
 import { Permission } from '@/database/interface/permissions'
@@ -34,6 +33,7 @@ import type {
 import type { PreviewData } from '../interface/preview_data'
 import { Cacheable } from './cacheable'
 import { timestampToFrenchDate } from '@/utils/date'
+import type { User } from '../interface/user'
 
 const TRY_AGAIN_LATER = 'Une erreur est survenue, réessayez plus tard'
 
@@ -117,7 +117,7 @@ export class SupabaseClient implements DatabaseClient {
         password: password,
       },
       {
-        redirectTo: window.location.host,
+        redirectTo: window.location.host + '/validate-account',
       },
     )
 
@@ -133,6 +133,18 @@ export class SupabaseClient implements DatabaseClient {
      * account creation in the API where the function createUser() is available and
      * return if an user with the same email already exists.
      */
+  }
+
+  async loginUsingToken(token: string): Promise<void> {
+    console.log("Token:", token)
+    const { user, error } = await supabase.auth.signIn({
+      refreshToken: token
+    })
+
+    console.error(error)
+    console.log(user)
+
+    await this.updateConnectionStatus()
   }
 
   async login(email: string, password: string): Promise<void> {
@@ -1063,21 +1075,31 @@ export class SupabaseClient implements DatabaseClient {
   // The value of this ref is the fetched repositories
   repositories: Ref<Repository[]> = ref([])
 
-  // The value of this ref is fetched permissions
+  /* -------------------------------------------------------------------------- */
+  /*                The value of this ref is fetched permissions                */
+  /* -------------------------------------------------------------------------- */
   fetchedMessages: Ref<Message[]> = ref([])
 
-  //  The email of the connected user or null if the user is not connected
+  /* -------------------------------------------------------------------------- */
+  /*    The email of the connected user or null if the user is not connected    */
+  /* -------------------------------------------------------------------------- */
   email: Ref<string | null> = ref(null)
 
-  // The uuid of the connected user or null if the user is not connected
+  /* -------------------------------------------------------------------------- */
+  /*                 The uuid of the connected user or null                     */
+  /* -------------------------------------------------------------------------- */
   uuid: Ref<string | null> = ref(null)
 
-  // The username of the connected user or null if the user is not connected
+  /* -------------------------------------------------------------------------- */
+  /*                 The username of the connected user or null                 */
+  /* -------------------------------------------------------------------------- */
   username: Ref<string | null> = ref(null)
 
   accountCreationDate: Ref<string | null> = ref(null)
 
-  // The last connection date of the connected user or null if the user is not connected
+  /* -------------------------------------------------------------------------- */
+  /*          // The last connection date of the connected user or null         */
+  /* -------------------------------------------------------------------------- */
   last_date: Ref<string | null> = ref(null)
 
   // The value of this ref is the fetched messages
@@ -1091,20 +1113,23 @@ export class SupabaseClient implements DatabaseClient {
   private newsOffset: number = 0
   maxNewsReached: Ref<boolean> = ref(false)
 
-  // A list of history points fetched from the database
+  /* -------------------------------------------------------------------------- */
+  /*             A list of history points fetched from the database             */
+  /* -------------------------------------------------------------------------- */
   fetchedHistoryPoints: Ref<HistoryPoint[]> = ref([])
 
-  //A list of messages from users fetched from the database
-  
+  /* -------------------------------------------------------------------------- */
+  /*           A list of messages from users fetched from the database          */
+  /* -------------------------------------------------------------------------- */
   fetchedUserMessages: Ref<UserMessage[]> = ref([])
 
   /**
-   * Private method to update the data of the user. For the moment it updates :
+   * Public  method to update the data of the user. For the moment it updates :
    *  - Connection status
    *  - User email
    *  - Permissions
    */
-  private async updateConnectionStatus() {
+  async updateConnectionStatus() {
     console.log('Updating connection status')
 
     const isConnected = supabase.auth.session() != null
@@ -2087,22 +2112,44 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async getAllUsers(quantity?: number): Promise<any> {
-    const { data, error } = quantity
+    // Requests profiles
+    let { data, error } = quantity
       ? await supabase
           .from('profiles')
           .select('*', { count: 'exact' })
           .range(0, quantity - 1)
       : await supabase.from('profiles').select('*')
+    
+    if (error) return console.error(error)
+
+    // Requests auth data
+    const { data: authData, error: authError } = quantity
+    ? await supabase
+        .from('users')
+        .select('*', { count: 'exact' })
+        .range(0, quantity - 1)
+    : await supabase.from('users').select('*')
+
+    if (!authData) return console.log("User table is empty, something gone wrong :(")
+
+    // Tries to mix profiles and auth data
+    let users: User[] = []
+    data?.forEach((profile, index) => {
+      profile.email = authData[index].email
+      users.push(profile)
+    })
+
+    if (authError) return console.error(authError)
 
     return new Promise((resolve, reject) => {
       if (error) {
         reject(error)
       }
-      if (data == null) {
+      if (users == null) {
         reject('No data fetched')
         return
       }
-      resolve(data)
+      resolve(users)
     })
   }
 

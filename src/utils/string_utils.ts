@@ -7,7 +7,11 @@ export function removeBadChars(stringWithBadChars: string) {
     .replace(/[\u0300-\u036f]/g, '')
 }
 
-export function replaceElementInArray(array: Array<any>, oldEl: any, newEl: any) {
+export function replaceElementInArray(
+  array: Array<any>,
+  oldEl: any,
+  newEl: any,
+) {
   const arrayCopy = array
   const index = arrayCopy.indexOf(oldEl)
 
@@ -21,9 +25,9 @@ export function replaceElementInArray(array: Array<any>, oldEl: any, newEl: any)
 }
 
 export function deleteElementInArray(array: Array<any>, elToRemove: any) {
-  let arrayCopy = [... array]
-  
-  arrayCopy = arrayCopy.filter(el => {
+  let arrayCopy = [...array]
+
+  arrayCopy = arrayCopy.filter((el) => {
     console.log(el == elToRemove)
     return elToRemove != el
   })
@@ -33,4 +37,14 @@ export function deleteElementInArray(array: Array<any>, elToRemove: any) {
 
 export function checkInclusion(array: Array<any>, subSet: Array<any>): boolean {
   return array.some((letter) => subSet.includes(letter))
+}
+
+export function getElementInArrayByKeyValue(
+  array: Array<any>,
+  key: any,
+  value: any,
+): any {
+  return array.filter((element) => {
+    return element[key] == value
+  })[0]
 }

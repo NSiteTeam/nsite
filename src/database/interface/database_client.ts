@@ -52,6 +52,10 @@ export interface DatabaseClient {
    */
   register(email: email, password: password): Promise<void>
 
+  updateConnectionStatus(): Promise<void>
+
+  loginUsingToken(token: string): Promise<void>
+
   /**
    * Login the user with the given email and password
    * @param email The email of the user
@@ -201,7 +205,9 @@ export interface DatabaseClient {
    */
   deleteThemeResource(theme_uuid: string, resource_uuid: string): Promise<void>
 
-  // Deposits
+  /* -------------------------------------------------------------------------- */
+  /*                                  Deposits                                  */
+  /* -------------------------------------------------------------------------- */
   uploadFileToDeposit(
     file: File,
     deposit: string,
@@ -227,18 +233,9 @@ export interface DatabaseClient {
 
   getAllUsers(quantity?: number): Promise<any>
 
-  // Messages
-  fetchMessages(repoId: number): Promise<Message[]>
-  postMessage(content: string, depoId: number): Promise<Message[]>
-  fetchMessages(repoId: number): Promise<Message[]>
-  watchMessages(depoId: number): void
-  deleteMessageInTheCache(messageId: number): void
-  deleteMessage(messageId: number): void
-  editMessage(messageId: number, newContent: string): void
-  clearMessages(): void
-  fetchedMessages: Ref<Message[]>
-
-  // NEWS
+  /* -------------------------------------------------------------------------- */
+  /*                                    NEWS                                    */
+  /* -------------------------------------------------------------------------- */
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
   historyPointsFetched: boolean
@@ -247,10 +244,12 @@ export interface DatabaseClient {
   updateNews(news: News): Promise<errorMessage | null>
   deleteNews(news: News): Promise<errorMessage | null>
 
-  uploadImage(file: File, ... folder: string[]): Promise<any>
+  uploadImage(file: File, ...folder: string[]): Promise<any>
   deleteImage(url: string, ...folders: string[]): Promise<any>
 
-  // TIMELINE
+  /* -------------------------------------------------------------------------- */
+  /*                                  TIMELINE                                  */
+  /* -------------------------------------------------------------------------- */
   createEmptyHistoryPoint(title: string): Promise<HistoryPoint>
   updateHistoryPoint(historyPoint: HistoryPoint): Promise<errorMessage | null>
   switchVisibilityOfHistoryPoint(
@@ -262,7 +261,13 @@ export interface DatabaseClient {
   fetchOneNew(id: number): Promise<News | undefined>
   fetchedHistoryPoints: Ref<HistoryPoint[]>
 
-  //CONTACTS
-  RecieveMessage(name:string, email:string, message: string): Promise<UserMessage>
+  /* -------------------------------------------------------------------------- */
+  /*                                  CONTACTS                                  */
+  /* -------------------------------------------------------------------------- */
+  RecieveMessage(
+    name: string,
+    email: string,
+    message: string,
+  ): Promise<UserMessage>
   fetchedUserMessages: Ref<UserMessage[]>
 }
