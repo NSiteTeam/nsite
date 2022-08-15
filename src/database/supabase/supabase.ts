@@ -55,21 +55,22 @@ export class SupabaseClient implements DatabaseClient {
       }
 
       const { data, error } = await supabase
-        .from('profiles')
+        .from('roles')
         .select()
-        .eq('user', this.user.value?.uuid)
-        .maybeSingle()
+        .contains('users', [this.user.value?.uuid])
 
       this.assertNoError(error, 'Fetching permissions failed')
 
       return (
-        data?.permissions?.map(SupabasePermissionHelper.permissionFromId) ?? []
+        data?.map((role) =>
+          SupabasePermissionHelper.permissionFromId(role.id),
+        ) ?? []
       )
     },
   )
 
   baseUrl: string =
-  'https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/'
+    'https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/'
 
   getPermissions(): Promise<Permission[]> {
     return this.userPermissionsCache.get()
@@ -136,12 +137,9 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async loginUsingToken(token: string): Promise<void> {
-    console.log("Token:", token)
-    const { user, error } = await supabase.auth.signIn({
-      refreshToken: token
-    })
+    console.log('Token:', token)
+    const { user } = await supabase.auth.setAuth(token)
 
-    console.error(error)
     console.log(user)
 
     await this.updateConnectionStatus()
@@ -305,8 +303,6 @@ export class SupabaseClient implements DatabaseClient {
       TRY_AGAIN_LATER,
       'Fetching resources of theme',
     )
-    
-
 
     const resources = data!!.map((resource: any) => ({
       uuid: resource.uuid,
@@ -1443,24 +1439,6 @@ export class SupabaseClient implements DatabaseClient {
     }
   }
 
-  async getUsername(uuid: string): Promise<string> {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select()
-      .eq('user', uuid)
-      .maybeSingle()
-
-    return new Promise((resolve, reject) => {
-      if (error) {
-        reject('Error while fetching data : ' + error.message)
-      }
-      if (data == null) {
-        reject('No data fetched')
-      }
-      resolve(data['username'])
-    })
-  }
-
   async getFile(id: number): Promise<CustomFile> {
     const { data, error } = await supabase
       .from('repository_file')
@@ -1715,7 +1693,7 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('news').insert([
       {
         title: title,
-        date: new Date()
+        date: new Date(),
       },
     ])
 
@@ -1741,7 +1719,11 @@ export class SupabaseClient implements DatabaseClient {
     return addedNews
   }
 
-  async RecieveMessage(name:string, email:string, message: string): Promise<UserMessage> {
+  async RecieveMessage(
+    name: string,
+    email: string,
+    message: string,
+  ): Promise<UserMessage> {
     console.log('Trying to add message in the database')
 
     const { data, error } = await supabase.from('messages_user').insert([
@@ -1750,14 +1732,14 @@ export class SupabaseClient implements DatabaseClient {
         message: message,
         email: email,
         name: name,
-        HasBeenRead: false
-      }
+        HasBeenRead: false,
+      },
     ])
 
     if (error) {
       throw error.message
     }
-    
+
     const recievedMessage = new SupabaseUserMessage(
       LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['message'],
@@ -1923,13 +1905,17 @@ export class SupabaseClient implements DatabaseClient {
     // Recreate the file with the clean name
     const escapedFile = new File([file], newName, { type: file.type })
 
-    // Uploads data to the storage bucket and adds a 3 digits number ahead the name 
+    // Uploads data to the storage bucket and adds a 3 digits number ahead the name
     const { data, error } = await supabase.storage
       .from('images')
-      .upload(escapedFolderName + '/' + newName + '_' + Math.random() * 1000, escapedFile, {
-        cacheControl: '3600',
-        upsert: false,
-      })
+      .upload(
+        escapedFolderName + '/' + newName + '_' + Math.random() * 1000,
+        escapedFile,
+        {
+          cacheControl: '3600',
+          upsert: false,
+        },
+      )
 
     if (data) return { data: this.baseUrl + data.Key, error: null }
     if (error) return { data: null, error: error.message }
@@ -1943,11 +1929,12 @@ export class SupabaseClient implements DatabaseClient {
    */
   async deleteImage(url: string, ...folders: string[]): Promise<any> {
     // Removes the bad caracters from the path
-    const path = removeBadChars(url.replaceAll(this.baseUrl, '')).replaceAll(' ', '_')
+    const path = removeBadChars(url.replaceAll(this.baseUrl, '')).replaceAll(
+      ' ',
+      '_',
+    )
 
-    const { error } = await supabase.storage
-      .from('images')
-      .remove([path])
+    const { error } = await supabase.storage.from('images').remove([path])
 
     if (!error) return { error: null }
     return { error: error.message }
@@ -2119,18 +2106,19 @@ export class SupabaseClient implements DatabaseClient {
           .select('*', { count: 'exact' })
           .range(0, quantity - 1)
       : await supabase.from('profiles').select('*')
-    
+
     if (error) return console.error(error)
 
     // Requests auth data
     const { data: authData, error: authError } = quantity
-    ? await supabase
-        .from('users')
-        .select('*', { count: 'exact' })
-        .range(0, quantity - 1)
-    : await supabase.from('users').select('*')
+      ? await supabase
+          .from('users')
+          .select('*', { count: 'exact' })
+          .range(0, quantity - 1)
+      : await supabase.from('users').select('*')
 
-    if (!authData) return console.log("User table is empty, something gone wrong :(")
+    if (!authData)
+      return console.log('User table is empty, something gone wrong :(')
 
     // Tries to mix profiles and auth data
     let users: User[] = []

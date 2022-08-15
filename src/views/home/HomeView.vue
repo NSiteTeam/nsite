@@ -89,9 +89,10 @@ databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS, true).then((_) => {
 })
 
 async function validateAccount(token: string) {
+  console.log(token)
   await databaseClient.loginUsingToken(token)
   MessageStack.getInstance().push({
-    text: 'Votre compte est vérifié',
+    text: 'Votre compte est vérifié, si besoin reconnectez-vous',
     type: MessageType.SUCCESS,
   })
 }
