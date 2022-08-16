@@ -1,6 +1,10 @@
 <template>
   <AuthView>
-    <form @keydown.enter="tryRegister" @submit.prevent="tryRegister" class="h-full w-full">
+    <form
+      @keydown.enter="tryRegister"
+      @submit.prevent="tryRegister"
+      class="h-full w-full"
+    >
       <div class="flex h-full flex-col">
         <LargeTitle>S'inscrire</LargeTitle>
 
@@ -66,6 +70,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { databaseClient } from '@/database/implementation'
+import { evaluatePassword, isEmail } from '@/utils/string_utils'
 import LargeTitle from '@/components/style/LargeTitle.vue'
 import InputField from '@/components/style/InputField.vue'
 import AuthView from './AuthView.vue'
@@ -91,7 +96,9 @@ const confirmPasswordError = ref('')
 const submitting = ref(false)
 
 const passwordStrength = ref(0)
+const strengthMessage = ref('')
 const passwordStrengthMessage = ref('')
+const tip = ref('')
 
 let replacer = new MessageReplacer()
 
@@ -107,10 +114,8 @@ watch(email, (value) => {
   }
 })
 
-watch(password, (value) => {
-  evaluatePassword(value)
-})
-evaluatePassword(password.value)
+watch(password, displayPasswordEvaluation)
+displayPasswordEvaluation()
 
 const invalidFields = computed(() => {
   return (
@@ -171,81 +176,11 @@ watch([confirmPassword, password], (values) => {
   }
 })
 
-// Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-function isEmail(email: string) {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    )
-}
+function displayPasswordEvaluation() {
+  ;[passwordStrength.value, strengthMessage.value, tip.value] =
+    evaluatePassword(password.value)
 
-function evaluatePassword(value: string) {
-  let strength = 0
-  let tip = ''
-
-  if (value.length >= 6) {
-    strength += 1
-  } else if (!tip) {
-    tip = 'Le mot de passe doit contenir au moins 6 caractères.'
-  }
-
-  if (value.match(/[a-z]/)) {
-    strength += 1
-  } else if (!tip) {
-    tip = 'Le mot de passe doit contenir au moins une lettre minuscule.'
-  }
-
-  if (value.match(/[A-Z]/)) {
-    strength += 1
-  } else if (!tip) {
-    tip = 'Le mot de passe doit contenir au moins une lettre majuscule.'
-  }
-
-  if (value.match(/[0-9]/)) {
-    strength += 1
-  } else if (!tip) {
-    tip = 'Le mot de passe doit contenir au moins un chiffre.'
-  }
-
-  if (value.match(/[^a-zA-Z0-9]/)) {
-    strength += 1
-  } else if (!tip) {
-    tip = 'Le mot de passe doit contenir au moins un caractère spécial.'
-  }
-
-  if (value.length > 12) {
-    strength += 1
-  }
-
-  passwordStrength.value = strength
-
-  let strengthMessage = null
-  switch (strength) {
-    case 0:
-      strengthMessage = '😕 Très faible.'
-      break
-    case 1:
-      strengthMessage = '😑 Faible.'
-      break
-    case 2:
-      strengthMessage = '😐 Moyen.'
-      break
-    case 3:
-      strengthMessage = '😊 Bon.'
-      break
-    case 4:
-      strengthMessage = '🙂 Très bon.'
-      break
-    case 5:
-      strengthMessage = '😁 Excellent.'
-      break
-    case 6:
-      strengthMessage = '🤩 Wow.'
-      break
-  }
-
-  if (strength < 5 && password.value) {
+  if (passwordStrength.value < 5 && password.value) {
     passwordError.value = ' ' // Little hack to make the error border pop out
     if (confirmPasswordError.value == '') {
       confirmPasswordError.value = 'Votre mot de passe doit être sûr'
@@ -254,13 +189,13 @@ function evaluatePassword(value: string) {
     passwordError.value = ''
   }
 
-  if (strength == 5) {
-    tip = 'Votre mot de passe est sûr.'
-  } else if (strength == 6) {
-    tip = 'Votre mot de passe est extrêmement sécurisé.'
+  if (passwordStrength.value == 5) {
+    tip.value = 'Votre mot de passe est sûr.'
+  } else if (passwordStrength.value == 6) {
+    tip.value = 'Votre mot de passe est extrêmement sécurisé.'
   }
 
-  passwordStrengthMessage.value = `${strengthMessage} ${tip}`
+  passwordStrengthMessage.value = `${strengthMessage.value} ${tip.value}`
 }
 
 function goHome() {

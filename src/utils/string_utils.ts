@@ -50,10 +50,78 @@ export function getElementInArrayByKeyValue(
 }
 
 // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-export function isEmail(email: string) {
-  return String(email)
+export function isEmail(email: string): boolean {
+  return !!String(email)
     .toLowerCase()
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     )
+}
+
+type strengthIndicator = [number, string, string]
+
+export function evaluatePassword(value: string): strengthIndicator {
+  let strength = 0
+  let tip = ''
+
+  if (value.length >= 6) {
+    strength += 1
+  } else if (!tip) {
+    tip = 'Le mot de passe doit contenir au moins 6 caractères.'
+  }
+
+  if (value.match(/[a-z]/)) {
+    strength += 1
+  } else if (!tip) {
+    tip = 'Le mot de passe doit contenir au moins une lettre minuscule.'
+  }
+
+  if (value.match(/[A-Z]/)) {
+    strength += 1
+  } else if (!tip) {
+    tip = 'Le mot de passe doit contenir au moins une lettre majuscule.'
+  }
+
+  if (value.match(/[0-9]/)) {
+    strength += 1
+  } else if (!tip) {
+    tip = 'Le mot de passe doit contenir au moins un chiffre.'
+  }
+
+  if (value.match(/[^a-zA-Z0-9]/)) {
+    strength += 1
+  } else if (!tip) {
+    tip = 'Le mot de passe doit contenir au moins un caractère spécial.'
+  }
+
+  if (value.length > 12) {
+    strength += 1
+  }
+
+  let strengthMessage = ''
+  switch (strength) {
+    case 0:
+      strengthMessage = '😕 Très faible.'
+      break
+    case 1:
+      strengthMessage = '😑 Faible.'
+      break
+    case 2:
+      strengthMessage = '😐 Moyen.'
+      break
+    case 3:
+      strengthMessage = '😊 Bon.'
+      break
+    case 4:
+      strengthMessage = '🙂 Très bon.'
+      break
+    case 5:
+      strengthMessage = '😁 Excellent.'
+      break
+    case 6:
+      strengthMessage = '🤩 Wow.'
+      break
+  }
+
+  return [strength, strengthMessage, tip]
 }

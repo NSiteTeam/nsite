@@ -24,6 +24,7 @@
         />
 
         <RouterLink
+          to="/reset-password"
           class="mt-2 ml-2 cursor-pointer text-xs italic text-blue-700 active:underline"
         >
           Mot de passe oublié ?

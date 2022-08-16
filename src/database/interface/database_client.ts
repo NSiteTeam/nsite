@@ -20,9 +20,9 @@ import type { PreviewData } from './preview_data'
 export type errorMessage = string
 
 export interface DatabaseClient {
-  /**
-   * USER SECTION
-   */
+  /* -------------------------------------------------------------------------- */
+  /*                                USER SECTION                                */
+  /* -------------------------------------------------------------------------- */
 
   isConnected: Ref<boolean>
   user: Ref<User | null>
@@ -56,6 +56,13 @@ export interface DatabaseClient {
 
   loginUsingToken(token: string): Promise<void>
 
+  sendResetUserPassword(email: string): Promise<string | void>
+  
+  resetPasswordWithToken(
+    token: string,
+    newPassword: string,
+  ): Promise<string | void>
+
   /**
    * Login the user with the given email and password
    * @param email The email of the user
@@ -70,9 +77,9 @@ export interface DatabaseClient {
    */
   logout(): Promise<void>
 
-  /**
-   * SCHOOL PROGRAM SECTION
-   */
+  /* -------------------------------------------------------------------------- */
+  /*                           SCHOOL PROGRAM SECTION                           */
+  /* -------------------------------------------------------------------------- */
 
   /**
    * Get the school program in mathematics that is visible by the students.
@@ -111,7 +118,9 @@ export interface DatabaseClient {
    */
   getPreviewDataOfURL(url: string): Promise<PreviewData>
 
-  // MANAGE PROGRAM
+  /* -------------------------------------------------------------------------- */
+  /*                               MANAGE PROGRAM                               */
+  /* -------------------------------------------------------------------------- */
 
   /**
    * Create a new, invisible theme

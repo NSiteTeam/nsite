@@ -66,17 +66,23 @@ import LargeTitle from '@/components/style/LargeTitle.vue'
 import SmallTitle from '@/components/style/SmallTitle.vue'
 import { MessageStack, MessageType } from '../messages/message_stack'
 import { databaseClient } from '@/database/implementation'
+import { useRouter } from 'vue-router'
 import getUrlParam from '@/utils/get_url_param'
 import type { News } from '@/database/interface/news'
 import { computed, ref } from 'vue'
 import { LongDate } from '@/utils/long_date'
+
+const router = useRouter()
 
 const NUMBER_OF_FETCHED_NEWS = 5
 const NUMBER_OF_CHAR_PER_NEWS = 137
 
 const newsFetched = ref<boolean>(false)
 
-if (getUrlParam('type') == 'signup') validateAccount(getUrlParam('access_token'))
+if (getUrlParam('type') == 'signup')
+  validateAccount(getUrlParam('access_token'))
+if (getUrlParam('type') == 'recovery') 
+  recoverPassword(getUrlParam('access_token'))
 
 const sortedNews = computed(() =>
   databaseClient.fetchedNews.value
@@ -88,13 +94,17 @@ databaseClient.fetchNews(NUMBER_OF_FETCHED_NEWS, true).then((_) => {
   newsFetched.value = true
 })
 
-async function validateAccount(token: string) {
-  console.log(token)
+async function validateAccount(token: string): Promise<void> {
   await databaseClient.loginUsingToken(token)
+
   MessageStack.getInstance().push({
     text: 'Votre compte est vérifié, si besoin reconnectez-vous',
     type: MessageType.SUCCESS,
   })
+}
+
+async function recoverPassword(token: string): Promise<void> {
+  router.push('/change-password/' + token)
 }
 
 function formatMessage(message: string) {

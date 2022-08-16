@@ -139,9 +139,21 @@ export class SupabaseClient implements DatabaseClient {
   async loginUsingToken(token: string): Promise<void> {
     const { user } = await supabase.auth.setAuth(token)
 
-    console.log(user)
-
     await this.updateConnectionStatus()
+  }
+
+  async sendResetUserPassword(email: string): Promise<string | void> {
+    const { error } = await supabase.auth.api.resetPasswordForEmail(email)
+
+    if (error) return error.message
+  }
+
+  async resetPasswordWithToken(token: string, newPassword: string): Promise<string | void> {
+    const { error } = await supabase.auth.api.updateUser(token, {
+      password: newPassword,
+    })
+
+    if (error) return error.message
   }
 
   async login(email: string, password: string): Promise<void> {

@@ -77,3 +77,24 @@ export class MessageReplacer {
     MessageStack.getInstance().push(message)
   }
 }
+
+export function pushSuccess(message: string): void {
+  MessageStack.getInstance().push({
+    text: message,
+    type: MessageType.SUCCESS
+  })
+}
+
+export function pushError(message: string): void {
+  MessageStack.getInstance().push({
+    text: message,
+    type: MessageType.ERROR
+  })
+}
+
+export function pushInfo(message: string): void {
+  MessageStack.getInstance().push({
+    text: message,
+    type: MessageType.INFO
+  })
+}

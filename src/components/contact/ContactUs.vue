@@ -47,7 +47,12 @@
       type="button"
       class="ml-16 mt-4 mr-2 mb-2 inline-flex items-center rounded-lg bg-[#050708] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#050708]/90 focus:outline-none focus:ring-4 focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 dark:focus:ring-[#050708]/50"
     >
-      <img class="mr-2" width="32" src="../../assets/discord.png" alt="logo discord">
+      <img
+        class="mr-2"
+        width="32"
+        src="../../assets/discord.png"
+        alt="logo discord"
+      />
       Contactez nous sur discord
     </a>
   </AuthView>
@@ -61,6 +66,7 @@ import InputField from '@/components/style/InputField.vue'
 import AuthView from '../../views/auth/AuthView.vue'
 import SubmitButton from '@/components/style/SubmitButton.vue'
 import TextArea from '@/components/style/TextArea.vue'
+import { isEmail } from '@/utils/string_utils'
 import {
   MessageReplacer,
   MessageStack,
@@ -71,14 +77,6 @@ import { useRouter } from 'vue-router'
 
 function goHome() {
   router.push('/')
-}
-
-function isEmail(email: string) {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    )
 }
 
 const router = useRouter()
