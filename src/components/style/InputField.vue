@@ -33,13 +33,14 @@
         :placeholder='placeholder'
         :value='modelValue'
         @input='updateValue'
-        @keydown.enter='$emit("enter")'
+        @keydown.enter.prevent='$emit("enter")'
       />
       <ActionIcon
         v-if='isPasswordField'
         :icon='isPasswordVisible ? "visibility" : "visibility_off"'
         class='m-2'
         @click.prevent='togglePasswordVisibility'
+        @keydown.enter="(event) => event.preventDefault()"
       />
     </div>
     <p

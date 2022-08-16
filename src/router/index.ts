@@ -80,6 +80,11 @@ const router = createRouter({
       name: 'contact-us',
       component: () => import('../components/contact/ContactUs.vue')
     },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/auth/ResetPassword.vue')
+    },
   ],
 })
 

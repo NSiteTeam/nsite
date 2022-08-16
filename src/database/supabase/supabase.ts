@@ -137,7 +137,6 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async loginUsingToken(token: string): Promise<void> {
-    console.log('Token:', token)
     const { user } = await supabase.auth.setAuth(token)
 
     console.log(user)
