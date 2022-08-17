@@ -18,8 +18,7 @@ await databaseClient.getDeposit(id).then((res) => {
 })
 </script>
 
-<template>
-  <!-- ensemble -->
+<template> 
   <div class="p-4">
     <h3 class="font-bold">
       <div class="text-4xl text-primary">{{ repoData.title }}</div>

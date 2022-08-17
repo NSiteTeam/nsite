@@ -2,7 +2,11 @@
   <div class="p-8">
     <div class="filters flex flex-col justify-center">
       <div class="flex w-full justify-center">
-        <SearchInput type="text" v-model="searchbarContent" placeholder="Géométrie repérée" />
+        <SearchInput
+          type="text"
+          v-model="searchbarContent"
+          placeholder="Géométrie repérée"
+        />
       </div>
       <ul class="level-buttons justify-center">
         <h2 class="text-xl font-bold">Niveaux :</h2>
@@ -10,7 +14,7 @@
           class="shadow-xl shadow-black/10"
           v-bind:class="{ 'border-2 border-primary': null == selectedLevel }"
           @click="selectLevel(null)"
-        > 
+        >
           <RouterLink class="font-bold" to="/browse/"> Tout </RouterLink>
         </li>
         <li
@@ -29,7 +33,7 @@
       <ul class="sort-keys justify-center">
         <h2 class="text-xl font-bold">Type de tri :</h2>
         <button
-          class="mx-8 rounded-xl items-center flex p-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
+          class="mx-8 flex items-center rounded-xl p-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
           @click="changeOrder()"
         >
           <span v-if="reversed" class="material-icons"> arrow_drop_up </span>
@@ -40,7 +44,7 @@
         <li
           @click="changeSort(sortType)"
           v-bind:class="{ 'border-2 border-primary': sort == sortType }"
-          class="rounded-xl p-4 my-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
+          class="my-4 rounded-xl p-4 text-xl font-bold text-dark shadow-xl shadow-black/10"
           v-for="sortType in Sort"
           :key="sortType"
         >
@@ -49,15 +53,12 @@
       </ul>
     </div>
     <h2 class="text-3xl font-bold text-primary">Résultats :</h2>
-    <div v-if="loading" class="loading-container">
-      <LoadingAnimation size="25%" />
-    </div>
-    <div v-else-if="!output.length" class="center-text">
+    <div v-if="!output.length" class="center-text">
       <p>Aucun depôt trouvé</p>
     </div>
     <Transition v-else name="fade">
       <div id="browse-container">
-        <Card :exercise="repo" v-for="repo in output" :key="repo.id" />
+        <Card :exercise="repo" v-for="(repo, index) in output" :key="index" />
       </div>
     </Transition>
   </div>
@@ -75,6 +76,7 @@ import { LongDate } from '@/utils/long_date'
 import { Level } from '@/database/interface/level'
 import { getParameterOfRoute } from '@/utils/route_utils'
 import SearchInput from './program/SearchInput.vue'
+import type { Theme } from '@/database/interface/school_program'
 
 const router = useRouter()
 
@@ -83,17 +85,13 @@ enum Sort {
   ALPHABETICAL = 'Alphabétique',
 }
 
-const deposits: Ref<Array<Repository>> = ref([])
+const deposits = (await databaseClient.getProgram()).themesByLevel
 
 const loading = ref(true)
-databaseClient.getDeposits().then((result) => {
-  deposits.value = result
-  loading.value = false
-})
 
 const reversed = ref(false)
 const sort = ref(Sort.PUBLICATION_DATE)
-const selectedLevel: Ref<Level | null> = ref(
+const selectedLevel: Ref<Level | undefined> = ref(
   Level.levelFromNameInURL(getParameterOfRoute(useRoute().params.level)),
 )
 const searchbarContent: Ref<string> = ref('')
@@ -113,43 +111,16 @@ function selectLevel(newLevel: Level) {
 
 const output = computed(() => {
   const reverseCoef = reversed.value ? -1 : 1
-
-  let selectedData = []
-  // If a level is selected, filter deposits
-  if (selectedLevel.value != null) {
-    selectedData = deposits.value.filter(
-      (deposit) => deposit.level == selectedLevel.value,
-    )
-  } else {
-    selectedData = deposits.value
-  }
-
-  selectedData = selectedData.filter((deposit) =>
-    deposit.title.includes(searchbarContent.value),
-  )
-
-  switch (sort.value) {
-    case Sort.ALPHABETICAL:
-      return selectedData.sort(
-        (a, b) => reverseCoef * a.title.localeCompare(b.title),
-      )
-    case Sort.PUBLICATION_DATE:
-      return selectedData.sort(
-        (a, b) =>
-          reverseCoef *
-          LongDate.compare(
-            LongDate.ISOStringToLongDate(a.publication_date),
-            LongDate.ISOStringToLongDate(b.publication_date),
-          ),
-      )
-    default:
-      throw Error('Unknown sort')
-  }
+  let rawDeposits: Theme[] = []
+  ;[...deposits.entries()]
+    .map((level) => level[1])
+    .forEach((deposit: Theme[]) => {
+      if (deposit[0]) rawDeposits.push(deposit[0])
+      if (deposit[1]) rawDeposits.push(deposit[1])
+    })
+  console.log(rawDeposits)
+  return rawDeposits
 })
 
-const levels = computed(() => {
-  const levels: Set<Level> = new Set()
-  deposits.value.forEach((deposit) => levels.add(deposit.level))
-  return Array.from(levels).sort((a, b) => a.index - b.index)
-})
+const levels = computed(() => [...deposits.entries()].map((level) => level[0]))
 </script>

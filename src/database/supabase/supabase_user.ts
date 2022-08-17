@@ -31,10 +31,9 @@ export class SupabaseUser implements User {
     try {
       // TODO-API:, replace this by a call to the API
       const { data, error } = await supabase
-        .from('profiles')
-        .select('roles')
-        .eq('user', supabase.auth.user()?.id)
-        .maybeSingle()
+        .from('roles')
+        .select('*')
+        .contains('users', this.uuid)
 
       if (error) {
         throw error
@@ -45,7 +44,7 @@ export class SupabaseUser implements User {
       }
 
       // TODO-TEST: Assert there is no changes that are not reflected in the database
-      return data.roles?.map(SupabasePermissionHelper.permissionFromId)
+      return data?.map((row) => SupabasePermissionHelper.permissionFromId(row.id))
     } catch (error) {
       console.log('Error while updating user infos', error)
 

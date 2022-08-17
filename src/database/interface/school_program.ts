@@ -32,6 +32,7 @@ export type ThemeResource = {
 
 export type Theme = {
   name: string
+  date: string
   description: string
   uuid: string
   level: Level

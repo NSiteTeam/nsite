@@ -53,7 +53,7 @@ export class Level {
     return this.LEVELS.find(level => level.index == index)
   }
 
-  static levelFromNameInURL(nameInURL: string) {
+  static levelFromNameInURL(nameInURL: string): Level | undefined {
     return this.LEVELS.find(level => level.nameInURL == nameInURL)
   }
 

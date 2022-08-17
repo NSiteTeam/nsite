@@ -7,13 +7,12 @@ const repo = props.exercise
 
 <template>
   <RouterLink
-    :to="'/repository/content/' + repo.id"
+    :to="'/repository/content/' + repo.uuid"
     class="flex-col rounded-xl w-64 m-4 flex bg-primary p-8 text-white shadow-xl"
   >
-    <h3 class="text-xl font-bold">{{ repo.title }}</h3>
+    <h3 class="text-xl font-bold">{{ repo.name }}</h3>
     <i>
-      Niveau: {{ repo.level.fullName }} • Ajouté le
-      {{ LongDate.ISOStringToLongDate(repo.publication_date).beautify() }}
+      Niveau: {{ repo.level.fullName }}
     </i>
     <p class="card-descr">{{ repo.description }}</p>
   </RouterLink>

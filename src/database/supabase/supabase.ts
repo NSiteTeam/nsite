@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
 import type { ApiError, PostgrestError } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient, errorMessage } from '../interface/database_client'
@@ -33,7 +32,6 @@ import type {
 import type { PreviewData } from '../interface/preview_data'
 import { Cacheable } from './cacheable'
 import { timestampToFrenchDate } from '@/utils/date'
-import type { User } from '../interface/user'
 
 const TRY_AGAIN_LATER = 'Une erreur est survenue, réessayez plus tard'
 
@@ -317,7 +315,7 @@ export class SupabaseClient implements DatabaseClient {
 
     const resources = data!!.map((resource: any) => ({
       uuid: resource.uuid,
-      date: timestampToFrenchDate(resource.date),
+      date: resource.date,
       name: resource.name,
       message: resource.message,
       correction: resource.correction,
@@ -1292,7 +1290,7 @@ export class SupabaseClient implements DatabaseClient {
     console.log('Trying to fetch deposits in the database')
 
     try {
-      const { data, error } = await supabase.from('deposits').select('*')
+      const { data, error } = await supabase.from('themes').select('*')
 
       if (error) {
         throw error
@@ -2113,48 +2111,29 @@ export class SupabaseClient implements DatabaseClient {
     // Requests profiles
     let { data, error } = quantity
       ? await supabase
-          .from('profiles')
-          .select('*', { count: 'exact' })
-          .range(0, quantity - 1)
-      : await supabase.from('profiles').select('*')
-
-    if (error) return console.error(error)
-
-    // Requests auth data
-    const { data: authData, error: authError } = quantity
-      ? await supabase
           .from('users')
           .select('*', { count: 'exact' })
           .range(0, quantity - 1)
       : await supabase.from('users').select('*')
 
-    if (!authData)
-      return console.log('User table is empty, something gone wrong :(')
-
-    // Tries to mix profiles and auth data
-    let users: User[] = []
-    data?.forEach((profile, index) => {
-      profile.email = authData[index].email
-      users.push(profile)
-    })
-
-    if (authError) return console.error(authError)
+    if (error) return console.error(error)
 
     return new Promise((resolve, reject) => {
       if (error) {
         reject(error)
       }
-      if (users == null) {
+      if (data == null) {
         reject('No data fetched')
         return
       }
-      resolve(users)
+      resolve(data)
     })
   }
 
   private static themeFromData(data: any): Theme {
     return {
       uuid: data.uuid,
+      date: data.date,
       name: data.name,
       description: data.description,
       level: SupabaseLevelHelper.getLevelById(data.level),

@@ -32,7 +32,7 @@
         }"
       >
         <CloseButton v-if='isBelowMediumDevice' :side='Side.TOP_RIGHT' @click='menuToggled = false' />
-        <NavBarLink to="/browse" :minify='isBelowMediumDevice'>Parcourir</NavBarLink>
+        <NavBarLink to="/programme" :minify='isBelowMediumDevice'>Parcourir</NavBarLink>
         <NavBarLink to="/news" :minify='isBelowMediumDevice'>News</NavBarLink>
         <NavBarLink to="/timeline" :minify='isBelowMediumDevice'>Histoire</NavBarLink>
         <NavBarLink to="/login" :minify='isBelowMediumDevice' v-if='!connected'>Se connecter</NavBarLink>
