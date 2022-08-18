@@ -23,6 +23,8 @@
       </ul>
     </div>
 
+    
+
     <div class="news shadow2">
       <h1>Actualités</h1>
       <div class="news-container">
@@ -45,6 +47,38 @@
             </div>
           </li>
         </ul>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
+        <div>Delete This Div SVP</div>
       </div>
     </div>
   </div>

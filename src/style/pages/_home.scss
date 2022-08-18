@@ -59,6 +59,7 @@ body::-webkit-scrollbar-thumb {
 // -------------------------------------------------------------------------
 // NEWS
 // -------------------------------------------------------------------------
+
 .news {
   display: inline-block;
   border-radius: 50px;
@@ -66,9 +67,11 @@ body::-webkit-scrollbar-thumb {
   padding-right: 5%;
   padding: 3%;
   width: 20vw;
+  min-width: 20vw;
   background-color: rgba(255, 255, 255, 0.1);
   color: $cream-white;
   height: min-content;
+  
 
   @media (max-width: $mobile-width) {
     width: 80%;
@@ -79,6 +82,8 @@ body::-webkit-scrollbar-thumb {
   #news-list {
     list-style: none;
     padding: 0;
+    min-width: 20vw;
+    // margin-left : -5%;
 
     .news-item {
       .news-header {
@@ -100,7 +105,10 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+
+
 #home-container {
+  max-height: 70vh;
   margin-top: 100px;
   display: flex;
   justify-content: space-around;
@@ -137,5 +145,6 @@ body::-webkit-scrollbar-thumb {
     border-radius: 50px;
     box-shadow: -10px 5px 10px rgba(0, 0, 0, 0.11);
     width: 50px;
+    scroll-padding : 50%;
   }
 }
