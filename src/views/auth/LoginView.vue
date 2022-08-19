@@ -51,7 +51,7 @@ import LargeTitle from '@/components/style/LargeTitle.vue'
 import InputField from '@/components/style/InputField.vue'
 import AuthView from './AuthView.vue'
 import SubmitButton from '@/components/style/SubmitButton.vue'
-import { isEmail } from '@/utils/string_utils'
+import { isEmail } from '@/utils/misc_utils'
 import {
   MessageReplacer,
   MessageStack,

@@ -66,7 +66,7 @@ import InputField from '@/components/style/InputField.vue'
 import AuthView from '../../views/auth/AuthView.vue'
 import SubmitButton from '@/components/style/SubmitButton.vue'
 import TextArea from '@/components/style/TextArea.vue'
-import { isEmail } from '@/utils/string_utils'
+import { isEmail } from '@/utils/misc_utils'
 import {
   MessageReplacer,
   MessageStack,

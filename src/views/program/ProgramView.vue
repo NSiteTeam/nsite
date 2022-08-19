@@ -71,7 +71,7 @@
 
       <div class="hidden xl:block">
         <div class="flex flex-row">
-          <SearchInput class="flex-1 basis-1" v-model="search" placeholder="Géométrie repérée ;;;" />
+          <SearchInput class="flex-1 basis-1" v-model="search" placeholder="Géométrie repérée ..." />
           <HorizontalRadio
             class="mx-2"
             :values="toStrings(SUPER_FILTERS)"

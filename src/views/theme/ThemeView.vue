@@ -62,6 +62,7 @@
                       >
                         <a
                           download
+                          target="_blank"
                           :href="link.url"
                           class="underline"
                           :class="{

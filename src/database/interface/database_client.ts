@@ -36,7 +36,7 @@ export interface DatabaseClient {
    *
    * @return the permissions of the current user.
    */
-  getPermissions(): Promise<Permission[]>
+   getPermissions(): Promise<(Permission | null)[]>
 
   /**
    * Return the levels that user can edit ONLY if he has the TEACHER permission
@@ -62,6 +62,8 @@ export interface DatabaseClient {
     token: string,
     newPassword: string,
   ): Promise<string | void>
+
+  addUserToRole(uuid: string, newRole: number, oldRole: number): Promise<boolean>
 
   /**
    * Login the user with the given email and password

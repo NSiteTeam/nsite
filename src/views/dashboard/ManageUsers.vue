@@ -28,64 +28,53 @@
         <SearchInput
           class="m-4 p-1"
           v-model="searchedText"
-          placeholder="Jean-Jacques ..."
+          placeholder="leonhard-euler@maths.ch ..."
         />
       </div>
       <div class="flex flex-1 flex-col px-4 py-2 font-bold text-gray-800">
         <div
-          class="my-1 flex w-full cursor-pointer justify-between rounded-lg p-2 transition-all hover:bg-primary/95 child:hover:text-white"
+          class="my-1 flex w-full cursor-pointer items-center justify-between rounded-lg p-2 transition-all hover:bg-primary/95 child:hover:text-white"
           v-for="(user, index) in usersWithSelectedPerms"
           :key="index"
           @click="selectUser(user)"
         >
-          <span>
-            {{ user.email }}
+          <span @click="copyEmail(index)" class="flex items-center">
+            <span class="w-64">
+              {{ maxLength(user.email, 25) }}
+            </span>
+            <button
+              @click="copyEmail(index)"
+              class="mx-4 hidden rounded-lg bg-gray-200 p-2 !text-gray-800 hover:!text-primary lg:block"
+            >
+              Copier
+            </button>
           </span>
-          <div
-            class="flex font-bold text-gray-800"
-            v-for="(permission, index) in user.permissions"
-            :key="index"
+          <select
+            :value="selectedPermission"
+            @focus="(event) => (this.oldValue = event.target.value)"
+            @change="
+              (event) =>
+                handleUpdateRole(
+                  this,
+                  user.id,
+                  user.email,
+                  event.target.value,
+                  this.oldValue,
+                )
+            "
+            class="rounded-lg p-2 !text-gray-800"
           >
-            {{ getPermFromId(permission) }}
-          </div>
+            <option
+              class="font-bold"
+              v-for="(permission, index) in [0, 1, 2, 3, 4]"
+              :key="index"
+              :value="permission"
+            >
+              {{ getPermFromId(permission) }}
+            </option>
+          </select>
         </div>
       </div>
-      <RightPanel
-        :isOpen="selectedUser ? true : false"
-        @cancel="() => selectUser(null)"
-        :title="'Modifier le profil de ' + selectedUser?.username"
-        description="
-          Si vous constatez qu'un utilisateur a un pseudonyme offenssant, 
-          n'hésitez-pas à le changer. C'est aussi sur ce panneau que vous pouvez 
-          modifier les rôles d'un utilisateur.
-        "
-      >
-        <div class="bold text-xl text-gray-800">Nom d'utilisateur</div>
-        <InputField
-          v-if="selectedUser ? true : false"
-          type="text"
-          placeholder="Nom d'utilisateur"
-          v-model="selectedUser.username"
-        />
-
-        <div class="text-xl font-bold text-gray-800">Permissions</div>
-        <label
-          class="color-gray-800 m-4 flex"
-          v-for="(permission, index) in [1, 2, 3, 4]"
-          :key="index"
-        >
-          <input
-            v-if="selectedUser ? true : false"
-            type="checkbox"
-            class="m-1 block"
-            :name="permission"
-            :checked="selectedUser.permissions.includes(permission)"
-          />
-          <div class="text-lg font-bold text-gray-800">
-            {{ getPermFromId(permission) }}
-          </div>
-        </label>
-      </RightPanel>
     </div>
   </div>
 </template>
@@ -99,16 +88,24 @@ import SearchInput from '../program/SearchInput.vue'
 import RightPanel from './RightPanel.vue'
 // @ts-ignore
 import InputField from '@/components/style/InputField.vue'
+import { maxLength } from '@/utils/misc_utils'
 import { databaseClient } from '@/database/implementation'
-import { computed, ref, toRaw } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { SupabasePermissionHelper } from '@/database/supabase/supabase_permission_helper'
-import { MessageStack, MessageType } from '../messages/message_stack'
+import {
+  MessageStack,
+  MessageType,
+  pushError,
+  pushSuccess,
+} from '../messages/message_stack'
 import type { User } from '@/database/interface/user'
+import { getElementsInArrayByKeyValue, uniqueArray } from '@/utils/misc_utils'
 
 const users = ref<any[]>()
 const selectedUser = ref<User | null>(null)
 const selectedPermission = ref<number>(1)
 const searchedText = ref<string>('')
+const refetch = ref<boolean>(false)
 
 function selectPermission(permId: number) {
   selectedPermission.value = permId
@@ -118,9 +115,7 @@ function selectPermission(permId: number) {
 function selectUser(userToSelect: any) {
   selectedUser.value = userToSelect
   console.log(
-    userToSelect
-      ? 'Selected user ' + userToSelect.username
-      : 'No user selected',
+    userToSelect ? 'Selected user ' + userToSelect : 'No user selected',
   )
 }
 
@@ -129,25 +124,54 @@ function getPermFromId(id: number) {
   return SupabasePermissionHelper.permissionFromId(id)
 }
 
-await databaseClient
-  .getAllUsers()
-  .then((fetchedUsers) => {
-    users.value = fetchedUsers
-  })
-  .catch(() => {
-    MessageStack.getInstance().push({
-      text: "Quelque chose s'est mal passé",
-      type: MessageType.SUCCESS,
+function copyEmail(index: number) {
+  navigator.clipboard
+    .writeText(usersWithSelectedPerms.value[index].email)
+    .then(() => pushSuccess('Email copié !'))
+    .catch(() => pushError("Quelque chose s'est mal passé"))
+}
+
+async function handleUpdateRole(
+  self: any,
+  uuid: string,
+  email: string,
+  newRole: number,
+  oldRole: number,
+) {
+  await databaseClient.addUserToRole(uuid, newRole, oldRole)
+  pushSuccess(`L'utilisateur ${email} est passé de ${getPermFromId(oldRole)} à ${getPermFromId(newRole)}`)
+  self.oldValue = newRole
+  refetch.value = !refetch.value
+}
+
+async function fetchDb() {
+  await databaseClient
+    .getAllUsers()
+    .then((fetchedUsers) => {
+      users.value = fetchedUsers
     })
-  })
+    .catch((error) => {
+      console.error(error.message)
+      MessageStack.getInstance().push({
+        text: "Quelque chose s'est mal passé",
+        type: MessageType.ERROR,
+      })
+    })
+}
+
+watch(refetch, fetchDb)
+fetchDb()
 
 const usersWithSelectedPerms = computed(() => {
-  return users.value?.filter(
-    (user) =>
-      [...toRaw(user.permissions)].includes(selectedPermission.value) &&
-      (searchedText.value
-        ? user.username.toLowerCase().includes(searchedText.value.toLowerCase())
-        : true),
+  if (!users.value?.length) return []
+  return uniqueArray(
+    getElementsInArrayByKeyValue(
+      users.value,
+      'id',
+      selectedPermission.value,
+    )[0].users.filter(({ email }: { email: string }) =>
+      email.includes(searchedText.value),
+    ),
   )
 })
 </script>

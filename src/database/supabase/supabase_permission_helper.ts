@@ -1,8 +1,11 @@
 import { Permission } from '../interface/permissions'
 
 export class SupabasePermissionHelper {
-  static permissionFromId(id: number): Permission {
+  static permissionFromId(id: number): Permission | null {
+    id = parseInt(id)
     switch (id) {
+      case 0:
+        return null
       case 1:
         return Permission.TEACHER
       case 2:
@@ -12,7 +15,7 @@ export class SupabasePermissionHelper {
       case 4:
         return Permission.GLOBAL_ADMIN
       default:
-        throw 'Unknown permission key' + id
+        throw 'Unknown permission key ' + id
     }
   }
 

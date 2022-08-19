@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.35.3",
+    "markdown-it-vue": "^1.1.7",
     "sass": "^1.52.3",
     "vue": "^3.2.33",
+    "vue-drag-drop": "^1.1.4",
     "vue-router": "^4.0.16",
     "vue-window-size": "^1.1.2"
   },

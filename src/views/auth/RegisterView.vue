@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { databaseClient } from '@/database/implementation'
-import { evaluatePassword, isEmail } from '@/utils/string_utils'
+import { evaluatePassword, isEmail } from '@/utils/misc_utils'
 import LargeTitle from '@/components/style/LargeTitle.vue'
 import InputField from '@/components/style/InputField.vue'
 import AuthView from './AuthView.vue'

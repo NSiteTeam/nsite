@@ -39,14 +39,14 @@ export function checkInclusion(array: Array<any>, subSet: Array<any>): boolean {
   return array.some((letter) => subSet.includes(letter))
 }
 
-export function getElementInArrayByKeyValue(
+export function getElementsInArrayByKeyValue(
   array: Array<any>,
   key: any,
   value: any,
 ): any {
   return array.filter((element) => {
     return element[key] == value
-  })[0]
+  })
 }
 
 // Thanks to https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
@@ -56,6 +56,15 @@ export function isEmail(email: string): boolean {
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     )
+}
+
+export function uniqueArray(array: any[]): any[] {
+  return [... new Set(array)]
+}
+
+export function maxLength(sentence: string, maxLength: number): string {
+  if (sentence.length > maxLength) return sentence.slice(0, maxLength) + ' ...'
+  else return sentence
 }
 
 type strengthIndicator = [number, string, string]

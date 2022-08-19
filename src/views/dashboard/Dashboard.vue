@@ -63,17 +63,16 @@ const hasAccessToDashboard = ref(
 )
 
 const views = computed(() => {
+  // Returns the views a user is allowed to use
   if (permissions!!.includes(Permission.GLOBAL_ADMIN)) {
     return [PROGRAM_VIEW, NEWS_VIEW, HISTORY_VIEW, USERS_VIEW]
-  }
-
-  const result = []
-
-  if (permissions!!.includes(Permission.TEACHER)) result.push(PROGRAM_VIEW)
-  if (permissions!!.includes(Permission.NEWS_ADMIN)) result.push(NEWS_VIEW)
-  if (permissions!!.includes(Permission.HISTORY_ADMIN)) result.push(HISTORY_VIEW)
-
-  return result
+  } else if (permissions!!.includes(Permission.HISTORY_ADMIN)) {
+    return [PROGRAM_VIEW, HISTORY_VIEW]
+  } else if (permissions!!.includes(Permission.NEWS_ADMIN)) {
+    return [PROGRAM_VIEW, NEWS_VIEW]
+  } else if (permissions!!.includes(Permission.TEACHER)) {
+    return [PROGRAM_VIEW]
+  } else return []
 })
 
 const currentView = computed(

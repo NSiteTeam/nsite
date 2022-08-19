@@ -20,7 +20,7 @@ import { supabase } from './supabase_client'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
-import { removeBadChars } from '@/utils/string_utils'
+import { getElementsInArrayByKeyValue, removeBadChars } from '@/utils/misc_utils'
 import { SchoolProgram } from '../interface/school_program'
 import type {
   Theme,
@@ -45,7 +45,7 @@ export class SupabaseClient implements DatabaseClient {
   isConnected: Ref<boolean> = ref(false)
   user: Ref<SupabaseUser | null> = shallowRef(null) // We make this ref shallow as an user is immutable
 
-  userPermissionsCache: Cacheable<Permission[]> = new Cacheable(
+  userPermissionsCache: Cacheable<(Permission | null)[]> = new Cacheable(
     'permissions',
     async () => {
       if (!this.isConnected.value) {
@@ -60,8 +60,9 @@ export class SupabaseClient implements DatabaseClient {
       this.assertNoError(error, 'Fetching permissions failed')
 
       return (
-        data?.map((role) =>
-          SupabasePermissionHelper.permissionFromId(role.id),
+        data?.map((role) => {
+          return SupabasePermissionHelper.permissionFromId(role.id)
+        }
         ) ?? []
       )
     },
@@ -70,7 +71,7 @@ export class SupabaseClient implements DatabaseClient {
   baseUrl: string =
     'https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/'
 
-  getPermissions(): Promise<Permission[]> {
+  getPermissions(): Promise<(Permission | null)[]> {
     return this.userPermissionsCache.get()
   }
 
@@ -2107,16 +2108,24 @@ export class SupabaseClient implements DatabaseClient {
     })
   }
 
-  async getAllUsers(quantity?: number): Promise<any> {
+  async getAllUsers(): Promise<any> {
     // Requests profiles
-    let { data, error } = quantity
-      ? await supabase
-          .from('users')
-          .select('*', { count: 'exact' })
-          .range(0, quantity - 1)
-      : await supabase.from('users').select('*')
+    let { data, error } = await supabase.from('roles').select('*')
 
+    const { data: users, error: userError } = await supabase.from('users').select()
+    
     if (error) return console.error(error)
+    if (data) console.log(data)
+
+    data = data?.map(({ id, users: uuids }) => {
+      if (uuids == null) uuids = []
+      return {
+        id: id,
+        users: uuids.map((uuid: string) => getElementsInArrayByKeyValue(users!!, 'id', uuid)[0])
+      }
+    }) ?? null
+
+    if (userError) return console.error(userError)
 
     return new Promise((resolve, reject) => {
       if (error) {
@@ -2128,6 +2137,17 @@ export class SupabaseClient implements DatabaseClient {
       }
       resolve(data)
     })
+  }
+
+  async addUserToRole(uuid: string, newRole: number, oldRole: number): Promise<boolean> {
+    const { error } = await supabase.rpc('add_user_to_role', { uuid: uuid, role: newRole })
+
+    const { error: deletionError } = await supabase.rpc('remove_user_to_role', { uuid: uuid, role: oldRole })
+    
+    if (deletionError) throw deletionError.message
+    if (error) throw error.message
+
+    return true
   }
 
   private static themeFromData(data: any): Theme {

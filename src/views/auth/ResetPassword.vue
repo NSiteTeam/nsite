@@ -40,7 +40,7 @@ import SmallTitle from '@/components/style/SmallTitle.vue'
 // @ts-ignore
 import SubmitButton from '@/components/style/SubmitButton.vue'
 import { databaseClient } from '@/database/implementation'
-import { isEmail } from '@/utils/string_utils'
+import { isEmail } from '@/utils/misc_utils'
 import { ref } from 'vue'
 import { MessageStack, MessageType } from '../messages/message_stack'
 
@@ -56,13 +56,13 @@ async function handleSubmit() {
   if (error) {
     return MessageStack.getInstance().push({
       text: error,
-      type: MessageType.ERROR
+      type: MessageType.ERROR,
     })
   }
 
   MessageStack.getInstance().push({
     text: "Si l'adresse que vous avez entrée est correcte, vous allez recevoir un lien pour changer votre mot de passe",
-    type: MessageType.SUCCESS
+    type: MessageType.SUCCESS,
   })
 }
 

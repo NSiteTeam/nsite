@@ -48,7 +48,7 @@ import { databaseClient } from '@/database/implementation'
 import { pushError, pushInfo, pushSuccess } from '../messages/message_stack'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
-import { evaluatePassword } from '@/utils/string_utils'
+import { evaluatePassword } from '@/utils/misc_utils'
 
 const route = useRoute()
 const router = useRouter()
@@ -61,16 +61,21 @@ const password1 = ref('')
 const password2 = ref('')
 
 async function handleSubmit(): Promise<void> {
-  if (passwordsIdentical.value) return pushError("Les mots de passe sont différents")
-  if (evaluatePassword(password1.value)[0] <= 2) return pushError("Le mot de passe est trop faible")
+  if (passwordsIdentical.value)
+    return pushError('Les mots de passe sont différents')
+  if (evaluatePassword(password1.value)[0] <= 2)
+    return pushError('Le mot de passe est trop faible')
 
   const token = route.params.token as string
-  const error = await databaseClient.resetPasswordWithToken(token, password1.value)
+  const error = await databaseClient.resetPasswordWithToken(
+    token,
+    password1.value,
+  )
 
-  pushInfo("Mot de passe en cours de modification ...")
+  pushInfo('Mot de passe en cours de modification ...')
 
   if (error) return pushError(error)
-  else pushSuccess("Votre mot de passe a bien été modifié")
+  else pushSuccess('Votre mot de passe a bien été modifié')
 
   router.push('/')
 }
