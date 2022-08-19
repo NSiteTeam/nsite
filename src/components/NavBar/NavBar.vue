@@ -84,6 +84,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted } from '@vue/runtime-core'
 import { Side } from '@/utils/sides'
 import { MessageStack, MessageType } from '@/views/messages/message_stack'
+import { removeNullValues } from '@/utils/misc_utils'
 
 const MEDIUM_SIZE = 768 // This is the width of the medium device in the default tailwind config
 
@@ -100,7 +101,7 @@ async function updateAccessToDashboard() {
   databaseClient.getPermissions().then((permissions) => {
     userPermissions.value = permissions
     hasAccessToDashboard.value =
-      databaseClient.isConnected.value && permissions.length > 0
+      databaseClient.isConnected.value && removeNullValues(permissions).length > 0
   })
 }
 

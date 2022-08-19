@@ -22,8 +22,8 @@
         {{ getPermFromId(permission) }}
       </div>
     </DataColumn>
-    <div class="w-full">
-      <div class="flex items-center justify-between">
+    <div class="w-0 md:w-full flex-1">
+      <div class="flex flex-wrap items-center justify-between">
         <h1 class="p-2 text-2xl font-bold">Utilisateurs</h1>
         <SearchInput
           class="m-4 p-1"
@@ -33,7 +33,7 @@
       </div>
       <div class="flex flex-1 flex-col px-4 py-2 font-bold text-gray-800">
         <div
-          class="my-1 flex w-full cursor-pointer items-center justify-between rounded-lg p-2 transition-all hover:bg-primary/95 child:hover:text-white"
+          class="my-1 flex flex-wrap w-full cursor-pointer items-center justify-between rounded-lg p-2 transition-all hover:bg-primary/95 child:hover:text-white"
           v-for="(user, index) in usersWithSelectedPerms"
           :key="index"
           @click="selectUser(user)"
@@ -103,7 +103,7 @@ import { getElementsInArrayByKeyValue, uniqueArray } from '@/utils/misc_utils'
 
 const users = ref<any[]>()
 const selectedUser = ref<User | null>(null)
-const selectedPermission = ref<number>(1)
+const selectedPermission = ref<number>(0)
 const searchedText = ref<string>('')
 const refetch = ref<boolean>(false)
 

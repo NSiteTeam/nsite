@@ -67,6 +67,10 @@ export function maxLength(sentence: string, maxLength: number): string {
   else return sentence
 }
 
+export function removeNullValues(array: any[]): any[] {
+  return array.filter(el => !!el)
+}
+
 type strengthIndicator = [number, string, string]
 
 export function evaluatePassword(value: string): strengthIndicator {
