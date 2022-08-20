@@ -67,6 +67,14 @@ export function maxLength(sentence: string, maxLength: number): string {
   else return sentence
 }
 
+export function range(stop: number, start: number = 0, increment: number = 1) {
+  let result = []
+  for (let i = start; i < stop; i += increment) {
+    result.push(i)
+  }
+  return result
+}
+
 export function removeNullValues(array: any[]): any[] {
   return array.filter(el => !!el)
 }

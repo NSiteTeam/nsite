@@ -20,7 +20,10 @@ import { supabase } from './supabase_client'
 import { SupabasePermissionHelper } from './supabase_permission_helper'
 import { SupabaseLevelHelper } from './supabase_level_helper'
 import { LongDate } from '@/utils/long_date'
-import { getElementsInArrayByKeyValue, removeBadChars } from '@/utils/misc_utils'
+import {
+  getElementsInArrayByKeyValue,
+  removeBadChars,
+} from '@/utils/misc_utils'
 import { SchoolProgram } from '../interface/school_program'
 import type {
   Theme,
@@ -62,8 +65,7 @@ export class SupabaseClient implements DatabaseClient {
       return (
         data?.map((role) => {
           return SupabasePermissionHelper.permissionFromId(role.id)
-        }
-        ) ?? []
+        }) ?? []
       )
     },
   )
@@ -147,7 +149,10 @@ export class SupabaseClient implements DatabaseClient {
     if (error) return error.message
   }
 
-  async resetPasswordWithToken(token: string, newPassword: string): Promise<string | void> {
+  async resetPasswordWithToken(
+    token: string,
+    newPassword: string,
+  ): Promise<string | void> {
     const { error } = await supabase.auth.api.updateUser(token, {
       password: newPassword,
     })
@@ -2112,20 +2117,38 @@ export class SupabaseClient implements DatabaseClient {
     // Requests profiles
     let { data, error } = await supabase.from('roles').select('*')
 
-    const { data: users, error: userError } = await supabase.from('users').select()
-    
+    const { data: users, error: userError } = await supabase
+      .from('users')
+      .select()
+
+    const { data: levels, error: levelsError } = await supabase
+      .from('teachers')
+      .select('*')
+
     if (error) return console.error(error)
-    if (data) console.log(data)
-
-    data = data?.map(({ id, users: uuids }) => {
-      if (uuids == null) uuids = []
-      return {
-        id: id,
-        users: uuids.map((uuid: string) => getElementsInArrayByKeyValue(users!!, 'id', uuid)[0])
-      }
-    }) ?? null
-
+    if (levelsError) return console.error(levelsError)
     if (userError) return console.error(userError)
+
+    if (levels) console.log(levels)
+    console.log(data)
+
+    data =
+      data?.map(({ id, users: uuids }) => {
+        if (uuids == null) uuids = []
+        return {
+          id: id,
+          users: uuids.map((uuid: string) => {
+            const user = getElementsInArrayByKeyValue(users!!, 'id', uuid)[0]
+            user.levels = getElementsInArrayByKeyValue(
+              levels,
+              'user',
+              uuid,
+            )[0]?.editable_levels ?? []
+            return user
+          }),
+        }
+      }) ?? null
+
 
     return new Promise((resolve, reject) => {
       if (error) {
@@ -2139,11 +2162,21 @@ export class SupabaseClient implements DatabaseClient {
     })
   }
 
-  async addUserToRole(uuid: string, newRole: number, oldRole: number): Promise<boolean> {
-    const { error } = await supabase.rpc('add_user_to_role', { uuid: uuid, role: newRole })
+  async addUserToRole(
+    uuid: string,
+    newRole: number,
+    oldRole: number,
+  ): Promise<boolean> {
+    const { error } = await supabase.rpc('add_user_to_role', {
+      uuid: uuid,
+      role: newRole,
+    })
 
-    const { error: deletionError } = await supabase.rpc('remove_user_to_role', { uuid: uuid, role: oldRole })
-    
+    const { error: deletionError } = await supabase.rpc('remove_user_to_role', {
+      uuid: uuid,
+      role: oldRole,
+    })
+
     if (deletionError) throw deletionError.message
     if (error) throw error.message
 
