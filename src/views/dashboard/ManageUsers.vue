@@ -89,13 +89,17 @@
       description="À chaque professeur est assigné une liste de niveaux où il peut gérer les contenus."
     >
       <div v-if="selectedUser" class="flex h-full flex-col">
-        {{ selectedUser.levels }}
         <label
-          v-for="(level) in [7, 6, 5, 4, 3, 2, 1]"
+          v-for="level in [1, 2, 3, 4, 5, 6, 7]"
           :key="level"
           class="bold flex items-center text-lg text-gray-800"
         >
-          <input type="checkbox" class="m-1" :checked="selectedUser.levels.includes(level)" />
+          <input
+            @click="(event) => handleCheck(level, event.target.checked)"
+            type="checkbox"
+            class="m-1"
+            :checked="selectedUser.levels.includes(level)"
+          />
           {{ SupabaseLevelHelper.getLevelById(level).fullName }}
         </label>
         <div
@@ -104,6 +108,9 @@
           <ActionButton cancel>Annuler</ActionButton>
           <ActionButton primary>Confirmer</ActionButton>
         </div>
+      </div>
+      <div v-else class="w-full flex justify-center text-xl font-bold text-gray-800">
+        Chargement ... 
       </div>
     </RightPanel>
   </div>
@@ -136,14 +143,17 @@ import {
 } from '../messages/message_stack'
 
 const users = ref<any[]>()
-const selectedUser = ref<User | null>(null)
+const selectedUser = ref<any>(null)
 const selectedPermission = ref<number>(0)
 const searchedText = ref<string>('')
 const refetch = ref<boolean>(false)
 const rightPannelOpened = ref<boolean>(false)
 
 function toggleRightPannel(user: any) {
-  selectUser(user)
+  fetchDb()
+    .then(() => selectUser(user))
+    .catch((e) => console.error(e))
+  
   rightPannelOpened.value = !rightPannelOpened.value
 }
 
@@ -157,6 +167,23 @@ function selectUser(userToSelect: any) {
   console.log(
     userToSelect ? 'Selected user ' + userToSelect : 'No user selected',
   )
+}
+
+async function handleCheck(level: number, newValue: boolean) {
+  try {
+    if (newValue) {
+      await databaseClient.checkLevelForUser(selectedUser.value!!.id, level)
+      selectedUser.value.levels.push(level)
+    } else {
+      await databaseClient.uncheckLevelForUser(selectedUser.value!!.id, level)
+      selectedUser.value.levels = selectedUser.value.levels.filter(
+        (userLevel: number) => userLevel != level,
+      )
+    }
+  } catch (e) {
+    pushError(e as string)
+    console.error(e as string)
+  }
 }
 
 function getPermFromId(id: number) {
@@ -185,7 +212,7 @@ async function handleUpdateRole(
     )} à ${getPermFromId(newRole)}`,
   )
   self.oldValue = newRole
-  refetch.value = !refetch.value
+  fetchDb()
 }
 
 async function fetchDb() {
@@ -203,7 +230,6 @@ async function fetchDb() {
     })
 }
 
-watch(refetch, fetchDb)
 fetchDb()
 
 const usersWithSelectedPerms = computed(() => {

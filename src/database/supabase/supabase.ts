@@ -2131,9 +2131,6 @@ export class SupabaseClient implements DatabaseClient {
     if (levelsError) return console.error(levelsError)
     if (userError) return console.error(userError)
 
-    if (levels) console.log(levels)
-    console.log(data)
-
     data =
       data?.map(({ id, users: uuids }) => {
         if (uuids == null) uuids = []
@@ -2183,6 +2180,24 @@ export class SupabaseClient implements DatabaseClient {
     if (error) throw error.message
 
     return true
+  }
+
+  async checkLevelForUser(uuid: string, level: number): Promise<any> {
+    const { error } = await supabase.rpc('update_user_levels', {
+      user_uuid: uuid,
+      level: level
+    })
+
+    if (error) throw error.message
+  }
+
+  async uncheckLevelForUser(uuid: string, level: number): Promise<any> {
+    const { error } = await supabase.rpc('remove_user_levels', {
+      user_uuid: uuid,
+      level: level
+    })
+
+    if (error) throw error.message
   }
 
   private static themeFromData(data: any): Theme {

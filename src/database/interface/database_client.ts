@@ -57,7 +57,11 @@ export interface DatabaseClient {
   loginUsingToken(token: string): Promise<void>
 
   sendResetUserPassword(email: string): Promise<string | void>
+
+  checkLevelForUser(uuid: string, level: number): Promise<any>
   
+  uncheckLevelForUser(uuid: string, level: number): Promise<any>
+
   resetPasswordWithToken(
     token: string,
     newPassword: string,
