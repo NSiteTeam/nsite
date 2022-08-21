@@ -1209,6 +1209,7 @@ export class SupabaseClient implements DatabaseClient {
             LongDate.ISOStringToLongDate(news['date']),
             concerned,
             news['visible'],
+            news['imageUrls']
           ),
         )
       })
@@ -2040,6 +2041,7 @@ export class SupabaseClient implements DatabaseClient {
         concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
         content: news.content,
         subtitle: news.subtitle,
+        imageUrls: news.imageUrls
       })
       .match({ id: news.id })
 

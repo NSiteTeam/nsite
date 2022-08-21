@@ -250,6 +250,8 @@ export interface DatabaseClient {
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
   historyPointsFetched: boolean
+  
+  fetchOneNew(id: number): Promise<News | undefined>
   fetchNews(quantity: number, onlyVisible: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>
@@ -269,7 +271,6 @@ export interface DatabaseClient {
   deleteHistoryPoint(news: HistoryPoint): Promise<errorMessage | null>
   fetchHistoryPoints(): Promise<void>
   fetchOneHistoryPoint(id: number): Promise<HistoryPoint | undefined>
-  fetchOneNew(id: number): Promise<News | undefined>
   fetchedHistoryPoints: Ref<HistoryPoint[]>
 
   /* -------------------------------------------------------------------------- */

@@ -1,10 +1,10 @@
 <template>
   <div class="flex h-full w-full">
-    <DataColumn title="Actualités">
+    <DataColumn title="Points d'Histoire">
       <div
         v-for="(historyPoint, index) in historyPoints"
         :key="index"
-        @click="selectNews(historyPoint)"
+        @click="selectHistoryPoint(historyPoint)"
         class="my-4 cursor-pointer whitespace-normal p-2 text-lg font-bold text-gray-500"
         :class="{
           'rounded-lg bg-gray-200': historyPoint == selectedPoint,
@@ -197,7 +197,7 @@ async function deleteImage(url: string) {
   })
 }
 
-function selectNews(historyPoint: HistoryPoint | null) {
+function selectHistoryPoint(historyPoint: HistoryPoint | null) {
   selectedPoint.value = historyPoint
   handleUpdate()
 }
@@ -234,7 +234,7 @@ function handleDelete() {
           type: MessageType.ERROR,
         }),
       )
-    selectNews(null)
+    selectHistoryPoint(null)
   }
 
   PopupManager.getInstance().confirm({

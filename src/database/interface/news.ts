@@ -9,4 +9,5 @@ export interface News {
   date: LongDate
   concerned: Array<Level>
   visible: boolean
+  imageUrls: string[]
 }

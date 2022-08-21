@@ -19,7 +19,6 @@
       </ActionButton>
     </DataColumn>
 
-    <!-- Contains the body of the page -->
     <div class="h-full w-full min-w-0 flex-1" v-if="selectedPoint">
       <div class="flex w-full flex-row justify-between p-4">
         <LargeTitle>Modifier l'actualité</LargeTitle>
@@ -71,10 +70,21 @@
           v-model="selectedPoint.content"
           id="content"
         />
-        <div class="flex w-full flex-row-reverse">
-          <ActionButton @click="handleUpdate" class="mt-8 mr-8" primary
-            >Sauvegarder</ActionButton
+        <FileList
+          label="Images"
+          boldLabel
+          class="mt-4 w-full md:w-2/3"
+          @files-added="uploadFile"
+        />
+        <div class="mb-16 flex flex-wrap">
+          <div
+            v-for="(imageUrl, index) in selectedPoint.imageUrls"
+            :key="index"
+            class="relative my-4 mr-4 h-64 w-auto rounded-xl bg-gray-200 p-4"
           >
+            <ImageActions :url="imageUrl" @delete="deleteImage" />
+            <img class="h-64" :src="imageUrl" alt="Image ajoutée" />
+          </div>
         </div>
       </div>
     </div>
@@ -100,24 +110,83 @@ import TextArea from '../../components/style/TextArea.vue'
 import InputField from '../../components/style/InputField.vue'
 // @ts-ignore
 import ActionButton from '../../components/style/ActionButton.vue'
-import type { HistoryPoint } from '@/database/interface/history_point'
+// @ts-ignore
+import FileList from './FileList.vue'
+// @ts-ignore
+import ImageActions from '@/components/style/ImageActions.vue'
 import type { News } from '@/database/interface/news'
 import type { ShallowRef } from 'vue'
-import { shallowRef } from 'vue'
+import { onUnmounted, shallowRef } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
+import { deleteElementInArray } from '@/utils/string_utils'
 
-function selectNews(actualite?: News) {
+onUnmounted(handleUpdate)
+
+function displayInfo(message: string): void {
+  MessageStack.getInstance().push({
+    text: message,
+    type: MessageType.INFO,
+  })
+}
+
+async function uploadFile(file: File[]) {
+  displayInfo("L'image est en cours d'acheminement")
+
+  console.log('Trying to upload image', file)
+  const { data, error } = await databaseClient.uploadImage(
+    file[0],
+    'news',
+    selectedPoint.value?.title!!,
+  )
+
+  MessageStack.getInstance().push({
+    text: "L'image a bien été ajoutée",
+    type: MessageType.SUCCESS,
+  })
+
+  if (data) selectedPoint.value?.imageUrls.push(data)
+  if (
+    error == 'duplicate key value violates unique constraint "bucketid_objname"'
+  ) {
+    displayErrorMessage('Fichier déjà envoyé')
+  } else if (error) {
+    displayErrorMessage(error)
+  }
+}
+
+async function deleteImage(url: string) {
+  if (!selectedPoint.value) return
+  displayInfo("L'image est en cours de suppression")
+
+  const { error } = await databaseClient.deleteImage(url)
+  if (error) return displayErrorMessage(error)
+
+  console.log(url)
+  selectedPoint.value.imageUrls = deleteElementInArray(
+    selectedPoint.value.imageUrls,
+    url,
+  )
+
+  MessageStack.getInstance().push({
+    text: "L'image a bien été supprimé",
+    type: MessageType.SUCCESS,
+  })
+}
+
+function selectNews(actualite: News | null) {
   selectedPoint.value = actualite
+  handleUpdate()
 }
 
 function handleUpdate() {
+  console.log(selectedPoint.value?.imageUrls)
   databaseClient
     .updateNews(selectedPoint.value as News)
     .then(() => {
       MessageStack.getInstance().push({
-        text: "L'actualité a bien été modifiée",
+        text: "Le point d'histoire a bien été modifié",
         type: MessageType.SUCCESS,
       })
     })
@@ -126,6 +195,7 @@ function handleUpdate() {
       displayErrorMessage("Quelque chose s'est mal passé")
     })
 }
+
 
 function handleDelete() {
   const deletePoint = () => {
@@ -143,7 +213,7 @@ function handleDelete() {
           type: MessageType.ERROR,
         }),
       )
-    selectNews()
+    selectNews(null)
   }
 
   PopupManager.getInstance().confirm({
@@ -198,7 +268,7 @@ function toggleVisibility() {
 }
 
 await databaseClient.fetchNews(300, false)
-const selectedPoint: ShallowRef<News | undefined> = shallowRef()
+const selectedPoint: ShallowRef<News | null> = shallowRef(null)
 
 const AllNews = databaseClient.fetchedNews
   .value as News[]

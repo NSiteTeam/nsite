@@ -10,6 +10,7 @@ export class SupabaseNews implements News {
   date: LongDate
   concerned: Array<Level>
   visible: boolean
+  imageUrls: string[]
 
   constructor(
     id: number,
@@ -19,6 +20,7 @@ export class SupabaseNews implements News {
     date: LongDate,
     concerned: Array<Level>,
     visible: boolean,
+    imageUrls: string[],
   ) {
     this.id = id
     this.title = title
@@ -27,5 +29,6 @@ export class SupabaseNews implements News {
     this.date = date
     this.concerned = concerned
     this.visible = visible
+    this.imageUrls = imageUrls
   }
 }
