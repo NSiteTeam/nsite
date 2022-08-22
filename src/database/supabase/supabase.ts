@@ -55,6 +55,8 @@ export class SupabaseClient implements DatabaseClient {
         return []
       }
 
+      if (typeof this.user.value?.uuid == 'undefined') return []
+      
       const { data, error } = await supabase
         .from('roles')
         .select()
@@ -1209,7 +1211,7 @@ export class SupabaseClient implements DatabaseClient {
             LongDate.ISOStringToLongDate(news['date']),
             concerned,
             news['visible'],
-            news['imageUrls']
+            news['imageUrls'],
           ),
         )
       })
@@ -1725,7 +1727,7 @@ export class SupabaseClient implements DatabaseClient {
       LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['concerned'],
       data[0]['visible'],
-      data[0]['imageUrls']
+      data[0]['imageUrls'],
     )
 
     console.log('Added one news in the database', addedNews)
@@ -2042,7 +2044,7 @@ export class SupabaseClient implements DatabaseClient {
         concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
         content: news.content,
         subtitle: news.subtitle,
-        imageUrls: news.imageUrls
+        imageUrls: news.imageUrls,
       })
       .match({ id: news.id })
 
@@ -2119,9 +2121,9 @@ export class SupabaseClient implements DatabaseClient {
   async getAllUsers(): Promise<any> {
     // Requests profiles
     let [
-      { data, error }, 
-      { data: users, error: userError }, 
-      { data: levels, error: levelsError }
+      { data, error },
+      { data: users, error: userError },
+      { data: levels, error: levelsError },
     ] = await Promise.all([
       supabase.from('roles').select(),
       supabase.from('users').select(),
@@ -2139,17 +2141,15 @@ export class SupabaseClient implements DatabaseClient {
           id: id,
           users: uuids.map((uuid: string) => {
             const user = getElementsInArrayByKeyValue(users!!, 'id', uuid)[0]
-            user.levels = getElementsInArrayByKeyValue(
-              levels!!,
-              'user',
-              uuid,
-            )[0]?.editable_levels ?? []
+            user.levels =
+              getElementsInArrayByKeyValue(levels!!, 'user', uuid)[0]
+                ?.editable_levels ?? []
             return user
           }),
         }
       }) ?? null
-    
-    console.log("Final data :", data)
+
+    console.log('Final data :', data)
 
     return new Promise((resolve, reject) => {
       if (error) {
@@ -2187,7 +2187,7 @@ export class SupabaseClient implements DatabaseClient {
   async checkLevelForUser(uuid: string, level: number): Promise<any> {
     const { error } = await supabase.rpc('update_user_levels', {
       user_uuid: uuid,
-      level: level
+      level: level,
     })
 
     if (error) throw error.message
@@ -2196,7 +2196,7 @@ export class SupabaseClient implements DatabaseClient {
   async uncheckLevelForUser(uuid: string, level: number): Promise<any> {
     const { error } = await supabase.rpc('remove_user_levels', {
       user_uuid: uuid,
-      level: level
+      level: level,
     })
 
     if (error) throw error.message

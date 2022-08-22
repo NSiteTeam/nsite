@@ -217,7 +217,7 @@ async function handleUpdateRole(
   pushSuccess(
     `L'utilisateur ${email} est passé de ${getPermFromId(
       oldRole,
-    )} à ${getPermFromId(newRole)}`,
+    ) ?? 'utilisateur'} à ${getPermFromId(newRole) ?? 'utilisateur'}`,
   )
   self.oldValue = newRole
   fetchDb()

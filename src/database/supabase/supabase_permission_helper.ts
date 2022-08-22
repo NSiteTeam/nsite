@@ -1,8 +1,9 @@
 import { Permission } from '../interface/permissions'
 
 export class SupabasePermissionHelper {
-  static permissionFromId(id: number): Permission | null {
-    id = parseInt(id)
+  static permissionFromId(id: number | string): Permission | null {
+    if (typeof id == 'string') id = parseInt(id)
+
     switch (id) {
       case 0:
         return null
@@ -21,6 +22,8 @@ export class SupabasePermissionHelper {
 
   static idFromPermission(permission: Permission): number {
     switch (permission) {
+      case null:
+        return 0
       case Permission.TEACHER:
         return 1
       case Permission.HISTORY_ADMIN:

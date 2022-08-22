@@ -24,7 +24,7 @@ export interface User {
    *
    * @throws if the permissions couldn't be fetched
    */
-  getPermissions(): Promise<Permission[]>
+  getPermissions(): Promise<(Permission | null)[]>
 
   /**
    * Fetches the username of the user.

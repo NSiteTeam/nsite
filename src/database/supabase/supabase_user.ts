@@ -20,7 +20,7 @@ export class SupabaseUser implements User {
     this.uuid = uuid
   }
 
-  async getPermissions(): Promise<Permission[]> {
+  async getPermissions(): Promise<(Permission | null)[]> {
     console.log("Fetching user's permissions")
 
     if (this.fetchedPermissions) {
@@ -29,7 +29,6 @@ export class SupabaseUser implements User {
     }
 
     try {
-      // TODO-API:, replace this by a call to the API
       const { data, error } = await supabase
         .from('roles')
         .select('*')
