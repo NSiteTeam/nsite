@@ -120,7 +120,7 @@ import { onUnmounted, shallowRef } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
 import { MessageStack, MessageType } from '../messages/message_stack'
-import { deleteElementInArray } from '@/utils/string_utils'
+import { deleteElementInArray } from '@/utils/misc_utils'
 
 onUnmounted(handleUpdate)
 

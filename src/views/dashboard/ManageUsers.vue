@@ -85,17 +85,18 @@
     <RightPanel
       :isOpen="rightPannelOpened"
       @cancel="toggleRightPannel"
-      title="Niveaux du professeur"
+      :title="'Niveaux du professeur'"
       description="À chaque professeur est assigné une liste de niveaux où il peut gérer les contenus."
     >
       <div v-if="selectedUser" class="flex h-full flex-col">
+        <Keyword :big="false" primary class="font-bold mb-2">{{ selectedUser.email }}</Keyword>
         <label
           v-for="level in [1, 2, 3, 4, 5, 6, 7]"
           :key="level"
           class="bold flex items-center text-lg text-gray-800"
         >
           <input
-            @click="(event) => handleCheck(level, event.target.checked)"
+            @click="(event) => handleCheck(level, event.target.checked, selectedUser.email)"
             type="checkbox"
             class="m-1"
             :checked="selectedUser.levels.includes(level)"
@@ -105,12 +106,14 @@
         <div
           class="absolute bottom-0 left-0 flex w-full items-center justify-between place-self-end p-4"
         >
-          <ActionButton cancel>Annuler</ActionButton>
-          <ActionButton primary>Confirmer</ActionButton>
+          <ActionButton cancel @click="toggleRightPannel">Annuler</ActionButton>
         </div>
       </div>
-      <div v-else class="w-full flex justify-center text-xl font-bold text-gray-800">
-        Chargement ... 
+      <div
+        v-else
+        class="flex w-full justify-center text-xl font-bold text-gray-800"
+      >
+        Chargement ...
       </div>
     </RightPanel>
   </div>
@@ -124,11 +127,12 @@ import SearchInput from '../program/SearchInput.vue'
 // @ts-ignore
 import RightPanel from './RightPanel.vue'
 // @ts-ignore
-import { SupabaseLevelHelper } from '@/database/supabase/supabase_level_helper'
-// @ts-ignore
 import InputField from '@/components/style/InputField.vue'
 // @ts-ignore
+import Keyword from '@/components/style/Keyword.vue'
+// @ts-ignore
 import ActionButton from '../../components/style/ActionButton.vue'
+import { SupabaseLevelHelper } from '@/database/supabase/supabase_level_helper'
 import { maxLength } from '@/utils/misc_utils'
 import { databaseClient } from '@/database/implementation'
 import { SupabasePermissionHelper } from '@/database/supabase/supabase_permission_helper'
@@ -146,14 +150,13 @@ const users = ref<any[]>()
 const selectedUser = ref<any>(null)
 const selectedPermission = ref<number>(0)
 const searchedText = ref<string>('')
-const refetch = ref<boolean>(false)
 const rightPannelOpened = ref<boolean>(false)
 
 function toggleRightPannel(user: any) {
   fetchDb()
     .then(() => selectUser(user))
     .catch((e) => console.error(e))
-  
+
   rightPannelOpened.value = !rightPannelOpened.value
 }
 
@@ -169,7 +172,7 @@ function selectUser(userToSelect: any) {
   )
 }
 
-async function handleCheck(level: number, newValue: boolean) {
+async function handleCheck(level: number, newValue: boolean, email: string) {
   try {
     if (newValue) {
       await databaseClient.checkLevelForUser(selectedUser.value!!.id, level)
@@ -180,6 +183,11 @@ async function handleCheck(level: number, newValue: boolean) {
         (userLevel: number) => userLevel != level,
       )
     }
+    pushSuccess(
+      `Le professeur ${email} s'est vu ${newValue ? 'assigné' : 'retiré'} le niveau ${
+        SupabaseLevelHelper.getLevelById(level).abbreviated
+      }`,
+    )
   } catch (e) {
     pushError(e as string)
     console.error(e as string)

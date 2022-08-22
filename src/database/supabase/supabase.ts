@@ -1725,6 +1725,7 @@ export class SupabaseClient implements DatabaseClient {
       LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['concerned'],
       data[0]['visible'],
+      data[0]['imageUrls']
     )
 
     console.log('Added one news in the database', addedNews)
@@ -2117,15 +2118,15 @@ export class SupabaseClient implements DatabaseClient {
 
   async getAllUsers(): Promise<any> {
     // Requests profiles
-    let { data, error } = await supabase.from('roles').select('*')
-
-    const { data: users, error: userError } = await supabase
-      .from('users')
-      .select()
-
-    const { data: levels, error: levelsError } = await supabase
-      .from('teachers')
-      .select('*')
+    let [
+      { data, error }, 
+      { data: users, error: userError }, 
+      { data: levels, error: levelsError }
+    ] = await Promise.all([
+      supabase.from('roles').select(),
+      supabase.from('users').select(),
+      supabase.from('teachers').select(),
+    ])
 
     if (error) return console.error(error)
     if (levelsError) return console.error(levelsError)
@@ -2139,7 +2140,7 @@ export class SupabaseClient implements DatabaseClient {
           users: uuids.map((uuid: string) => {
             const user = getElementsInArrayByKeyValue(users!!, 'id', uuid)[0]
             user.levels = getElementsInArrayByKeyValue(
-              levels,
+              levels!!,
               'user',
               uuid,
             )[0]?.editable_levels ?? []
@@ -2147,7 +2148,8 @@ export class SupabaseClient implements DatabaseClient {
           }),
         }
       }) ?? null
-
+    
+    console.log("Final data :", data)
 
     return new Promise((resolve, reject) => {
       if (error) {
