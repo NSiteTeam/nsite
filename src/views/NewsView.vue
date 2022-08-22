@@ -1,14 +1,21 @@
 <template>
   <div class="m-8">
     <LargeTitle primary>{{ data.title }}</LargeTitle>
-    <SmallTitle>{{ data.subtitle }}</SmallTitle>
+    <img :src="data.imageUrls[0]" class="float-left max-h-64 w-auto p-2" />
+    <MediumTitle>{{ data.subtitle }}</MediumTitle>
     <div class="text-lg">{{ data.content }}</div>
+    <img
+      v-for="(image, index) in data.imageUrls.slice(1)"
+      :key="index"
+      :src="image"
+      class="float-left h-64 p-2"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 // @ts-ignore
-import SmallTitle from '../components/style/SmallTitle.vue'
+import MediumTitle from '../components/style/MediumTitle.vue'
 // @ts-ignore
 import LargeTitle from '@/components/style/LargeTitle.vue'
 import { ref } from 'vue'
