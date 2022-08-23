@@ -25,8 +25,8 @@
     <!-- Contains the body of the page -->
     <div class="h-full w-full min-w-0 flex-1" v-if="selectedPoint">
       <div class="flex w-full flex-row justify-between p-4">
-        <LargeTitle>Modifier le point d'histoire</LargeTitle>
-        <div class="flex">
+        <MediumTitle>Modifier le point d'histoire</MediumTitle>
+        <div class="flex justify-around w-96">
           <span
             @click="toggleVisibility"
             class="flex cursor-pointer items-center font-bold"
@@ -48,17 +48,17 @@
       <div class="p-4">
         <div class="flex flex-wrap items-center justify-between">
           <div class="">
-            <label for="content" class="block text-2xl font-bold text-gray-800"
+            <label for="content" class="block text-xl font-bold text-gray-800"
               >Titre du point d'histoire</label
             >
             <InputField
-              class="block w-[500px] text-2xl font-bold"
+              class="block w-[500px] text-xl font-bold"
               v-model="selectedPoint.title"
               id="title"
             />
           </div>
           <div class="">
-            <label for="content" class="block text-2xl font-bold text-gray-800"
+            <label for="content" class="block text-xl font-bold text-gray-800"
               >Date</label
             >
             <input
@@ -68,7 +68,7 @@
             />
           </div>
         </div>
-        <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
+        <label for="content" class="mt-4 block text-xl font-bold text-gray-800"
           >Sous-titre</label
         >
         <InputField
@@ -76,14 +76,22 @@
           v-model="selectedPoint.subtitle"
           id="subtitle"
         />
-        <label for="content" class="mt-4 block text-2xl font-bold text-gray-800"
-          >Contenu</label
-        >
-        <TextArea
-          class="block h-64 w-full"
-          v-model="selectedPoint.content"
-          id="content"
-        />
+        <div class="flex w-full flex-wrap lg:flex-nowrap mt-4">
+          <div>
+            <span class="mb-4 text-xl font-bold text-gray-800">Contenu</span>
+            <textarea
+              class="block h-64 w-96 rounded-lg p-3 font-mono text-sm outline-primary"
+              v-model="selectedPoint.content"
+            />
+          </div>
+          <div>
+            <span class="mb-4 text-xl font-bold text-gray-800">Aperçu</span>
+            <div
+              class="prose h-64 w-fit overflow-y-scroll pl-4"
+              v-html="parsedMarkdown"
+            ></div>
+          </div>
+        </div>
         <FileList
           label="Images"
           boldLabel
@@ -130,7 +138,9 @@ import FileList from './FileList.vue'
 // @ts-ignore
 import ImageActions from '@/components/style/ImageActions.vue'
 import type { HistoryPoint } from '@/database/interface/history_point'
-import type { ShallowRef } from 'vue'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
+import { computed } from 'vue'
 import { onUnmounted, shallowRef } from 'vue'
 import { deleteElementInArray } from '@/utils/misc_utils'
 import { databaseClient } from '@/database/implementation'
@@ -282,7 +292,11 @@ function toggleVisibility() {
 }
 
 await databaseClient.fetchHistoryPoints()
-const selectedPoint: ShallowRef<HistoryPoint | null> = shallowRef(null)
+const selectedPoint = shallowRef<HistoryPoint | null>(null)
+
+const parsedMarkdown = computed(() =>
+  DOMPurify.sanitize(marked.parse(selectedPoint.value?.content ?? ''), false),
+)
 
 const historyPoints = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]

@@ -1,10 +1,15 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
+    fontFamily: {
+      'mono': ['ui-monospace', 'SFMono-Regular',  ...defaultTheme.fontFamily.mono]
+    },
     extend: {
       height: {
         'header': '4rem',
@@ -41,6 +46,7 @@ module.exports = {
     function ({ addVariant }) {
       addVariant('child', '& > *');
       addVariant('child-hover', '& > *:hover');
-    }
+    },
+    require('@tailwindcss/typography'),
   ],
 }

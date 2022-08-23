@@ -411,11 +411,8 @@ export class SupabaseClient implements DatabaseClient {
           utilisations: typeObject.utilisations + 1 ?? 1,
         })
         .eq('id', typeObject.id)
-
-      this.assertNoError(
-        error,
-        'Increasing usage of theme resource type failed',
-      )
+      
+      if (error) console.error(error)
 
       typeObject = {
         ...typeObject,
@@ -990,9 +987,6 @@ export class SupabaseClient implements DatabaseClient {
         description: description,
         level: SupabaseLevelHelper.getIdByLevel(level),
         visible: false,
-        resources_interrogations: 0,
-        resources_exercises: 0,
-        resources_with_correction: 0,
       })
       .maybeSingle()
 

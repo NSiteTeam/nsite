@@ -223,12 +223,11 @@ import { Level, School } from '@/database/interface/level'
 import { computed, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import { useWindowSize } from 'vue-window-size'
+import useWindowSize from '@/utils/windows_size'
 import {
-  getParameterOfRoute,
   getQueryParameterOfRoute,
 } from '@/utils/route_utils'
-import { MessageStack, MessageType } from '@/views/messages/message_stack'
+import { MessageStack } from '@/views/messages/message_stack'
 
 const route = useRoute()
 const router = useRouter()
