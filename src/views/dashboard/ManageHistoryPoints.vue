@@ -86,10 +86,7 @@
           </div>
           <div>
             <span class="mb-4 text-xl font-bold text-gray-800">Aperçu</span>
-            <div
-              class="prose h-64 w-fit overflow-y-scroll pl-4"
-              v-html="parsedMarkdown"
-            ></div>
+            <Markdown :rawText="selectedPoint.content"/>
           </div>
         </div>
         <FileList
@@ -137,10 +134,9 @@ import ActionButton from '../../components/style/ActionButton.vue'
 import FileList from './FileList.vue'
 // @ts-ignore
 import ImageActions from '@/components/style/ImageActions.vue'
+// @ts-ignore
+import Markdown from '@/components/style/Markdown.vue'
 import type { HistoryPoint } from '@/database/interface/history_point'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
-import { computed } from 'vue'
 import { onUnmounted, shallowRef } from 'vue'
 import { deleteElementInArray } from '@/utils/misc_utils'
 import { databaseClient } from '@/database/implementation'
@@ -293,10 +289,6 @@ function toggleVisibility() {
 
 await databaseClient.fetchHistoryPoints()
 const selectedPoint = shallowRef<HistoryPoint | null>(null)
-
-const parsedMarkdown = computed(() =>
-  DOMPurify.sanitize(marked.parse(selectedPoint.value?.content ?? ''), false),
-)
 
 const historyPoints = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]
