@@ -1,3 +1,5 @@
+import type { ImageWithLabel } from './../interface/image_with_label'
+import { SupabaseImage } from './supabase_image'
 import type { ApiError, PostgrestError } from '@supabase/supabase-js'
 import { ref, shallowRef, type Ref } from 'vue'
 import type { DatabaseClient, errorMessage } from '../interface/database_client'
@@ -56,7 +58,7 @@ export class SupabaseClient implements DatabaseClient {
       }
 
       if (typeof this.user.value?.uuid == 'undefined') return []
-      
+
       const { data, error } = await supabase
         .from('roles')
         .select()
@@ -411,7 +413,7 @@ export class SupabaseClient implements DatabaseClient {
           utilisations: typeObject.utilisations + 1 ?? 1,
         })
         .eq('id', typeObject.id)
-      
+
       if (error) console.error(error)
 
       typeObject = {
@@ -1237,6 +1239,12 @@ export class SupabaseClient implements DatabaseClient {
         .select('*')
         .order('date')
 
+      const { data: labelData, error: labelError } = await supabase
+        .from('image_labels')
+        .select('*')
+
+      if (labelError) console.error(error)
+
       if (error) {
         throw 'Error while fetching history points' + error
       }
@@ -1246,6 +1254,12 @@ export class SupabaseClient implements DatabaseClient {
       }
 
       data?.forEach((historyPoint: any) => {
+        const imagesWithLabels = historyPoint['imageIds'].map((id: any) => {
+          return getElementsInArrayByKeyValue(labelData!!, 'id', id)[0]
+        })
+
+        console.log(imagesWithLabels)
+
         this.fetchedHistoryPoints.value.push(
           new SupabaseHistoryPoint(
             historyPoint['id'],
@@ -1254,7 +1268,9 @@ export class SupabaseClient implements DatabaseClient {
             historyPoint['content'],
             historyPoint['date'],
             historyPoint['visible'],
-            historyPoint['imageUrls'],
+            imagesWithLabels.map((image: any) => {
+              return new SupabaseImage(image.id, image.url, image.label)
+            }),
           ),
         )
       })
@@ -1272,7 +1288,17 @@ export class SupabaseClient implements DatabaseClient {
       .eq('id', id)
       .maybeSingle()
 
+    const { data: labelData, error: labelError } = await supabase
+      .from('image_labels')
+      .select('*')
+
+    data.images = data.imageIds.map(
+      (id: number) =>
+        getElementsInArrayByKeyValue(labelData ?? [], 'id', id)[0],
+    )
+
     if (error) console.error(error.message)
+    else if (labelError) console.error(labelError.message)
     else return data
   }
 
@@ -1905,7 +1931,11 @@ export class SupabaseClient implements DatabaseClient {
    * @param folders The folders to go
    * @returns The URL of the uploaded image
    */
-  async uploadImage(file: File, ...folders: string[]): Promise<any> {
+  async uploadImage(
+    file: File,
+    label: string,
+    ...folders: string[]
+  ): Promise<{ data: ImageWithLabel | null; error: string | null }> {
     // Removes the bad caracters from the file name
     const newName = removeBadChars(file.name).replaceAll(' ', '_')
     // Renames the folders and replaces whitespaces with underscores
@@ -1930,8 +1960,27 @@ export class SupabaseClient implements DatabaseClient {
         },
       )
 
-    if (data) return { data: this.baseUrl + data.Key, error: null }
     if (error) return { data: null, error: error.message }
+
+    const { data: labelData, error: labelError } = await supabase
+      .from('image_labels')
+      .insert({
+        url: this.baseUrl + data?.Key,
+        label: label,
+      })
+      .maybeSingle()
+
+    if (labelError) console.error(labelError)
+    if (data) console.log(data.Key)
+
+    const response = new SupabaseImage(
+      labelData.id,
+      labelData.url,
+      labelData.label,
+    )
+
+    if (data) return { data: response, error: null }
+    return { data: null, error: null }
   }
 
   /**
@@ -2063,7 +2112,7 @@ export class SupabaseClient implements DatabaseClient {
         date: historyPoint.date,
         title: historyPoint.title,
         subtitle: historyPoint.subtitle,
-        imageUrls: historyPoint.imageUrls,
+        imageIds: historyPoint.images.map((image) => image.id),
         visible: historyPoint.visible,
         content: historyPoint.content,
       })
@@ -2077,6 +2126,16 @@ export class SupabaseClient implements DatabaseClient {
     console.log('History point updated with success', data)
 
     return null
+  }
+
+  async updateImageLabel(id: number, newLabel: string): Promise<boolean> {
+    const { data, error: err } = await supabase.from('image_labels').update({
+      label: newLabel
+    }).match({ id: id })
+
+    if (err) console.error(err)
+
+    return !err
   }
 
   async editDeposit(

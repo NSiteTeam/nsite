@@ -1,27 +1,36 @@
 <template>
-  <div class="m-8">
+  <div class="m-8 max-w-full">
     <LargeTitle primary>{{ data.title }}</LargeTitle>
     <SmallTitle>{{ data.subtitle }}</SmallTitle>
-    <img
-      class="float-left h-40 p-4"
-      v-if="data.imageUrls[0]"
-      :src="data.imageUrls[0]"
-      alt="image contenue dans l'article"
-    />
-    <img
-      class="float-right h-40 p-4"
-      v-if="data.imageUrls[1]"
-      :src="data.imageUrls[1]"
-      alt="image contenue dans l'article"
-    />
-    <div class="text-lg">{{ data.content }}</div>
-    <img
-      class="float-right h-64 p-4"
-      v-for="(url, index) in data.imageUrls.slice(2)"
-      :key="index"
-      :src="url"
-      alt="image contenue dans l'article"
-    />
+    <div class="float-left flex flex-col p-4 text-gray-800">
+      <img
+        class="h-40"
+        v-if="data.images.length"
+        :src="data.images[0].url"
+        alt="Image contenue dans l'article"
+      />
+      <div class="font-bold">
+        {{ data.images[0].label }}
+      </div>
+    </div>
+    <div class="child:max-w-80 float-right flex w-1/2 flex-wrap pl-10">
+      <div
+        class="float-left flex flex-col font-bold p-4 text-gray-800"
+        v-for="(image, index) in data.images.slice(1)"
+        :key="index"
+      >
+        <img
+          class="h-40"
+          v-if="data.images.length"
+          :src="image.url"
+          alt="Image contenue dans l'article"
+        />
+        <div class="font-bold">
+          {{ image.label }}
+        </div>
+      </div>
+    </div>
+    <Markdown class="w-full" :rawText="data.content" />
   </div>
 </template>
 
@@ -30,6 +39,8 @@
 import SmallTitle from '../components/style/SmallTitle.vue'
 // @ts-ignore
 import LargeTitle from '@/components/style/LargeTitle.vue'
+// @ts-ignore
+import Markdown from '@/components/style/Markdown.vue'
 import { ref } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { useRoute } from 'vue-router'

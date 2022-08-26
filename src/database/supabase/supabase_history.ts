@@ -1,3 +1,4 @@
+import type { ImageWithLabel } from './../interface/image_with_label'
 import type { HistoryPoint } from '../interface/history_point'
 
 export class SupabaseHistoryPoint implements HistoryPoint {
@@ -6,7 +7,7 @@ export class SupabaseHistoryPoint implements HistoryPoint {
   subtitle: string
   date: number
   content: string
-  imageUrls: string[]
+  images: ImageWithLabel[]
   visible: boolean
 
   constructor(
@@ -16,13 +17,13 @@ export class SupabaseHistoryPoint implements HistoryPoint {
     content: string,
     date: number,
     visible: boolean,
-    imageUrls: string[],
+    imageUrls: ImageWithLabel[],
   ) {
     this.id = id
     this.title = title
     this.subtitle = subtitle
     this.content = content
-    this.imageUrls = imageUrls
+    this.images = imageUrls
     this.date = date
     this.visible = visible
   }

@@ -26,7 +26,7 @@
     <div class="h-full w-full min-w-0 flex-1" v-if="selectedPoint">
       <div class="flex w-full flex-row justify-between p-4">
         <MediumTitle>Modifier le point d'histoire</MediumTitle>
-        <div class="flex justify-around w-96">
+        <div class="flex w-96 justify-around">
           <span
             @click="toggleVisibility"
             class="flex cursor-pointer items-center font-bold"
@@ -76,7 +76,7 @@
           v-model="selectedPoint.subtitle"
           id="subtitle"
         />
-        <div class="flex w-full flex-wrap lg:flex-nowrap mt-4">
+        <div class="mt-4 flex w-full flex-wrap lg:flex-nowrap">
           <div>
             <span class="mb-4 text-xl font-bold text-gray-800">Contenu</span>
             <textarea
@@ -84,32 +84,67 @@
               v-model="selectedPoint.content"
             />
           </div>
-          <div>
+          <div class="ml-4">
             <span class="mb-4 text-xl font-bold text-gray-800">Aperçu</span>
-            <Markdown :rawText="selectedPoint.content"/>
+            <div class="h-64 w-fit overflow-y-scroll">
+              <Markdown :rawText="selectedPoint.content" />
+            </div>
           </div>
         </div>
+        <a
+          class="mt-2 block text-primary underline"
+          href="https://www.christopheducamp.com/2014/09/18/love-markdown/#table-des-matières"
+          target="_blank"
+        >
+          <Icon icon="open_in_new" />
+          Antisèche sur le language de mise en forme markdown
+        </a>
         <FileList
           label="Images"
           boldLabel
+          image
           class="mt-4 w-full md:w-2/3"
           @files-added="uploadFile"
         />
         <div class="mb-16 flex flex-wrap">
           <div
-            v-for="(imageUrl, index) in selectedPoint.imageUrls"
+            v-for="(image, index) in selectedPoint.images"
             :key="index"
-            class="relative my-4 mr-4 h-64 w-auto rounded-xl bg-gray-200 p-4"
+            class="h-70 relative my-4 mr-4 w-auto rounded-xl bg-gray-200 p-4"
           >
-            <ImageActions :url="imageUrl" @delete="deleteImage" />
-            <img class="h-64" :src="imageUrl" alt="Image ajoutée" />
+            <ImageActions :image="image" @delete="deleteImage" />
+            <img class="h-64 pb-2" :src="image.url" alt="Image ajoutée" />
+            <div class="flex flex-col justify-center">
+              <div class="items-strech flex w-full justify-center">
+                <Icon
+                  @click="handleSwap(index, index - 1)"
+                  class="my-1 rounded-lg bg-gray-300 px-2"
+                  icon="arrow_back"
+                />
+                <InputField v-model="image.label" />
+                <Icon
+                  @click="updateImageLabel(image.id, image.label)"
+                  class="my-2 mx-2 rounded-xl bg-primary px-2 text-white"
+                  icon="save"
+                />
+                <Icon
+                  @click="handleSwap(index, index + 1)"
+                  class="my-1 rounded-lg bg-gray-300 px-2"
+                  icon="arrow_forward"
+                />
+              </div>
+              <!-- <em v-if="image.label" class="text-sm flex justify-center text-center text-primary">
+                <Icon class="mr-1" icon="warning" />
+                N'oubliez pas de sauvegarder
+              </em> -->
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- If the user hasn't selected anything, display this -->
-    <div class="flex h-full w-full items-center justify-center" v-else>
+    <div class="flex h-full w-full flex-1 items-center justify-center" v-else>
       <MediumTitle class="w-96 rounded-xl bg-primary p-4 text-white"
         >Choisissez un point d'histoire à modifier</MediumTitle
       >
@@ -136,71 +171,75 @@ import FileList from './FileList.vue'
 import ImageActions from '@/components/style/ImageActions.vue'
 // @ts-ignore
 import Markdown from '@/components/style/Markdown.vue'
+// @ts-ignore
+import Icon from '@/components/style/Icon.vue'
 import type { HistoryPoint } from '@/database/interface/history_point'
-import { onUnmounted, shallowRef } from 'vue'
-import { deleteElementInArray } from '@/utils/misc_utils'
+import { onUnmounted, ref, shallowRef } from 'vue'
+import { deleteElementInArray, moveElInArray } from '@/utils/misc_utils'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
-import { MessageStack, MessageType } from '../messages/message_stack'
+import { pushError, pushInfo, pushSuccess } from '../messages/message_stack'
+import type { ImageWithLabel } from '@/database/interface/image_with_label'
 
-onUnmounted(handleUpdate)
+onUnmounted(() => {
+  if (selectedPoint.value) handleUpdate()
+})
 
-function displayErrorMessage(text: string) {
-  MessageStack.getInstance().push({
-    text: text,
-    type: MessageType.ERROR,
-  })
+function handleSwap(oldIndex: number, newIndex: number) {
+  if (selectedPoint.value)
+    selectedPoint.value.images = moveElInArray(
+      selectedPoint.value?.images!!,
+      oldIndex,
+      newIndex,
+    )
 }
 
-function displayInfo(message: string): void {
-  MessageStack.getInstance().push({
-    text: message,
-    type: MessageType.INFO,
-  })
+async function updateImageLabel(id: number, newLabel: string) {
+  try {
+    await databaseClient.updateImageLabel(id, newLabel)
+    pushSuccess("La légende a bien été sauvegardé")
+  } catch {
+    pushError("Quelque chose ne s'est pas bien passé")
+  }
 }
 
 async function uploadFile(file: File[]) {
-  displayInfo("L'image est en cours d'acheminement")
+  pushInfo("L'image est en cours d'acheminement")
 
   console.log('Trying to upload image', file)
+
   const { data, error } = await databaseClient.uploadImage(
     file[0],
+    '',
     'history_points',
     selectedPoint.value?.title!!,
   )
 
-  MessageStack.getInstance().push({
-    text: "L'image a bien été ajoutée",
-    type: MessageType.SUCCESS,
-  })
+  pushSuccess("L'image a bien été ajoutée")
 
-  if (data) selectedPoint.value?.imageUrls.push(data)
+  if (data) selectedPoint.value?.images.push(data)
   if (
     error == 'duplicate key value violates unique constraint "bucketid_objname"'
   ) {
-    displayErrorMessage('Fichier déjà envoyé')
+    pushError('Fichier déjà envoyé')
   } else if (error) {
-    displayErrorMessage(error)
+    pushError(error)
   }
 }
 
-async function deleteImage(url: string) {
+async function deleteImage(image: ImageWithLabel) {
   if (!selectedPoint.value) return
-  displayInfo("L'image est en cours de suppression")
+  pushInfo("L'image est en cours de suppression")
 
-  const { error } = await databaseClient.deleteImage(url)
-  if (error) return displayErrorMessage(error)
+  const { error } = await databaseClient.deleteImage(image.url)
+  if (error) return pushError(error)
 
-  console.log(url)
-  selectedPoint.value.imageUrls = deleteElementInArray(
-    selectedPoint.value.imageUrls,
-    url,
+  selectedPoint.value.images = deleteElementInArray(
+    selectedPoint.value.images,
+    image,
   )
 
-  MessageStack.getInstance().push({
-    text: "L'image a bien été supprimé",
-    type: MessageType.SUCCESS,
-  })
+  pushSuccess("L'image a bien été supprimé")
 }
 
 function selectHistoryPoint(historyPoint: HistoryPoint | null) {
@@ -209,18 +248,14 @@ function selectHistoryPoint(historyPoint: HistoryPoint | null) {
 }
 
 function handleUpdate() {
-  console.log(selectedPoint.value?.imageUrls)
   databaseClient
     .updateHistoryPoint(selectedPoint.value as HistoryPoint)
     .then(() => {
-      MessageStack.getInstance().push({
-        text: "Le point d'histoire a bien été modifié",
-        type: MessageType.SUCCESS,
-      })
+      pushSuccess("Le point d'histoire a bien été modifié")
     })
     .catch((err) => {
       console.error(err.message)
-      displayErrorMessage("Quelque chose s'est mal passé")
+      pushError("Quelque chose s'est mal passé")
     })
 }
 
@@ -229,17 +264,9 @@ function handleDelete() {
     databaseClient
       .deleteHistoryPoint(selectedPoint.value as HistoryPoint)
       .then(() => {
-        MessageStack.getInstance().push({
-          text: "Le point d'histoire a bien été supprimé",
-          type: MessageType.SUCCESS,
-        })
+        pushSuccess("Le point d'histoire a bien été supprimé")
       })
-      .catch(() =>
-        MessageStack.getInstance().push({
-          text: "Quelque chose s'est mal passé",
-          type: MessageType.ERROR,
-        }),
-      )
+      .catch(() => pushError("Quelque chose s'est mal passé"))
     selectHistoryPoint(null)
   }
 
@@ -256,15 +283,10 @@ function addHistoryPoint() {
   const createHistoryPoint = (value: string) => {
     databaseClient
       .createEmptyHistoryPoint(value)
-      .then(() =>
-        MessageStack.getInstance().push({
-          text: "Le point d'histoire a bien été créé",
-          type: MessageType.SUCCESS,
-        }),
-      )
+      .then(() => pushSuccess("Le point d'histoire a bien été créé"))
       .catch((err) => {
         console.error(err)
-        displayErrorMessage("Quelque chose s'est mal passé")
+        pushError("Quelque chose s'est mal passé")
       })
   }
 
@@ -288,7 +310,7 @@ function toggleVisibility() {
 }
 
 await databaseClient.fetchHistoryPoints()
-const selectedPoint = shallowRef<HistoryPoint | null>(null)
+const selectedPoint = ref<HistoryPoint | null>(null)
 
 const historyPoints = databaseClient.fetchedHistoryPoints
   .value as HistoryPoint[]

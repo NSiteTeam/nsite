@@ -16,6 +16,7 @@ import type {
   ThemeResourceType,
 } from './school_program'
 import type { PreviewData } from './preview_data'
+import type { ImageWithLabel } from './image_with_label'
 
 export type errorMessage = string
 
@@ -36,7 +37,7 @@ export interface DatabaseClient {
    *
    * @return the permissions of the current user.
    */
-   getPermissions(): Promise<(Permission | null)[]>
+  getPermissions(): Promise<(Permission | null)[]>
 
   /**
    * Return the levels that user can edit ONLY if he has the TEACHER permission
@@ -59,7 +60,7 @@ export interface DatabaseClient {
   sendResetUserPassword(email: string): Promise<string | void>
 
   checkLevelForUser(uuid: string, level: number): Promise<any>
-  
+
   uncheckLevelForUser(uuid: string, level: number): Promise<any>
 
   resetPasswordWithToken(
@@ -67,7 +68,11 @@ export interface DatabaseClient {
     newPassword: string,
   ): Promise<string | void>
 
-  addUserToRole(uuid: string, newRole: number, oldRole: number): Promise<boolean>
+  addUserToRole(
+    uuid: string,
+    newRole: number,
+    oldRole: number,
+  ): Promise<boolean>
 
   /**
    * Login the user with the given email and password
@@ -254,15 +259,20 @@ export interface DatabaseClient {
   fetchedNews: Ref<Array<News>>
   numberOfNews: Ref<number>
   historyPointsFetched: boolean
-  
+
   fetchOneNew(id: number): Promise<News | undefined>
   fetchNews(quantity: number, onlyVisible: boolean): Promise<void>
   createEmptyNews(title: string): Promise<News>
   updateNews(news: News): Promise<errorMessage | null>
   deleteNews(news: News): Promise<errorMessage | null>
 
-  uploadImage(file: File, ...folder: string[]): Promise<any>
+  uploadImage(
+    file: File,
+    label: string,
+    ...folder: string[]
+  ): Promise<{ data: ImageWithLabel | null; error: string | null }>
   deleteImage(url: string, ...folders: string[]): Promise<any>
+  updateImageLabel(id: number, newLabel: string): Promise<boolean>
 
   /* -------------------------------------------------------------------------- */
   /*                                  TIMELINE                                  */

@@ -137,6 +137,7 @@ async function uploadFile(file: File[]) {
   console.log('Trying to upload image', file)
   const { data, error } = await databaseClient.uploadImage(
     file[0],
+    '',
     'news',
     selectedPoint.value?.title!!,
   )

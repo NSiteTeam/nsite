@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import { computed } from 'vue'
 
 const { rawText } = defineProps(['rawText'])
 
-const parsedMarkdown = computed(() =>
-  DOMPurify.sanitize(marked.parse(rawText ?? ''), false),
-)
+function parseMarkdown(text: string) {
+  return DOMPurify.sanitize(marked.parse(text ?? ''), false)
+}
+
 </script>
 
 <template>
   <div
-    class="prose h-64 w-fit overflow-y-scroll pl-4"
-    v-html="parsedMarkdown"
+    class="prose w-full"
+    v-html="parseMarkdown(rawText)"
   ></div>
 </template>

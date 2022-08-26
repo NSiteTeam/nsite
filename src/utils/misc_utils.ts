@@ -1,4 +1,6 @@
-// These are pure functions for strings
+/* -------------------------------------------------------------------------- */
+/*                    These are pure functions for strings                    */
+/* -------------------------------------------------------------------------- */
 
 export function removeBadChars(stringWithBadChars: string) {
   return stringWithBadChars
@@ -58,8 +60,22 @@ export function isEmail(email: string): boolean {
     )
 }
 
+export function moveElInArray(
+  array: any[],
+  index1: number,
+  index2: number,
+): any[] {
+  let arr: any[] = array
+
+  // If the indexes are well contained in the array, switch elements
+  if (index1 < arr.length && index2 < arr.length && index1 >= 0 && index2 >= 0)
+    [arr[index1], arr[index2]] = [arr[index2], arr[index1]]
+
+  return arr
+}
+
 export function uniqueArray(array: any[]): any[] {
-  return [... new Set(array)]
+  return [...new Set(array)]
 }
 
 export function maxLength(sentence: string, maxLength: number): string {
@@ -76,7 +92,7 @@ export function range(stop: number, start: number = 0, increment: number = 1) {
 }
 
 export function removeNullValues(array: any[]): any[] {
-  return array.filter(el => !!el)
+  return array.filter((el) => !!el)
 }
 
 type strengthIndicator = [number, string, string]

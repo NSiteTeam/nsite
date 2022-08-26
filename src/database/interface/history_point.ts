@@ -1,11 +1,10 @@
-import type { LongDate } from '@/utils/long_date'
-
+import type { ImageWithLabel } from './image_with_label'
 export interface HistoryPoint {
   id: number
   title: string
   subtitle: string
   date: number
   content: string
-  imageUrls: string[]
+  images: ImageWithLabel[]
   visible: boolean
 }
