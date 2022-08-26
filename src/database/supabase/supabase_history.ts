@@ -17,13 +17,13 @@ export class SupabaseHistoryPoint implements HistoryPoint {
     content: string,
     date: number,
     visible: boolean,
-    imageUrls: ImageWithLabel[],
+    images: ImageWithLabel[],
   ) {
     this.id = id
     this.title = title
     this.subtitle = subtitle
     this.content = content
-    this.images = imageUrls
+    this.images = images
     this.date = date
     this.visible = visible
   }

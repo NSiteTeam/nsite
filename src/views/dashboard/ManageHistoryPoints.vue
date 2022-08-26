@@ -80,13 +80,14 @@
           <div>
             <span class="mb-4 text-xl font-bold text-gray-800">Contenu</span>
             <textarea
+              placeholder="Écrivez votre article ici avec la syntaxe markdown"
               class="block h-64 w-96 rounded-lg p-3 font-mono text-sm outline-primary"
               v-model="selectedPoint.content"
             />
           </div>
           <div class="ml-4">
             <span class="mb-4 text-xl font-bold text-gray-800">Aperçu</span>
-            <div class="h-64 w-fit overflow-y-scroll">
+            <div class="h-64 w-fit min-w-96 overflow-y-scroll">
               <Markdown :rawText="selectedPoint.content" />
             </div>
           </div>
@@ -133,10 +134,6 @@
                   icon="arrow_forward"
                 />
               </div>
-              <!-- <em v-if="image.label" class="text-sm flex justify-center text-center text-primary">
-                <Icon class="mr-1" icon="warning" />
-                N'oubliez pas de sauvegarder
-              </em> -->
             </div>
           </div>
         </div>

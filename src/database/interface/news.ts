@@ -1,4 +1,5 @@
 import type { LongDate } from '@/utils/long_date'
+import type { ImageWithLabel } from './image_with_label'
 import type { Level } from './level'
 
 export interface News {
@@ -9,5 +10,5 @@ export interface News {
   date: LongDate
   concerned: Array<Level>
   visible: boolean
-  imageUrls: string[]
+  images: ImageWithLabel[]
 }

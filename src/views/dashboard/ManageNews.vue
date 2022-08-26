@@ -78,12 +78,32 @@
         />
         <div class="mb-16 flex flex-wrap">
           <div
-            v-for="(imageUrl, index) in selectedPoint.imageUrls"
+            v-for="(image, index) in selectedPoint.images"
             :key="index"
-            class="relative my-4 mr-4 h-64 w-auto rounded-xl bg-gray-200 p-4"
+            class="relative my-4 mr-4 w-auto rounded-xl bg-gray-200 p-4"
           >
-            <ImageActions :url="imageUrl" @delete="deleteImage" />
-            <img class="h-64" :src="imageUrl" alt="Image ajoutée" />
+            <ImageActions :image="image" @delete="deleteImage" />
+            <img class="h-64" :src="image.url" alt="Image ajoutée" />
+            <div class="flex flex-col justify-center">
+              <div class="items-strech flex w-full justify-center">
+                <Icon
+                  @click="handleSwap(index, index - 1)"
+                  class="my-1 rounded-lg bg-gray-300 px-2"
+                  icon="arrow_back"
+                />
+                <InputField v-model="image.label" />
+                <Icon
+                  @click="updateImageLabel(image.id, image.label)"
+                  class="my-2 mx-2 rounded-xl bg-primary hover:bg-primary/90 px-2 text-white"
+                  icon="save"
+                />
+                <Icon
+                  @click="handleSwap(index, index + 1)"
+                  class="my-1 rounded-lg bg-gray-300 px-2"
+                  icon="arrow_forward"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -114,13 +134,16 @@ import ActionButton from '../../components/style/ActionButton.vue'
 import FileList from './FileList.vue'
 // @ts-ignore
 import ImageActions from '@/components/style/ImageActions.vue'
+// @ts-ignore
+import Icon from '@/components/style/Icon.vue'
 import type { News } from '@/database/interface/news'
 import type { ShallowRef } from 'vue'
 import { onUnmounted, shallowRef } from 'vue'
 import { databaseClient } from '@/database/implementation'
 import { PopupManager } from '../popup/popup_manager'
-import { MessageStack, MessageType } from '../messages/message_stack'
-import { deleteElementInArray } from '@/utils/misc_utils'
+import { MessageStack, MessageType, pushError, pushSuccess } from '../messages/message_stack'
+import { deleteElementInArray, moveElInArray } from '@/utils/misc_utils'
+import type { ImageWithLabel } from '@/database/interface/image_with_label'
 
 onUnmounted(handleUpdate)
 
@@ -129,6 +152,15 @@ function displayInfo(message: string): void {
     text: message,
     type: MessageType.INFO,
   })
+}
+
+async function updateImageLabel(id: number, newLabel: string) {
+  try {
+    await databaseClient.updateImageLabel(id, newLabel)
+    pushSuccess("La légende a bien été sauvegardé")
+  } catch {
+    pushError("Quelque chose ne s'est pas bien passé")
+  }
 }
 
 async function uploadFile(file: File[]) {
@@ -142,38 +174,31 @@ async function uploadFile(file: File[]) {
     selectedPoint.value?.title!!,
   )
 
-  MessageStack.getInstance().push({
-    text: "L'image a bien été ajoutée",
-    type: MessageType.SUCCESS,
-  })
+  pushSuccess("L'image a bien été ajoutée")
 
-  if (data) selectedPoint.value?.imageUrls.push(data)
+  if (data) selectedPoint.value?.images.push(data)
   if (
     error == 'duplicate key value violates unique constraint "bucketid_objname"'
   ) {
-    displayErrorMessage('Fichier déjà envoyé')
+    displayErrorMessage('Image déjà envoyé')
   } else if (error) {
     displayErrorMessage(error)
   }
 }
 
-async function deleteImage(url: string) {
+async function deleteImage(image: ImageWithLabel) {
   if (!selectedPoint.value) return
   displayInfo("L'image est en cours de suppression")
 
-  const { error } = await databaseClient.deleteImage(url)
+  const { error } = await databaseClient.deleteImage(image.url)
   if (error) return displayErrorMessage(error)
 
-  console.log(url)
-  selectedPoint.value.imageUrls = deleteElementInArray(
-    selectedPoint.value.imageUrls,
-    url,
+  selectedPoint.value.images = deleteElementInArray(
+    selectedPoint.value.images,
+    image,
   )
 
-  MessageStack.getInstance().push({
-    text: "L'image a bien été supprimé",
-    type: MessageType.SUCCESS,
-  })
+  pushSuccess("L'image a bien été supprimé")
 }
 
 function selectNews(actualite: News | null) {
@@ -181,15 +206,21 @@ function selectNews(actualite: News | null) {
   handleUpdate()
 }
 
+function handleSwap(oldIndex: number, newIndex: number) {
+  if (selectedPoint.value)
+    selectedPoint.value.images = moveElInArray(
+      selectedPoint.value?.images!!,
+      oldIndex,
+      newIndex,
+    )
+}
+
 function handleUpdate() {
-  console.log(selectedPoint.value?.imageUrls)
+  console.log(selectedPoint.value?.images)
   databaseClient
     .updateNews(selectedPoint.value as News)
     .then(() => {
-      MessageStack.getInstance().push({
-        text: "Le point d'histoire a bien été modifié",
-        type: MessageType.SUCCESS,
-      })
+      pushSuccess("L'actualité a bien été modifié")
     })
     .catch((err) => {
       console.error(err.message)
@@ -203,16 +234,10 @@ function handleDelete() {
     databaseClient
       .deleteNews(selectedPoint.value as News)
       .then(() => {
-        MessageStack.getInstance().push({
-          text: "L'actualité a bien été supprimée",
-          type: MessageType.SUCCESS,
-        })
+        pushSuccess("L'actualité a bien été supprimée")
       })
       .catch(() =>
-        MessageStack.getInstance().push({
-          text: "Quelque chose s'est mal passé",
-          type: MessageType.ERROR,
-        }),
+        pushError("Quelque chose s'est mal passé")
       )
     selectNews(null)
   }
@@ -238,10 +263,7 @@ function addNews() {
     databaseClient
       .createEmptyNews(value)
       .then(() =>
-        MessageStack.getInstance().push({
-          text: "L'actualité a bien été créée",
-          type: MessageType.SUCCESS,
-        }),
+        pushSuccess("L'actualité a bien été créée")
       )
       .catch((err) => {
         console.error(err)

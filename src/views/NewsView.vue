@@ -1,15 +1,26 @@
 <template>
   <div class="m-8">
     <LargeTitle primary>{{ data.title }}</LargeTitle>
-    <img :src="data.imageUrls[0]" class="float-left max-h-64 w-auto p-2" />
+    <div 
+      v-if="data.images.length"
+      class="float-left max-w-64 p-2"
+    >
+      <img 
+        v-if="data.images.length"
+        class="w-64"
+        :src="data.images[0].url"
+      />
+      {{ data.images[0].label }}
+    </div>
     <MediumTitle>{{ data.subtitle }}</MediumTitle>
     <div class="text-lg">{{ data.content }}</div>
-    <img
-      v-for="(image, index) in data.imageUrls.slice(1)"
-      :key="index"
-      :src="image"
-      class="float-left h-64 p-2"
-    />
+    <div class="float-left flex flex-col font-bold" :key="index" v-for="(image, index) in data.images.slice(1)">
+      <img
+        :src="image.url"
+        class="max-h-64 p-2"
+      />
+      {{ image.label }}
+    </div>
   </div>
 </template>
 

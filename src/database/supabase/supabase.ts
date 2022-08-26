@@ -1185,6 +1185,12 @@ export class SupabaseClient implements DatabaseClient {
 
       const { data, error } = await request
 
+      const { data: labelData, error: labelErr } = await supabase
+        .from('image_labels')
+        .select()
+
+      if (labelErr) return console.error(labelErr)
+
       if (error) {
         throw 'Error while fetching news' + error
       }
@@ -1198,6 +1204,10 @@ export class SupabaseClient implements DatabaseClient {
           ? news['concerned'].map(SupabaseLevelHelper.getLevelById)
           : null
 
+        const images = news['imageIds'].map((id: number) => {
+          return getElementsInArrayByKeyValue(labelData, 'id', id)[0] as News
+        })
+
         this.fetchedNews.value.push(
           new SupabaseNews(
             news['id'],
@@ -1207,7 +1217,7 @@ export class SupabaseClient implements DatabaseClient {
             LongDate.ISOStringToLongDate(news['date']),
             concerned,
             news['visible'],
-            news['imageUrls'],
+            images,
           ),
         )
       })
@@ -1305,11 +1315,22 @@ export class SupabaseClient implements DatabaseClient {
   async fetchOneNew(id: number): Promise<News | undefined> {
     const { data, error } = await supabase
       .from('news')
-      .select('*')
+      .select()
       .eq('id', id)
       .maybeSingle()
+    
+    const { data: labelData, error: labelErr } = await supabase
+      .from('image_labels')
+      .select()
+
+    data.images = data.imageIds.map((id: number) => {
+      return getElementsInArrayByKeyValue(labelData ?? [], 'id', id)[0]
+    })
+    
     if (error) {
       console.error(error.message)
+    } else if (labelErr) {
+      console.error(labelErr.message)
     } else {
       return data
     }
@@ -1731,13 +1752,16 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('news').insert([
       {
         title: title,
-        date: new Date(),
       },
     ])
 
     if (error) {
       throw error.message
     }
+
+    const { data: labelData, error: labelErr } = await supabase
+      .from('image_labels')
+      .select()
 
     const addedNews = new SupabaseNews(
       data[0]['id'],
@@ -1747,7 +1771,11 @@ export class SupabaseClient implements DatabaseClient {
       LongDate.ISOStringToLongDate(data[0]['date']),
       data[0]['concerned'],
       data[0]['visible'],
-      data[0]['imageUrls'],
+      data[0]['imageIds'].map((id: number) => {
+        return getElementsInArrayByKeyValue(
+          labelData ?? [], 'id', id
+        )[0]
+      }),
     )
 
     console.log('Added one news in the database', addedNews)
@@ -1803,23 +1831,20 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('history_points').insert([
       {
         title: title,
-        imageUrls: [],
+        imageIds: [],
       },
     ])
 
-    if (error) {
-      console.log('Error while creating history point', error)
-      throw error.message
-    }
+    if (error) throw error.message
 
     const addedHistoryPoint = new SupabaseHistoryPoint(
       data[0]['id'],
       data[0]['title'],
-      data[0]['subtitle'],
-      data[0]['content'],
+      '',
+      '',
       data[0]['date'],
       data[0]['visible'],
-      data[0]['imageUrls'],
+      []
     )
 
     console.log('Added one history point in the database', addedHistoryPoint)
@@ -2087,7 +2112,7 @@ export class SupabaseClient implements DatabaseClient {
         concerned: news.concerned.map(SupabaseLevelHelper.getIdByLevel),
         content: news.content,
         subtitle: news.subtitle,
-        imageUrls: news.imageUrls,
+        imageIds: news.images.map((image) => image.id),
       })
       .match({ id: news.id })
 
@@ -2129,9 +2154,12 @@ export class SupabaseClient implements DatabaseClient {
   }
 
   async updateImageLabel(id: number, newLabel: string): Promise<boolean> {
-    const { data, error: err } = await supabase.from('image_labels').update({
-      label: newLabel
-    }).match({ id: id })
+    const { data, error: err } = await supabase
+      .from('image_labels')
+      .update({
+        label: newLabel,
+      })
+      .match({ id: id })
 
     if (err) console.error(err)
 

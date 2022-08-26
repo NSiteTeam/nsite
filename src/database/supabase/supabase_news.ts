@@ -1,3 +1,4 @@
+import type  { ImageWithLabel } from './../interface/image_with_label';
 import type { LongDate } from '@/utils/long_date'
 import type { Level } from '../interface/level'
 import type { News } from '../interface/news'
@@ -10,7 +11,7 @@ export class SupabaseNews implements News {
   date: LongDate
   concerned: Array<Level>
   visible: boolean
-  imageUrls: string[]
+  images: ImageWithLabel[]
 
   constructor(
     id: number,
@@ -20,7 +21,7 @@ export class SupabaseNews implements News {
     date: LongDate,
     concerned: Array<Level>,
     visible: boolean,
-    imageUrls: string[],
+    images: ImageWithLabel[],
   ) {
     this.id = id
     this.title = title
@@ -29,6 +30,6 @@ export class SupabaseNews implements News {
     this.date = date
     this.concerned = concerned
     this.visible = visible
-    this.imageUrls = imageUrls
+    this.images = images
   }
 }
