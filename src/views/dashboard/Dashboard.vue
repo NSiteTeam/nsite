@@ -6,7 +6,7 @@
         <template v-for="view in views" :key="view.nameInURL">
           <div class="relative">
             <div
-              class="center m-2 h-12 w-12 rounded-lg p-2 transition-all"
+              class="flex justify-center m-2 h-12 w-12 rounded-lg p-2 transition-all"
               :class="{
                 'text-gray-800 hover:bg-gray-200': !isCurrentView(view),
                 'translate-x-1 bg-gray-800 text-white hover:bg-gray-700':

@@ -1,6 +1,6 @@
 <template>
   <div
-    class='h-full center flex items-center relative'
+    class='h-full flex justify-center items-center relative'
     :class="{
       'after:content-[\'\'] after:absolute': isActive,
       'after:from-primary after:to-transparent': isActive,

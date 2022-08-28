@@ -109,9 +109,9 @@
       </div>
     </div>
 
-    <div class="flex h-full w-full items-center justify-center" v-else>
-      <MediumTitle class="w-96 rounded-xl bg-primary p-4 text-white"
-        >Choisissez une actualité à modifier ou créez en une nouvelle</MediumTitle
+    <div class="flex flex-1 h-full w-full items-center justify-center" v-else>
+      <MediumTitle class="rounded-xl md:block hidden bg-primary p-4 text-white"
+        >Choisissez une actualité</MediumTitle
       >
     </div>
   </div>
@@ -292,7 +292,7 @@ function toggleVisibility() {
     selectedPoint.value.visible = !selectedPoint.value.visible as boolean
 }
 
-await databaseClient.fetchNews(300, false)
+await databaseClient.fetchNews(3000, false)
 const selectedPoint: ShallowRef<News | null> = shallowRef(null)
 
 const AllNews = databaseClient.fetchedNews

@@ -2,7 +2,7 @@
   <div class="flex w-full justify-between">
     <DataColumn title="Utilisateurs">
       <div
-        class="bold min-w-96 my-4 cursor-pointer p-2 text-gray-700"
+        class="font-bold min-w-96 my-4 cursor-pointer p-2 text-gray-700"
         :class="{
           'rounded-lg bg-gray-200': selectedPermission == 0,
         }"
@@ -11,7 +11,7 @@
         Utilisateur
       </div>
       <div
-        class="bold min-w-96 my-4 cursor-pointer p-2 text-gray-700"
+        class="font-bold min-w-96 my-4 cursor-pointer p-2 text-gray-700"
         :class="{
           'rounded-lg bg-gray-200': selectedPermission == permission,
         }"

@@ -141,8 +141,8 @@
     </div>
 
     <!-- If the user hasn't selected anything, display this -->
-    <div class="flex h-full w-full flex-1 items-center justify-center" v-else>
-      <MediumTitle class="w-96 rounded-xl bg-primary p-4 text-white"
+    <div class="md:flex h-full w-full flex-1 items-center justify-center" v-else>
+      <MediumTitle class="w-96 rounded-xl hidden md:block bg-primary p-4 text-white"
         >Choisissez un point d'histoire à modifier</MediumTitle
       >
     </div>

@@ -9,7 +9,7 @@
     <template v-for='(value, index) in values' :key='index'>
       <div
         @click="selectValue(value)"
-        class='bold mx-1 p-2 rounded-lg cursor-pointer select-none transition-all whitespace-nowrap'
+        class='font-bold mx-1 p-2 rounded-lg cursor-pointer select-none transition-all whitespace-nowrap'
         :class='{
           "bg-primary text-white -translate-y-1": value === modelValue,
           "text-gray-700": value !== modelValue,

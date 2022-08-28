@@ -149,7 +149,7 @@
                   :types="[
                     'primary',
                     'secondary',
-                    'secondary',
+                    'date',
                     'secondary',
                     'boolean',
                     'link[]',

@@ -4,7 +4,7 @@
     <ul
       class="
         flex flex-col place-content-around sm:flex-row
-        bold text-center
+        font-bold text-center
         p-12
       "
     >

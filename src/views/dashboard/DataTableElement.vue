@@ -11,6 +11,14 @@
     </div>
   </template>
 
+  <template v-else-if="type === 'date'">
+    <span
+      class="text-primary bold whitespace-nowrap"
+    >
+      {{ LongDate.value }}
+    </span>
+  </template>
+
   <template v-else>
     <span
       :class='{
@@ -25,6 +33,7 @@
 
 <script setup lang='ts'>
   import type { ThemeResourceFile } from "@/database/interface/school_program"
+  import { LongDate } from '@/utils/long_date'
   import Icon from '@/components/style/Icon.vue'
 
   const NUMBER_OF_CHAR_PER_LINK = 40

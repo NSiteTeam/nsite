@@ -27,7 +27,7 @@ const searchbarContent: Ref<string> = ref('')
 
 <template>
   <div class="my-16 mx-8">
-    <div class="my-4 flex items-center justify-between">
+    <div class="my-4 flex flex-wrap items-center justify-between">
       <LargeTitle primary>Quelques nouvelles :</LargeTitle>
       <Searchbar v-model="searchbarContent" />
     </div>
