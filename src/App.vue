@@ -15,6 +15,15 @@
   import PopupView from '@/views/popup/PopupView.vue'
 </script>
 
-<style lang="scss">
-  @import './src/style/index.scss'
+<style>
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+
+  @layer components {
+    .input-style {
+      @apply flex flex-row items-center overflow-clip rounded-lg border-4 bg-gray-500/20 p-4 text-2xl font-bold outline-none transition-colors focus-within:border-primary focus-within:bg-transparent;
+    }
+  }
+
 </style>

@@ -2,10 +2,9 @@
   <div class="m-8 max-w-full">
     <LargeTitle primary>{{ data.title }}</LargeTitle>
     <SmallTitle>{{ data.subtitle }}</SmallTitle>
-    <div class="float-left flex flex-col p-4 text-gray-800">
+    <div v-if="data.images.length" class="float-left flex flex-col p-4 text-gray-800">
       <img
         class="h-40"
-        v-if="data.images.length"
         :src="data.images[0].url"
         alt="Image contenue dans l'article"
       />

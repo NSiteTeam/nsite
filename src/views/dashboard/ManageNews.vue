@@ -145,7 +145,9 @@ import { MessageStack, MessageType, pushError, pushSuccess } from '../messages/m
 import { deleteElementInArray, moveElInArray } from '@/utils/misc_utils'
 import type { ImageWithLabel } from '@/database/interface/image_with_label'
 
-onUnmounted(handleUpdate)
+onUnmounted(() => {
+  if (selectedPoint.value) handleUpdate()
+})
 
 function displayInfo(message: string): void {
   MessageStack.getInstance().push({
