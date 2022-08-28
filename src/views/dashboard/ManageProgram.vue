@@ -452,6 +452,7 @@ databaseClient
   .getTeachingLevels()
   .then((levels) => {
     teachingLevels.value = levels.map((level) => level.fullName)
+    console.log(teachingLevels.value)
   })
   .catch(MessageStack.logError)
 

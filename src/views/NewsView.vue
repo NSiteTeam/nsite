@@ -3,7 +3,7 @@
     <LargeTitle primary>{{ data.title }}</LargeTitle>
     <div 
       v-if="data.images.length"
-      class="float-left max-w-64 p-2"
+      class="float-left font-bold w-64 p-2 break-words"
     >
       <img 
         v-if="data.images.length"

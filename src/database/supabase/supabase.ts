@@ -64,6 +64,7 @@ export class SupabaseClient implements DatabaseClient {
         .select()
         .contains('users', [this.user.value?.uuid])
 
+      console.log(this.user.value?.uuid, data)
       this.assertNoError(error, 'Fetching permissions failed')
 
       return (
@@ -92,7 +93,11 @@ export class SupabaseClient implements DatabaseClient {
         return Level.LEVELS
       }
 
-      if (!permissions.includes(Permission.TEACHER)) {
+      if (!(
+        permissions.includes(Permission.TEACHER)
+        || permissions.includes(Permission.NEWS_ADMIN)
+        || permissions.includes(Permission.HISTORY_ADMIN)
+      )) {
         console.log('User is not a teacher, returning empty array')
 
         return []
@@ -103,6 +108,8 @@ export class SupabaseClient implements DatabaseClient {
         .select()
         .eq('user', this.user.value?.uuid)
         .maybeSingle()
+
+      console.log('Fetched teaching levels', data)
 
       this.assertNoError(error, 'Fetching teaching levels failed')
 
@@ -280,8 +287,7 @@ export class SupabaseClient implements DatabaseClient {
   themeResourcesCache: Map<string, Cacheable<ThemeResource[]>> = new Map()
   async getThemeResources(uuid: string): Promise<ThemeResource[] | null> {
     if (
-      !this.themeResourcesCache.has(uuid) &&
-      (await this.fullProgramCache.get()).contains(uuid)
+      !this.themeResourcesCache.has(uuid)
     ) {
       this.themeResourcesCache.set(
         uuid,
@@ -1752,6 +1758,7 @@ export class SupabaseClient implements DatabaseClient {
     const { data, error } = await supabase.from('news').insert([
       {
         title: title,
+        imageIds: []
       },
     ])
 
