@@ -14,7 +14,7 @@
       <div
         :class="{
           flex: true,
-          'h-full items-center': !isBelowMediumDevice,
+          'h-full flex items-baseline': !isBelowMediumDevice,
           hidden: isBelowMediumDevice && !menuToggled,
           'fixed top-0 right-0 z-40 m-4 w-60 flex-col items-start rounded-lg bg-white py-4 pr-20 text-xl shadow-lg':
             isBelowMediumDevice && menuToggled,

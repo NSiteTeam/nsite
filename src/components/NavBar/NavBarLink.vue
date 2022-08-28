@@ -1,11 +1,11 @@
 <template>
   <div
-    class='h-full center relative'
+    class='h-full center flex items-center relative'
     :class="{
       'after:content-[\'\'] after:absolute': isActive,
       'after:from-primary after:to-transparent': isActive,
       'pl-6': minify,
-      'after:bottom-0 after:h-1 after:w-full after:bg-gradient-to-t after:rounded-t-full': isActive && !minify,
+      'after:bottom-0 after:h-1 after:w-full after:bg-gradient-to-t after:rounded-t-full after:left-0': isActive && !minify,
       'after:left-0 after:w-1.5 after:h-full after:bg-gradient-to-r after:rounded-r-full': isActive && minify,
     }"
   >
