@@ -7,18 +7,18 @@
 
       <Catchphrase smiley="🖋️">
         Les annales des précédents DS avec
-        <Keyword big primary bold> les corrigés</Keyword>
+        <Keyword :big="false" primary bold> les corrigés</Keyword>
       </Catchphrase>
       <Catchphrase smiley="📃">
-        Des <Keyword primary bold>fiches d'exercices</Keyword> pour s'entraîner
+        Des <Keyword :big="false" primary bold>fiches d'exercices</Keyword> pour s'entraîner
       </Catchphrase>
       <Catchphrase smiley="🏅">
         Les concours
-        <Keyword primary bold> de mathématiques </Keyword> organisés par Saint
+        <Keyword :big="false" primary bold> de mathématiques </Keyword> organisés par Saint
         Jean Hulst
       </Catchphrase>
       <Catchphrase smiley="🤓">
-        De quoi <Keyword primary bold>se préparer</Keyword> pour la rentrée
+        De quoi <Keyword :big="false" primary bold>se préparer</Keyword> pour la rentrée
       </Catchphrase>
     </ShadowBox>
 

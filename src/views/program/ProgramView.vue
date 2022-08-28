@@ -12,8 +12,8 @@
       lycée.
       <br />
       A chaque thème est associé des fiches
-      <Keyword big primary bold>d'exercices</Keyword> ainsi que d'anciennes
-      interrogations pour <Keyword big primary bold>s'entraîner</Keyword>.
+      <Keyword primary bold :big="false">d'exercices</Keyword> ainsi que d'anciennes
+      interrogations pour <Keyword primary bold :big="false">s'entraîner</Keyword>.
     </p>
 
     <!--Spacer-->

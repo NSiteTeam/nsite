@@ -75,8 +75,7 @@ export class SupabaseClient implements DatabaseClient {
     },
   )
 
-  baseUrl: string =
-    'https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/'
+  baseUrl: string = import.meta.env.VITE_SUPABASE_URL!! + '/storage/v1/object/public/'
 
   getPermissions(): Promise<(Permission | null)[]> {
     return this.userPermissionsCache.get()
@@ -2064,7 +2063,7 @@ export class SupabaseClient implements DatabaseClient {
     if (data != null && this.user.value) {
       // Registers the file in the database
       const url = encodeURI(
-        `https://xtaokvbipbsfiierhajp.supabase.co/storage/v1/object/public/${data.Key}`,
+        this.baseUrl + data.Key
       )
       const res = await supabase.from('repository_file').insert([
         {
