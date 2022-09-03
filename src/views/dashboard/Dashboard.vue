@@ -6,18 +6,27 @@
         <template v-for="view in views" :key="view.nameInURL">
           <div class="relative">
             <div
-              class="flex justify-center m-2 h-12 w-12 rounded-lg p-2 transition-all"
+              class="align-items group relative m-2 flex h-12 
+              w-12 justify-center rounded-lg p-2 transition-all"
               :class="{
                 'text-gray-800 hover:bg-gray-200': !isCurrentView(view),
-                'translate-x-1 bg-gray-800 text-white hover:bg-gray-700':
+                'bg-gray-800 text-white hover:bg-gray-700':
                   isCurrentView(view),
               }"
               @click="select(view)"
             >
               <Icon :icon="view.icon" 2xl />
+              <div
+                class="absolute z-50 w-32 translate-x-24 top-[10%] 
+                transition-all duration-100 scale-0 rounded-lg bg-gray-800 p-2 font-bold
+                text-white group-hover:scale-100"
+              >
+                {{ view.tooltip }}
+              </div>
             </div>
             <div
-              class="absolute -left-2 w-1 rounded-r-full bg-gray-800 transition-all duration-500"
+              class="absolute -left-2 w-1 rounded-r-full 
+              bg-gray-800 transition-all duration-500"
               :class="{
                 'top-0 h-12': isCurrentView(view),
                 'top-6 h-0': !isCurrentView(view),

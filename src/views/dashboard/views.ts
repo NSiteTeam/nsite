@@ -17,26 +17,26 @@ export const PROGRAM_VIEW = {
   nameInUrl: 'themes',
   icon: 'topic',
   view: ManageProgram,
-  tooltip: 'Thèmes de l\'année'
+  tooltip: 'Thèmes'
 }
 export const NEWS_VIEW = {
   name: 'Actualités',
   nameInUrl: 'actualites',
   icon: 'newspaper',
   view: ManageNews,
-  tooltip: 'actualités'
+  tooltip: 'Actualités'
 }
 export const HISTORY_VIEW = {
   name: 'Histoire',
   nameInUrl: 'histoire',
   icon: 'timeline',
   view: ManageHistoryPoints,
-  tooltip: 'Points d\'Histoire'
+  tooltip: 'Histoire'
 }
 export const USERS_VIEW = {
   name: 'Utilisateurs',
   nameInUrl: 'utilisateurs',
   icon: 'manage_accounts',
   view: ManageUsers,
-  tooltip: 'Gérer les utilisateurs'
+  tooltip: 'Utilisateurs'
 }
