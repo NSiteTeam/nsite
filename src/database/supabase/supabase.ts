@@ -1209,7 +1209,7 @@ export class SupabaseClient implements DatabaseClient {
           ? news['concerned'].map(SupabaseLevelHelper.getLevelById)
           : null
 
-        const images = news['imageIds'].map((id: number) => {
+        const images = (news['imageIds'] ?? []).map((id: number) => {
           return getElementsInArrayByKeyValue(labelData, 'id', id)[0] as News
         })
 
@@ -1230,7 +1230,7 @@ export class SupabaseClient implements DatabaseClient {
       this.newsOffset += data.length
       this.maxNewsReached.value = data.length != quantity
     } catch (error) {
-      console.log(
+      console.error(
         `Error while updating permissions, probably caused by changes in the database`,
         error,
       )

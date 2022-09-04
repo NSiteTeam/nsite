@@ -17,9 +17,13 @@
             >
               <Icon :icon="view.icon" 2xl />
               <div
-                class="absolute z-50 w-32 translate-x-24 top-[10%] 
-                transition-all duration-100 scale-0 rounded-lg bg-gray-800 p-2 font-bold
+                class="absolute z-50 w-36 translate-x-[100px] top-[10%] 
+                transition-all duration-100 scale-0 rounded-lg bg-gray-900 p-2 font-bold
                 text-white group-hover:scale-100"
+                :class="{
+                  'group-hover:bg-gray-700': isCurrentView(view),
+                  'group-hover:bg-gray-200 group-hover:text-gray-900': !isCurrentView(view),
+                }"
               >
                 {{ view.tooltip }}
               </div>
