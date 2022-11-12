@@ -1083,7 +1083,7 @@ export class SupabaseClient implements DatabaseClient {
   // The value of this ref is the fetched files
   files: Ref<CustomFile[]> = ref([])
 
-  // The number of fetched news (Laurian, j'ai mis 10 au pif, il fallait une valeur)
+  // The number of fetched news
   numberOfNews: Ref<number> = ref(10)
 
   // The value of this ref is the fetched repositories
@@ -1412,6 +1412,30 @@ export class SupabaseClient implements DatabaseClient {
       console.log('Error while fetching owned deposits', error)
       return []
     }
+  }
+
+  async getOwnEmail(): Promise<string> {
+    const { data, error } = await supabase
+      .rpc("get_own_email")
+      .maybeSingle()
+    
+      if (error) console.error(error)
+      return data
+  }
+
+  async changeEmail(newEmail: string): Promise<boolean> {
+    if (!this.user.value) return false
+
+    const { error } = await supabase.auth.update({ email: newEmail })
+    const { error: userError } = await supabase
+      .from('users')
+      .update({ email: newEmail })
+      .match({ id: this.user.value.uuid })
+
+    if (error) console.error(error)
+    if (userError) console.error(userError)
+
+    return !error || !userError
   }
 
   async getDeposit(id: number): Promise<Repository | null> {
@@ -2031,79 +2055,6 @@ export class SupabaseClient implements DatabaseClient {
 
     if (!error) return { error: null }
     return { error: error.message }
-  }
-
-  /* What it does :
-        1: uploads the file to a storage bucket
-        2: registers the file object in the dB
-        3: selects the already present files in the depo
-        4: updates the content in the depo */
-  async uploadFileToDeposit(
-    file: File,
-    deposit: string,
-    message: string,
-    fileName?: string,
-  ): Promise<string> {
-    // Removes the bad caracters from the file name
-    const newName = removeBadChars(fileName || file.name)
-
-    // Removes the bad caracters from the deposit name
-    const cleanDepositName = removeBadChars(deposit)
-
-    // Uploads data to the storage bucket
-    const escapedFile = new File([file], newName, { type: file.type })
-
-    console.log(deposit + '/' + newName)
-    const { data, error } = await supabase.storage
-      .from('depositsfiles')
-      .upload(cleanDepositName + '/' + newName, escapedFile, {
-        cacheControl: '3600',
-        upsert: false,
-      })
-    if (data != null && this.user.value) {
-      // Registers the file in the database
-      const url = encodeURI(
-        this.baseUrl + data.Key
-      )
-      const res = await supabase.from('repository_file').insert([
-        {
-          file_url: url,
-          last_commit_text: message,
-          name: newName,
-        },
-      ])
-      res.error ? console.warn(res.error.message) : null
-      res.data ? console.log(res.data) : null
-
-      if (res.data && !res.error) {
-        // Gets the files that are already in the depo
-        const responseForTheSelect = await supabase
-          .from('deposits')
-          // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
-          .select()
-          .eq('title', deposit)
-          .maybeSingle()
-        res.error ? console.warn(responseForTheSelect.error) : null
-        // @ts-ignore res.data vaut any donc il est pas content qu'on lise des propriétés dessus
-        res.data ? console.log(responseForTheSelect.data) : null
-
-        const oldData = responseForTheSelect.data.content || []
-        // Adds the file to the depo
-        const responseForTheUpdate = await supabase
-          .from('deposits')
-          // @ts-ignore res.data is any so he is not happy
-          .update([{ content: oldData.concat(res.data[0].id) }])
-          .match({ title: deposit })
-
-        res.error ? console.warn(responseForTheUpdate.error) : null
-        res.data ? console.log(responseForTheUpdate.data) : null
-      }
-    }
-    // OMG that was a long journey to upload a file 😅
-    return new Promise((resolve, reject) => {
-      if (error) reject(error.message)
-      resolve('Le fichier a bien été téléversé')
-    })
   }
 
   async updateNews(news: News): Promise<errorMessage | null> {

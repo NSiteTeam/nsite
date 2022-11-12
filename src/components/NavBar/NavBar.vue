@@ -39,13 +39,19 @@
           to="/register"
           :minify="isBelowMediumDevice"
           v-if="!connected"
-          >S'inscrire</NavBarLink
+         >S'inscrire</NavBarLink
         >
         <NavBarLink
           to="/dashboard"
           :minify="isBelowMediumDevice"
           v-if="hasAccessToDashboard"
           >Gestion du site</NavBarLink
+        >
+        <NavBarLink
+          to="/my-account"
+          :minify="isBelowMediumDevice"
+          v-if="hasAccessToDashboard"
+          >Mon compte</NavBarLink
         >
         <ActionIcon
           v-if="connected"

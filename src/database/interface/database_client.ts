@@ -61,6 +61,10 @@ export interface DatabaseClient {
 
   checkLevelForUser(uuid: string, level: number): Promise<any>
 
+  getOwnEmail(): Promise<string>
+
+  changeEmail(newEmail: string): Promise<boolean>
+
   uncheckLevelForUser(uuid: string, level: number): Promise<any>
 
   resetPasswordWithToken(
@@ -228,12 +232,7 @@ export interface DatabaseClient {
   /* -------------------------------------------------------------------------- */
   /*                                  Deposits                                  */
   /* -------------------------------------------------------------------------- */
-  uploadFileToDeposit(
-    file: File,
-    deposit: string,
-    message: string,
-    fileName?: string,
-  ): Promise<string>
+
   editDeposit(
     id: number,
     title: string,

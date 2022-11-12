@@ -23,10 +23,8 @@
     </ShadowBox>
 
     <ShadowBox class="h-min bg-white/10">
-      <LargeTitle
-        >Les <Keyword big secondary>actualités</Keyword> de Saint
-        Jean</LargeTitle
-      >
+      <LargeTitle>Les <Keyword big secondary>actualités</Keyword> de Saint
+        Jean</LargeTitle>
       <div class="news-container no-scrollbar max-h-[60vh] overflow-y-scroll">
         <CenteredLoadingAnimation v-if="!newsFetched" animation-size="75%" />
 
@@ -64,7 +62,7 @@ import ShadowBox from '@/components/style/ShadowBox.vue'
 import LargeTitle from '@/components/style/LargeTitle.vue'
 // @ts-ignore
 import SmallTitle from '@/components/style/SmallTitle.vue'
-import { MessageStack, MessageType } from '../messages/message_stack'
+import { MessageStack, MessageType, pushError, pushInfo } from '../messages/message_stack'
 import { databaseClient } from '@/database/implementation'
 import { useRouter } from 'vue-router'
 import getUrlParam from '@/utils/get_url_param'
@@ -81,8 +79,12 @@ const newsFetched = ref<boolean>(false)
 
 if (getUrlParam('type') == 'signup')
   validateAccount(getUrlParam('access_token'))
-if (getUrlParam('type') == 'recovery') 
+if (getUrlParam('type') == 'recovery')
   recoverPassword(getUrlParam('access_token'))
+if (getUrlParam('message') == 'Confirmation+link+accepted.+Please+proceed+to+confirm+link+sent+to+the+other+email')
+  pushInfo('Lien de confirmation accepté: veuillez confirmez le lien envoyé à l\'autre adresse')
+if (getUrlParam('error') == 'unauthorized_client')
+  pushError('Le lien est invalide ou a expiré')
 
 const sortedNews = computed(() =>
   databaseClient.fetchedNews.value

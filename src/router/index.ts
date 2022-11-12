@@ -86,6 +86,11 @@ const router = createRouter({
       component: () => import('@/views/auth/ResetPassword.vue')
     },
     {
+      path: '/my-account',
+      name: 'my-account',
+      component: () => import('@/views/auth/MyAccount.vue')
+    },
+    {
       path: '/change-password/:token',
       name: 'change-password',
       component: () => import('@/views/auth/ChangePassword.vue')
